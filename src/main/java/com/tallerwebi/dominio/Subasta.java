@@ -10,9 +10,6 @@ public class Subasta {
     private String estadoArticulo;
     private String estadoSubasta;
 
-    public Subasta() {
-    }
-
     public Subasta(String nombre, String descripcion, double precioInicial, double precioMaximo, String categoria, String estadoArticulo) {
         this.nombre = nombre;
         this.descripcion = descripcion;
