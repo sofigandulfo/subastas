@@ -37,6 +37,25 @@ public class ServicioSubastaTest {
     }
 
     @Test
+    public void queSeActualicenLosAtributosDeUnaSubasta(){
+        Subasta subasta = new Subasta("Notebook", "Notebook 16gb", 1000.0, 5000.0, "Tecnologia", "nuevo");
+
+        subasta.setNombre("Mouse");
+        subasta.setDescripcion("Mouse inalambrico");
+        subasta.setPrecioInicial(500.0);
+        subasta.setPrecioMaximo(2000.0);
+        subasta.setCategoria("Perifericos");
+        subasta.setEstado("usado");
+
+        assertEquals("Mouse", subasta.getNombre());
+        assertEquals("Mouse inalambrico", subasta.getDescripcion());
+        assertEquals(500.0, subasta.getPrecioInicial());
+        assertEquals(2000.0, subasta.getPrecioMaximo());
+        assertEquals("Perifericos", subasta.getCategoria());
+        assertEquals("usado", subasta.getEstado());
+    }
+
+    @Test
     public void queAlCrearUnaSubastaValidaSeGuardaEnLaBaseDeDatosCorrectamente() throws SubastaInvalidaExeption{
         Subasta subasta = new Subasta("Notebook", "Notebook 16gb", 1000.0, 5000.0, "Tecnologia", "nuevo");
 
