@@ -66,8 +66,8 @@ public class Subasta {
         return estadoArticulo;
     }
 
-    public void setEstado(String estadoArticulo) {
-        this.estadoArticulo = estadoArticulo;
+    public void setEstado(String estado) {
+        this.estadoArticulo = estado;
     }
 
     public String getEstadoSubasta() { 
