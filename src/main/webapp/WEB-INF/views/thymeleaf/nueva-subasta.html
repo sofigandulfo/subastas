@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Subasta</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+
+<body>
+    <!--
+    Crear el formulario web para que el usuario 
+    (creador de la subasta) ingrese: nombre, 
+    descripción, precio inicial, precio máximo, 
+    categoría e imagen.
+-->
+    <div class="w3-container w3-display-middle" style="width:50%">
+        <div class="w3-card-4">
+            <div class="w3-container w3-blue-grey">
+                <h2>Crea tu subasta</h2>
+            </div>
+            <p>Ingresa los datos para poder crear tu subasta:</p>
+            <div class="formulario">
+                <form th:action="@{/crear-subasta}" th:object="${subasta}" class="w3-container w3-padding-16"
+                    method="POST">
+                    <!--Se crea el formulario y aclaro: 1-A donde van los datos del formulario: METODO del Controller
+                    2-VINCULO un objeto subasta a partir de los datos ingresados. -->
+
+                    <!-- Agrego en cada input (cada DATO que pido) un th:field. 
+                                                asocio lo que pido con el 
+                                                atributo del objeto a crear (la subata) -->
+                    <label>Nombre:</label> <input th:field="*{nombre}" class="w3-input" type="text"
+                        placeholder="Ejemplo: Sillón">
+                    <label>Descripcion:</label> <input th:field="*{descripcion}" class="w3-input" type="text">
+                    <label>Precio Inicial:</label> <input th:field="*{precioInicial}" class="w3-input" type="number">
+                    <label>Precio Maximo:</label> <input th:field="*{precioMaximo}" class="w3-input" type="number">
+                    <label>Categoria:</label> <select th:field="*{categoria}" class="w3-select">
+                        <option value="" disabled selected>Elegir categoria</option>
+                        <option value="electronica">Electrónica</option>
+                        <option value="entretenimiento">Entretenimiento</option>
+                        <option value="vehiculo">Vehiculo</option>
+                        <option value="ropa">Ropa/Moda</option>
+                        <option value="hogar">Hogar</option>
+                        <option value="deporte">Deporte</option>
+                    </select>
+                    <label>Estado:</label> <select th:field="*{estado}" class="w3-select">
+                        <option value="" disabled selected>Elegir estado</option>
+                        <option value="nuevo">Nuevo</option>
+                        <option value="usado">Usado</option>
+                    </select>
+                    <button type="submit" class="w3-btn w3-blue-grey w3-block">Crear Subasta</button>
+                </form>
+            </div>
+        </div>
+</body>
+
+</html>
