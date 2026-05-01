@@ -2,77 +2,86 @@ package com.tallerwebi.dominio;
 
 public class Subasta {
 
-    private String nombre;
-    private String descripcion;
-    private double precioInicial;
-    private double precioMaximo;
-    private String categoria;
-    private String estadoArticulo;
-    private String estadoSubasta;
+  private String nombre;
+  private String descripcion;
+  private double precioInicial;
+  private double precioMaximo;
+  private String categoria;
+  private String estadoArticulo;
+  private String estadoSubasta;
 
-    public Subasta(String nombre, String descripcion, double precioInicial, double precioMaximo, String categoria, String estadoArticulo) {
-        this.nombre = nombre;
-        this.descripcion = descripcion;
-        this.precioInicial = precioInicial;
-        this.precioMaximo = precioMaximo;
-        this.categoria = categoria;
-        this.estadoArticulo = estadoArticulo;
-    }
+  public Subasta(
+    String nombre,
+    String descripcion,
+    double precioInicial,
+    double precioMaximo,
+    String categoria,
+    String estadoArticulo
+  ) {
+    this.nombre = nombre;
+    this.descripcion = descripcion;
+    this.precioInicial = precioInicial;
+    this.precioMaximo = precioMaximo;
+    this.categoria = categoria;
+    this.estadoArticulo = estadoArticulo;
+  }
 
-    public String getNombre() {
-        return nombre;
-    }
+  //creo un constructor vacio para el formulario html
+  public Subasta() {}
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
+  public String getNombre() {
+    return nombre;
+  }
 
-    public String getDescripcion() {
-        return descripcion;
-    }
+  public void setNombre(String nombre) {
+    this.nombre = nombre;
+  }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
+  public String getDescripcion() {
+    return descripcion;
+  }
 
-    public double getPrecioInicial() {
-        return precioInicial;
-    }
+  public void setDescripcion(String descripcion) {
+    this.descripcion = descripcion;
+  }
 
-    public void setPrecioInicial(double precioInicial) {
-        this.precioInicial = precioInicial;
-    }
+  public double getPrecioInicial() {
+    return precioInicial;
+  }
 
-    public double getPrecioMaximo() {
-        return precioMaximo;
-    }
+  public void setPrecioInicial(double precioInicial) {
+    this.precioInicial = precioInicial;
+  }
 
-    public void setPrecioMaximo(double precioMaximo) {
-        this.precioMaximo = precioMaximo;
-    }
+  public double getPrecioMaximo() {
+    return precioMaximo;
+  }
 
-    public String getCategoria() {
-        return categoria;
-    }
+  public void setPrecioMaximo(double precioMaximo) {
+    this.precioMaximo = precioMaximo;
+  }
 
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
-    }
+  public String getCategoria() {
+    return categoria;
+  }
 
-    public String getEstado() {
-        return estadoArticulo;
-    }
+  public void setCategoria(String categoria) {
+    this.categoria = categoria;
+  }
 
-    public void setEstado(String estado) {
-        this.estadoArticulo = estado;
-    }
+  public String getEstado() {
+    return estadoArticulo;
+  }
 
-    public String getEstadoSubasta() { 
-        return estadoSubasta; 
-    }
-    
-    public void setEstadoSubasta(String estadoSubasta) {
-         this.estadoSubasta = estadoSubasta; 
-        }
-    
+  public void setEstado(String estado) {
+    this.estadoArticulo = estado;
+  }
+
+  public String getEstadoSubasta() {
+    return estadoSubasta;
+  }
+
+  public void setEstadoSubasta(String estadoSubasta) {
+    this.estadoSubasta = estadoSubasta;
+  }
 }

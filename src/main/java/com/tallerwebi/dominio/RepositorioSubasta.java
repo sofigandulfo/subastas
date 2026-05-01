@@ -1,7 +1,5 @@
 package com.tallerwebi.dominio;
 
 public interface RepositorioSubasta {
-
-     void guardarSubasta(Subasta subasta);
-
+  void guardarSubasta(Subasta subasta);
 }
