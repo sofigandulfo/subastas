@@ -6,101 +6,149 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import com.tallerwebi.dominio.excepcion.SubastaInvalidaExeption;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.tallerwebi.dominio.excepcion.SubastaInvalidaExeption;
-
 public class ServicioSubastaTest {
 
-    private ServicioSubasta servicioSubasta;
-    private RepositorioSubasta repositorioSubasta;
+  private ServicioSubasta servicioSubasta;
+  private RepositorioSubasta repositorioSubasta;
 
-    @BeforeEach
-    public void init() {
-        repositorioSubasta = mock(RepositorioSubasta.class);
-        servicioSubasta = new ServicioSubastaImpl(repositorioSubasta);
-    }
-    
-    @Test
-    public void queUnaSubastaTengaLosAtributosCorrectos() throws SubastaInvalidaExeption {
-        Subasta subasta = new Subasta("Notebook", "Notebook 16gb", 1000.0, 5000.0, "Tecnologia", "nuevo");
+  @BeforeEach
+  public void init() {
+    repositorioSubasta = mock(RepositorioSubasta.class);
+    servicioSubasta = new ServicioSubastaImpl(repositorioSubasta);
+  }
 
-        servicioSubasta.crearSubasta(subasta);
+  @Test
+  public void queUnaSubastaTengaLosAtributosCorrectos() throws SubastaInvalidaExeption {
+    Subasta subasta = new Subasta(
+      "Notebook",
+      "Notebook 16gb",
+      1000.0,
+      5000.0,
+      "Tecnologia",
+      "nuevo"
+    );
 
-        assertEquals("Notebook", subasta.getNombre());
-        assertEquals("Notebook 16gb", subasta.getDescripcion());
-        assertEquals(1000.0, subasta.getPrecioInicial());
-        assertEquals(5000.0, subasta.getPrecioMaximo());
-        assertEquals("Tecnologia", subasta.getCategoria());
-        assertEquals("nuevo", subasta.getEstado());
-    }
+    servicioSubasta.crearSubasta(subasta);
 
-    @Test
-    public void queSeActualicenLosAtributosDeUnaSubasta(){
-        Subasta subasta = new Subasta("Notebook", "Notebook 16gb", 1000.0, 5000.0, "Tecnologia", "nuevo");
+    assertEquals("Notebook", subasta.getNombre());
+    assertEquals("Notebook 16gb", subasta.getDescripcion());
+    assertEquals(1000.0, subasta.getPrecioInicial());
+    assertEquals(5000.0, subasta.getPrecioMaximo());
+    assertEquals("Tecnologia", subasta.getCategoria());
+    assertEquals("nuevo", subasta.getEstado());
+  }
 
-        subasta.setNombre("Mouse");
-        subasta.setDescripcion("Mouse inalambrico");
-        subasta.setPrecioInicial(500.0);
-        subasta.setPrecioMaximo(2000.0);
-        subasta.setCategoria("Perifericos");
-        subasta.setEstado("usado");
+  @Test
+  public void queSeActualicenLosAtributosDeUnaSubasta() {
+    Subasta subasta = new Subasta(
+      "Notebook",
+      "Notebook 16gb",
+      1000.0,
+      5000.0,
+      "Tecnologia",
+      "nuevo"
+    );
 
-        assertEquals("Mouse", subasta.getNombre());
-        assertEquals("Mouse inalambrico", subasta.getDescripcion());
-        assertEquals(500.0, subasta.getPrecioInicial());
-        assertEquals(2000.0, subasta.getPrecioMaximo());
-        assertEquals("Perifericos", subasta.getCategoria());
-        assertEquals("usado", subasta.getEstado());
-    }
+    subasta.setNombre("Mouse");
+    subasta.setDescripcion("Mouse inalambrico");
+    subasta.setPrecioInicial(500.0);
+    subasta.setPrecioMaximo(2000.0);
+    subasta.setCategoria("Perifericos");
+    subasta.setEstado("usado");
 
-    @Test
-    public void queAlCrearUnaSubastaValidaSeGuardaEnLaBaseDeDatosCorrectamente() throws SubastaInvalidaExeption{
-        Subasta subasta = new Subasta("Notebook", "Notebook 16gb", 1000.0, 5000.0, "Tecnologia", "nuevo");
+    assertEquals("Mouse", subasta.getNombre());
+    assertEquals("Mouse inalambrico", subasta.getDescripcion());
+    assertEquals(500.0, subasta.getPrecioInicial());
+    assertEquals(2000.0, subasta.getPrecioMaximo());
+    assertEquals("Perifericos", subasta.getCategoria());
+    assertEquals("usado", subasta.getEstado());
+  }
 
-        servicioSubasta.crearSubasta(subasta);
+  @Test
+  public void queAlCrearUnaSubastaValidaSeGuardaEnLaBaseDeDatosCorrectamente()
+    throws SubastaInvalidaExeption {
+    Subasta subasta = new Subasta(
+      "Notebook",
+      "Notebook 16gb",
+      1000.0,
+      5000.0,
+      "Tecnologia",
+      "nuevo"
+    );
 
-        verify(this.repositorioSubasta, times(1)).guardarSubasta(subasta);
-    }
+    servicioSubasta.crearSubasta(subasta);
 
-    @Test
-    public void queAlCrearUnaSubastaValidaQuedaComoActiva() throws SubastaInvalidaExeption {
-        Subasta subasta = new Subasta("Notebook", "Notebook 16gb", 1000.0, 5000.0, "Tecnologia", "nuevo");
+    verify(this.repositorioSubasta, times(1)).guardarSubasta(subasta);
+  }
 
-        servicioSubasta.crearSubasta(subasta);
+  @Test
+  public void queAlCrearUnaSubastaValidaQuedaComoActiva() throws SubastaInvalidaExeption {
+    Subasta subasta = new Subasta(
+      "Notebook",
+      "Notebook 16gb",
+      1000.0,
+      5000.0,
+      "Tecnologia",
+      "nuevo"
+    );
 
-        String resultadoEsperado = "ACTIVA";
-        String resultadoObtenido = subasta.getEstadoSubasta();
-        assertEquals(resultadoEsperado, resultadoObtenido);
-    }
+    servicioSubasta.crearSubasta(subasta);
 
-    @Test
-    public void queNoSePuedaCrearUnaSubastaSinNombre() {
-        Subasta subasta = new Subasta("", "Notebook 16gb", 1000.0, 5000.0, "Tecnologia", "nuevo");
+    String resultadoEsperado = "ACTIVA";
+    String resultadoObtenido = subasta.getEstadoSubasta();
+    assertEquals(resultadoEsperado, resultadoObtenido);
+  }
 
+  @Test
+  public void queNoSePuedaCrearUnaSubastaSinNombre() {
+    Subasta subasta = new Subasta("", "Notebook 16gb", 1000.0, 5000.0, "Tecnologia", "nuevo");
 
-        assertThrows(SubastaInvalidaExeption.class, () -> servicioSubasta.crearSubasta(subasta));
-        }
+    assertThrows(SubastaInvalidaExeption.class, () -> servicioSubasta.crearSubasta(subasta));
+  }
 
-    @Test
-    public void queNoSePuedaCrearUnaSubastaConPrecioInicialNegativo(){
-        Subasta subasta = new Subasta("Notebook", "Notebook 16gb", -1000.0, 5000.0, "Tecnologia", "nuevo");
+  @Test
+  public void queNoSePuedaCrearUnaSubastaConPrecioInicialNegativo() {
+    Subasta subasta = new Subasta(
+      "Notebook",
+      "Notebook 16gb",
+      -1000.0,
+      5000.0,
+      "Tecnologia",
+      "nuevo"
+    );
 
-        assertThrows(SubastaInvalidaExeption.class, () -> servicioSubasta.crearSubasta(subasta));
-    }
+    assertThrows(SubastaInvalidaExeption.class, () -> servicioSubasta.crearSubasta(subasta));
+  }
 
-    @Test
-    public void queNoSePuedaCrearUnaSubastaConPrecioMaximoNegativo(){
-        Subasta subasta = new Subasta("Notebook", "Notebook 16gb", 1000.0, -5000.0, "Tecnologia", "nuevo");
-    
-        assertThrows(SubastaInvalidaExeption.class, () -> servicioSubasta.crearSubasta(subasta));
-    }
+  @Test
+  public void queNoSePuedaCrearUnaSubastaConPrecioMaximoNegativo() {
+    Subasta subasta = new Subasta(
+      "Notebook",
+      "Notebook 16gb",
+      1000.0,
+      -5000.0,
+      "Tecnologia",
+      "nuevo"
+    );
 
-    @Test
-    public void queNoSePuedaCrearUnaSubastaConPrecioMaximoMenosAlPrecioInicial(){
-        Subasta subasta = new Subasta("Notebook", "Notebook 16gb", 1000.0, 100.0, "Tecnologia", "nuevo");
-    
-        assertThrows(SubastaInvalidaExeption.class, () -> servicioSubasta.crearSubasta(subasta));
-    }
+    assertThrows(SubastaInvalidaExeption.class, () -> servicioSubasta.crearSubasta(subasta));
+  }
+
+  @Test
+  public void queNoSePuedaCrearUnaSubastaConPrecioMaximoMenosAlPrecioInicial() {
+    Subasta subasta = new Subasta(
+      "Notebook",
+      "Notebook 16gb",
+      1000.0,
+      100.0,
+      "Tecnologia",
+      "nuevo"
+    );
+
+    assertThrows(SubastaInvalidaExeption.class, () -> servicioSubasta.crearSubasta(subasta));
+  }
 }
