@@ -7,6 +7,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.tallerwebi.dominio.ServicioSubasta;
 import com.tallerwebi.dominio.Subasta;
@@ -42,8 +43,11 @@ public class ControladorSubastaTest {
   @Test
   public void crearSubastaConDatosValidosDeberiaRedirigirAVistaDetalleSubasta()
     throws SubastaInvalidaExeption {
+    when(servicioSubastaMock.crearSubasta(subastaMock)).thenReturn(subastaMock);
+    when(subastaMock.getId()).thenReturn(1L);
+
     ModelAndView modelAndView = controladorSubasta.crearSubasta(subastaMock);
-    assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/detalle-subasta"));
+    assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/detalle-subasta?id=1"));
     verify(servicioSubastaMock, times(1)).crearSubasta(subastaMock);
   }
 

@@ -1,6 +1,16 @@
 package com.tallerwebi.dominio;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
 public class Subasta {
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
   private String nombre;
   private String descripcion;
@@ -26,7 +36,7 @@ public class Subasta {
     this.estadoArticulo = estadoArticulo;
   }
 
-  //creo un constructor vacio para el formulario html
+  // creo un constructor vacio para el formulario html
   public Subasta() {}
 
   public String getNombre() {
@@ -83,5 +93,13 @@ public class Subasta {
 
   public void setEstadoSubasta(String estadoSubasta) {
     this.estadoSubasta = estadoSubasta;
+  }
+
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
   }
 }

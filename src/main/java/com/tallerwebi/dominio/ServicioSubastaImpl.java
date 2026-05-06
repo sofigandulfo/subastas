@@ -1,10 +1,12 @@
 package com.tallerwebi.dominio;
 
 import com.tallerwebi.dominio.excepcion.SubastaInvalidaExeption;
+import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
+@Transactional
 public class ServicioSubastaImpl implements ServicioSubasta {
 
   private RepositorioSubasta repositorioSubasta;
@@ -15,7 +17,7 @@ public class ServicioSubastaImpl implements ServicioSubasta {
   }
 
   @Override
-  public void crearSubasta(Subasta subasta) throws SubastaInvalidaExeption {
+  public Subasta crearSubasta(Subasta subasta) throws SubastaInvalidaExeption {
     if (subasta.getNombre() == null || subasta.getNombre().isBlank()) {
       throw new SubastaInvalidaExeption();
     } else if (subasta.getPrecioInicial() < 0) {
@@ -27,6 +29,11 @@ public class ServicioSubastaImpl implements ServicioSubasta {
     }
 
     subasta.setEstadoSubasta("ACTIVA");
-    repositorioSubasta.guardarSubasta(subasta);
+    return repositorioSubasta.guardarSubasta(subasta);
+  }
+
+  @Override
+  public Subasta obtenerSubasta(Long id) {
+    return repositorioSubasta.obtenerSubasta(id);
   }
 }

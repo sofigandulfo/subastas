@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalle Subasta</title>
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
@@ -38,13 +39,13 @@
                     <div class="w3-half w3-col s6">
                         <label class="w3-text-grey w3-small">PRECIO INICIAL</label>
                         <p class="w3-large w3-text-green">
-                            <b th:text="'$' + ${subasta.precioInicial}">$0.00</b>
+                            <b th:text="'$' + ${#numbers.formatDecimal(subasta.precioInicial, 1, 2)}">$0.00</b>
                         </p>
                     </div>
                     <div class="w3-half w3-col s6">
                         <label class="w3-text-grey w3-small">PRECIO MÁXIMO</label>
                         <p class="w3-large w3-text-red">
-                            <b th:if="${subasta.precioMaximo > 0}" th:text="'$' + ${subasta.precioMaximo}">$0.00</b>
+                            <b th:text="'$' + ${#numbers.formatDecimal(subasta.precioMaximo, 1, 2)}">$0.00</b>
                         </p>
                     </div>
                 </div>
