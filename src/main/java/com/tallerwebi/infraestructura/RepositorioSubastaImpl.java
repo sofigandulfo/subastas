@@ -2,13 +2,33 @@ package com.tallerwebi.infraestructura;
 
 import com.tallerwebi.dominio.RepositorioSubasta;
 import com.tallerwebi.dominio.Subasta;
+import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class RepositorioSubastaImpl implements RepositorioSubasta {
 
+  private SessionFactory sessionFactory;
+
+  @Autowired
+  public RepositorioSubastaImpl(SessionFactory sessionFactory) {
+    this.sessionFactory = sessionFactory;
+  }
+
   @Override
-  public void guardarSubasta(Subasta subasta) {
-    // por implementar
+  public Subasta guardarSubasta(Subasta subasta) {
+    sessionFactory.getCurrentSession().save(subasta);
+    return subasta; // después del save, hibernate ya le asignó el id
+  }
+
+  @Override
+  public Subasta obtenerSubasta(Long id) {
+    return (Subasta) sessionFactory
+      .getCurrentSession()
+      .createCriteria(Subasta.class)
+      .add(Restrictions.eq("id", id))
+      .uniqueResult();
   }
 }

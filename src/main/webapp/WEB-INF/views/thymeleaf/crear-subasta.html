@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crear Subasta</title>
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
@@ -37,17 +38,17 @@
                     <label>Precio Maximo:</label> <input th:field="*{precioMaximo}" class="w3-input" type="number">
                     <label>Categoria:</label> <select th:field="*{categoria}" class="w3-select">
                         <option value="" disabled selected>Elegir categoria</option>
-                        <option value="electronica">Electrónica</option>
-                        <option value="entretenimiento">Entretenimiento</option>
-                        <option value="vehiculo">Vehiculo</option>
-                        <option value="ropa">Ropa/Moda</option>
-                        <option value="hogar">Hogar</option>
-                        <option value="deporte">Deporte</option>
+                        <option value="Electronica">Electrónica</option>
+                        <option value="Entretenimiento">Entretenimiento</option>
+                        <option value="Vehiculo">Vehiculo</option>
+                        <option value="Ropa">Ropa/Moda</option>
+                        <option value="Hogar">Hogar</option>
+                        <option value="Deporte">Deporte</option>
                     </select>
                     <label>Estado:</label> <select th:field="*{estado}" class="w3-select">
                         <option value="" disabled selected>Elegir estado</option>
-                        <option value="nuevo">Nuevo</option>
-                        <option value="usado">Usado</option>
+                        <option value="Nuevo">Nuevo</option>
+                        <option value="Usado">Usado</option>
                     </select>
                     <button type="submit" class="w3-btn w3-blue-grey w3-block">Crear Subasta</button>
                 </form>
