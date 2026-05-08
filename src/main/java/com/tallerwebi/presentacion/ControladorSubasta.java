@@ -16,6 +16,8 @@ import org.springframework.web.servlet.ModelAndView;
 public class ControladorSubasta {
 
   private ServicioSubasta servicioSubasta;
+  private static final String VISTA_CREAR_SUBASTA = "crear-subasta";
+  private static final String KEY_SUBASTA = "subasta";
 
   @Autowired
   public ControladorSubasta(ServicioSubasta servicioSubasta) {
@@ -26,8 +28,8 @@ public class ControladorSubasta {
   @GetMapping("/crear-subasta")
   public ModelAndView irAlFormulario() {
     ModelMap modelo = new ModelMap();
-    modelo.put("subasta", new Subasta());
-    return new ModelAndView("crear-subasta", modelo);
+    modelo.put(KEY_SUBASTA, new Subasta());
+    return new ModelAndView(VISTA_CREAR_SUBASTA, modelo);
   }
 
   @PostMapping("/crear-subasta")
@@ -37,18 +39,22 @@ public class ControladorSubasta {
       Subasta subastaGuardada = servicioSubasta.crearSubasta(subasta);
       return new ModelAndView("redirect:/detalle-subasta?id=" + subastaGuardada.getId());
     } catch (SubastaInvalidaExeption e) {
-      return new ModelAndView("crear-subasta", "error", "Los datos ingresados son invalidos");
+      return new ModelAndView(VISTA_CREAR_SUBASTA, "error", "Los datos ingresados son invalidos");
     } catch (Exception e) {
-      return new ModelAndView("crear-subasta", "error", "Error al registrar nueva subasta");
+      return new ModelAndView(VISTA_CREAR_SUBASTA, "error", "Error al registrar nueva subasta");
     }
   }
 
   // metodo get detalle-subasta:
   @GetMapping("/detalle-subasta")
   public ModelAndView verDetalle(@RequestParam Long id) {
-    ModelMap modelo = new ModelMap();
     Subasta subasta = servicioSubasta.obtenerSubasta(id);
-    modelo.put("subasta", subasta);
+    ModelMap modelo = new ModelMap();
+    if (subasta == null) {
+      modelo.put(KEY_SUBASTA, new Subasta());
+      return new ModelAndView(VISTA_CREAR_SUBASTA, "error", "Subasta no encontrada");
+    }
+    modelo.put(KEY_SUBASTA, subasta);
     return new ModelAndView("detalle-subasta", modelo);
   }
 }

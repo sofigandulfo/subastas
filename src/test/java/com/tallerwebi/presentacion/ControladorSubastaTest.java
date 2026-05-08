@@ -80,4 +80,31 @@ public class ControladorSubastaTest {
       equalToIgnoringCase("Error al registrar nueva subasta")
     );
   }
+
+  @Test
+  public void verDetalleConIdValidoDeberiaRetornarVistaDetalleConSubasta() {
+    //preparacion->No me importa la logica del SERVICIO por lo que mockeo
+    //lo que debe devolver cuando le pida la subasta con id 1.
+    //Simulo: "existe una subasta con id 1 en la BD"
+    when(servicioSubastaMock.obtenerSubasta(1L)).thenReturn(subastaMock); //cuando le pido al servicio una subasta con id 1L me retorna una subasta falsa.
+    //ejecucion ->Llamo al CONTROLADOR
+    ModelAndView modelAndView = controladorSubasta.verDetalle(1L); //mostrame la vista y el modelo de subasta id 1L
+    //valido-> Verifico que el controlador devuelva la vista y un objeto de tipo subasta en el modelo
+    assertThat(modelAndView.getViewName(), equalToIgnoringCase("detalle-subasta"));
+    assertThat(modelAndView.getModel().get("subasta"), instanceOf(Subasta.class));
+  }
+
+  @Test
+  public void verDetalleConIdInexistenteDeberiaVolverAlFormularioConError() {
+    //preparacion-> El servicio devuelve null al llamar un id por ejemplo 200L
+    when(servicioSubastaMock.obtenerSubasta(200L)).thenReturn(null);
+    //ejecucion
+    ModelAndView modelAndView = controladorSubasta.verDetalle(200L);
+    //verifico que no paso a la vista de detalle con una subasta y me haya llevado al formulario con error
+    assertThat(modelAndView.getViewName(), equalToIgnoringCase("crear-subasta"));
+    assertThat(
+      modelAndView.getModel().get("error").toString(),
+      equalToIgnoringCase("Subasta no encontrada")
+    );
+  }
 }
