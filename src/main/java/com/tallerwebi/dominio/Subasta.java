@@ -19,6 +19,7 @@ public class Subasta {
   private String categoria;
   private String estadoArticulo;
   private String estadoSubasta;
+  private double precioActual;
 
   public Subasta(
     String nombre,
@@ -34,6 +35,7 @@ public class Subasta {
     this.precioMaximo = precioMaximo;
     this.categoria = categoria;
     this.estadoArticulo = estadoArticulo;
+    this.precioActual = precioInicial;
   }
 
   // creo un constructor vacio para el formulario html
@@ -101,5 +103,13 @@ public class Subasta {
 
   public void setId(Long id) {
     this.id = id;
+  }
+
+  public double getPrecioActual() {
+    return precioActual;
+  }
+
+  public void setPrecioActual(double precioActual) {
+    this.precioActual = precioActual;
   }
 }

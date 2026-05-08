@@ -15,7 +15,7 @@
     <main role="main" class="container">
         <div class="container">
             <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
-                <form action="#" th:action="@{/ofertar}" method="POST" th:object="${oferta}">
+                <form action="#" th:action="@{/ofertar/{id}(id=${subasta.id})}" method="POST" th:object="${oferta}">
                     <h3 class="form-signin-heading">Ofertar en Subasta</h3>
                     <hr class="colorgraph"><br>
                     <p>Precio actual: <strong th:text="${subasta.precioActual}"></strong></p>

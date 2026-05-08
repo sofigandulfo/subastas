@@ -29,6 +29,10 @@ public class ServicioSubastaImpl implements ServicioSubasta {
     }
 
     subasta.setEstadoSubasta("ACTIVA");
+
+    // Agrego esta linea para que el precio actual de la subasta se guarde en la BD
+    subasta.setPrecioActual(subasta.getPrecioInicial());
+
     return repositorioSubasta.guardarSubasta(subasta);
   }
 

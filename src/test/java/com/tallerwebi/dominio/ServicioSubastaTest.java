@@ -151,4 +151,34 @@ public class ServicioSubastaTest {
 
     assertThrows(SubastaInvalidaExeption.class, () -> servicioSubasta.crearSubasta(subasta));
   }
+
+  @Test
+  public void dadoQueLaSubastaSeVaAIrPujandoDeberiaDeTenerUnPrecioActualQueInicializadoDeberiaSerIgualAlPrecioInicial() {
+    Subasta subasta = new Subasta(
+      "Notebook",
+      "Notebook 16gb",
+      1000.0,
+      3000.0,
+      "Tecnologia",
+      "nuevo"
+    );
+
+    assertEquals(1000.0, subasta.getPrecioActual());
+  }
+
+  @Test
+  public void dadoQueAlguienPujoLaOfertaElPrecioActualDeberiaSerActualizado() {
+    Subasta subasta = new Subasta(
+      "Notebook",
+      "Notebook 16gb",
+      1000.0,
+      3000.0,
+      "Tecnologia",
+      "nuevo"
+    );
+
+    subasta.setPrecioActual(1100.0);
+
+    assertEquals(1100.0, subasta.getPrecioActual());
+  }
 }
