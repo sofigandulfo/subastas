@@ -1,9 +1,6 @@
 package com.tallerwebi.dominio;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Subasta {
@@ -20,6 +17,9 @@ public class Subasta {
   private String estadoArticulo;
   private String estadoSubasta;
   private double precioActual;
+
+  @Lob
+  private byte[] imagen;
 
   public Subasta(
     String nombre,
@@ -103,6 +103,14 @@ public class Subasta {
 
   public void setId(Long id) {
     this.id = id;
+  }
+
+  public byte[] getImagen() {
+    return imagen != null ? imagen.clone() : null;
+  }
+
+  public void setImagen(byte[] imagen) {
+    this.imagen = imagen != null ? imagen.clone() : null;
   }
 
   public double getPrecioActual() {

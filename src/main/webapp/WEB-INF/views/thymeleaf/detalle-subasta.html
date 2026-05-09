@@ -68,6 +68,11 @@
                         <label class="w3-text-grey w3-small">ESTADO</label>
                         <p th:text="${subasta.estado}">Nuevo / Usado</p>
                     </div>
+                    <div th:if="${imagenBase64 != null}" class="w3-half w3-col s6">
+                        <img th:src="@{'data:image/jpeg;base64,' + ${imagenBase64}}" alt="Imagen de la subasta"
+                            style="max-width: 400px;">
+                    </div>
+                    <p th:unless="${imagenBase64 != null}">Sin imagen cargada</p>
                 </div>
                 <hr>
 
@@ -81,9 +86,7 @@
                         </a>
                     </div>
 
-
                     <div class="w3-half w3-margin-bottom">
-
                         <form th:action="@{/eliminar-subasta/{id}(id=${subasta.id})}" method="POST">
                             <button type="submit" class="w3-button w3-red w3-block w3-round w3-large"
                                 onclick="return confirm('¿Estás seguro de que deseas eliminar esta subasta?')">

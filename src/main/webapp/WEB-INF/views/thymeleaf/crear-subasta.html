@@ -23,7 +23,7 @@
             </div>
             <p>Ingresa los datos para poder crear tu subasta:</p>
             <div class="formulario">
-                <form th:action="@{/crear-subasta}" th:object="${subasta}" class="w3-container w3-padding-16"
+                <form th:action="@{/crear-subasta}" th:object="${subasta}" enctype="multipart/form-data" class="w3-container w3-padding-16"
                     method="POST">
                     <!--Se crea el formulario y aclaro: 1-A donde van los datos del formulario: METODO del Controller
                     2-VINCULO un objeto subasta a partir de los datos ingresados. -->
@@ -34,8 +34,8 @@
                     <label>Nombre:</label> <input th:field="*{nombre}" class="w3-input" type="text"
                         placeholder="Ejemplo: Sillón">
                     <label>Descripcion:</label> <input th:field="*{descripcion}" class="w3-input" type="text">
-                    <label>Precio Inicial:</label> <input th:field="*{precioInicial}" class="w3-input" type="number">
-                    <label>Precio Maximo:</label> <input th:field="*{precioMaximo}" class="w3-input" type="number">
+                    <label>Precio Inicial:</label> <input th:field="*{precioInicial}" class="w3-input" type="number" step="0.01" min="0">
+                    <label>Precio Maximo:</label> <input th:field="*{precioMaximo}" class="w3-input" type="number" step="0.01" min="0">
                     <label>Categoria:</label> <select th:field="*{categoria}" class="w3-select">
                         <option value="" disabled selected>Elegir categoria</option>
                         <option value="Electronica">Electrónica</option>
@@ -45,11 +45,15 @@
                         <option value="Hogar">Hogar</option>
                         <option value="Deporte">Deporte</option>
                     </select>
+                    <br>
                     <label>Estado:</label> <select th:field="*{estado}" class="w3-select">
                         <option value="" disabled selected>Elegir estado</option>
                         <option value="Nuevo">Nuevo</option>
                         <option value="Usado">Usado</option>
                     </select>
+                    <br>
+                    <input type="file" name="imagen" accept="image/*" class="w3-input">
+                    <br>
                     <button type="submit" class="w3-btn w3-blue-grey w3-block">Crear Subasta</button>
                 </form>
             </div>

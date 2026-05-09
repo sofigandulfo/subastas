@@ -3,6 +3,7 @@ package com.tallerwebi.presentacion;
 import com.tallerwebi.dominio.ServicioSubasta;
 import com.tallerwebi.dominio.Subasta;
 import com.tallerwebi.dominio.excepcion.SubastaInvalidaExeption;
+import java.util.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -33,10 +35,12 @@ public class ControladorSubasta {
   }
 
   @PostMapping("/crear-subasta")
-  public ModelAndView crearSubasta(@ModelAttribute("subasta") Subasta subasta)
-    throws SubastaInvalidaExeption {
+  public ModelAndView crearSubasta(
+    @ModelAttribute("subasta") Subasta subasta,
+    @RequestParam("imagen") MultipartFile imagen
+  ) throws SubastaInvalidaExeption {
     try {
-      Subasta subastaGuardada = servicioSubasta.crearSubasta(subasta);
+      Subasta subastaGuardada = servicioSubasta.crearSubasta(subasta, imagen);
       return new ModelAndView("redirect:/detalle-subasta?id=" + subastaGuardada.getId());
     } catch (SubastaInvalidaExeption e) {
       return new ModelAndView(VISTA_CREAR_SUBASTA, "error", "Los datos ingresados son invalidos");
@@ -55,6 +59,9 @@ public class ControladorSubasta {
       return new ModelAndView(VISTA_CREAR_SUBASTA, "error", "Subasta no encontrada");
     }
     modelo.put(KEY_SUBASTA, subasta);
+    if (subasta.getImagen() != null) {
+      modelo.put("imagenBase64", Base64.getEncoder().encodeToString(subasta.getImagen()));
+    }
     return new ModelAndView("detalle-subasta", modelo);
   }
 }
