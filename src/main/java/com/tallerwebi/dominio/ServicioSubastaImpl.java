@@ -22,14 +22,15 @@ public class ServicioSubastaImpl implements ServicioSubasta {
   public Subasta crearSubasta(Subasta subasta, MultipartFile imagen)
     throws SubastaInvalidaExeption {
     validarSubasta(subasta);
-    if (imagen != null && !imagen.isEmpty()) { // ← también chequeá isEmpty()
+    if (imagen != null && !imagen.isEmpty()) {
       try {
-        subasta.setImagen(imagen.getBytes()); // ← bytes crudos, sin Base64
+        subasta.setImagen(imagen.getBytes());
       } catch (IOException e) {
         throw new RuntimeException(e);
       }
     }
     subasta.setEstadoSubasta("ACTIVA");
+    subasta.setPrecioActual(subasta.getPrecioInicial());
     return repositorioSubasta.guardarSubasta(subasta);
   }
 

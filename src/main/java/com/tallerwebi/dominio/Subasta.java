@@ -16,6 +16,7 @@ public class Subasta {
   private String categoria;
   private String estadoArticulo;
   private String estadoSubasta;
+  private double precioActual;
 
   @Lob
   private byte[] imagen;
@@ -34,6 +35,7 @@ public class Subasta {
     this.precioMaximo = precioMaximo;
     this.categoria = categoria;
     this.estadoArticulo = estadoArticulo;
+    this.precioActual = precioInicial;
   }
 
   // creo un constructor vacio para el formulario html
@@ -109,5 +111,13 @@ public class Subasta {
 
   public void setImagen(byte[] imagen) {
     this.imagen = imagen != null ? imagen.clone() : null;
+  }
+
+  public double getPrecioActual() {
+    return precioActual;
+  }
+
+  public void setPrecioActual(double precioActual) {
+    this.precioActual = precioActual;
   }
 }

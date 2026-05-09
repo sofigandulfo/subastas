@@ -35,6 +35,15 @@
                     <label class="w3-text-grey w3-small">DESCRIPCIÓN</label>
                     <p th:text="${subasta.descripcion}">Descripción detallada aquí...</p>
                 </div>
+
+                <!-- Agregué el precio actual -->
+                <div class="w3-margin-bottom w3-padding w3-light-blue w3-round">
+                    <label class="w3-text-grey w3-small">PRECIO ACTUAL</label>
+                    <p class="w3-xxlarge w3-text-blue-grey" style="margin-top:0">
+                        <b th:text="'$' + ${#numbers.formatDecimal(subasta.precioActual, 1, 2)}">$0.00</b>
+                    </p>
+                </div>
+
                 <div class="w3-row-padding w3-margin-bottom" style="margin: 0 -16px;">
                     <div class="w3-half w3-col s6">
                         <label class="w3-text-grey w3-small">PRECIO INICIAL</label>
