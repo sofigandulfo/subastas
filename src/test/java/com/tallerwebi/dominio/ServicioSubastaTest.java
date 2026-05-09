@@ -32,7 +32,7 @@ public class ServicioSubastaTest {
       "nuevo"
     );
 
-    servicioSubasta.crearSubasta(subasta);
+    servicioSubasta.crearSubasta(subasta, null);
 
     assertEquals("Notebook", subasta.getNombre());
     assertEquals("Notebook 16gb", subasta.getDescripcion());
@@ -80,7 +80,7 @@ public class ServicioSubastaTest {
       "nuevo"
     );
 
-    servicioSubasta.crearSubasta(subasta);
+    servicioSubasta.crearSubasta(subasta, null);
 
     verify(this.repositorioSubasta, times(1)).guardarSubasta(subasta);
   }
@@ -96,7 +96,7 @@ public class ServicioSubastaTest {
       "nuevo"
     );
 
-    servicioSubasta.crearSubasta(subasta);
+    servicioSubasta.crearSubasta(subasta, null);
 
     String resultadoEsperado = "ACTIVA";
     String resultadoObtenido = subasta.getEstadoSubasta();
@@ -107,7 +107,7 @@ public class ServicioSubastaTest {
   public void queNoSePuedaCrearUnaSubastaSinNombre() {
     Subasta subasta = new Subasta("", "Notebook 16gb", 1000.0, 5000.0, "Tecnologia", "nuevo");
 
-    assertThrows(SubastaInvalidaExeption.class, () -> servicioSubasta.crearSubasta(subasta));
+    assertThrows(SubastaInvalidaExeption.class, () -> servicioSubasta.crearSubasta(subasta, null));
   }
 
   @Test
@@ -121,7 +121,7 @@ public class ServicioSubastaTest {
       "nuevo"
     );
 
-    assertThrows(SubastaInvalidaExeption.class, () -> servicioSubasta.crearSubasta(subasta));
+    assertThrows(SubastaInvalidaExeption.class, () -> servicioSubasta.crearSubasta(subasta, null));
   }
 
   @Test
@@ -135,7 +135,7 @@ public class ServicioSubastaTest {
       "nuevo"
     );
 
-    assertThrows(SubastaInvalidaExeption.class, () -> servicioSubasta.crearSubasta(subasta));
+    assertThrows(SubastaInvalidaExeption.class, () -> servicioSubasta.crearSubasta(subasta, null));
   }
 
   @Test
@@ -149,6 +149,6 @@ public class ServicioSubastaTest {
       "nuevo"
     );
 
-    assertThrows(SubastaInvalidaExeption.class, () -> servicioSubasta.crearSubasta(subasta));
+    assertThrows(SubastaInvalidaExeption.class, () -> servicioSubasta.crearSubasta(subasta, null));
   }
 }

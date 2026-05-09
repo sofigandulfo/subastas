@@ -14,6 +14,7 @@ import com.tallerwebi.dominio.Subasta;
 import com.tallerwebi.dominio.excepcion.SubastaInvalidaExeption;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 public class ControladorSubastaTest {
@@ -21,12 +22,14 @@ public class ControladorSubastaTest {
   private ControladorSubasta controladorSubasta;
   private Subasta subastaMock;
   private ServicioSubasta servicioSubastaMock;
+  private MultipartFile imagenMock;
 
   @BeforeEach
   public void init() {
     subastaMock = mock(Subasta.class);
     servicioSubastaMock = mock(ServicioSubasta.class);
     controladorSubasta = new ControladorSubasta(servicioSubastaMock);
+    imagenMock = mock(MultipartFile.class);
   }
 
   @Test
@@ -43,21 +46,23 @@ public class ControladorSubastaTest {
   @Test
   public void crearSubastaConDatosValidosDeberiaRedirigirAVistaDetalleSubasta()
     throws SubastaInvalidaExeption {
-    when(servicioSubastaMock.crearSubasta(subastaMock)).thenReturn(subastaMock);
+    when(servicioSubastaMock.crearSubasta(subastaMock, imagenMock)).thenReturn(subastaMock);
     when(subastaMock.getId()).thenReturn(1L);
 
-    ModelAndView modelAndView = controladorSubasta.crearSubasta(subastaMock);
+    ModelAndView modelAndView = controladorSubasta.crearSubasta(subastaMock, imagenMock);
     assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/detalle-subasta?id=1"));
-    verify(servicioSubastaMock, times(1)).crearSubasta(subastaMock);
+    verify(servicioSubastaMock, times(1)).crearSubasta(subastaMock, imagenMock);
   }
 
   @Test
   public void crearSubastaConDatosInvalidosDeberiaVolverAlFormularioConError()
     throws SubastaInvalidaExeption {
     // preparacion: simulo que el servicio lanza una exception
-    doThrow(SubastaInvalidaExeption.class).when(servicioSubastaMock).crearSubasta(subastaMock);
+    doThrow(SubastaInvalidaExeption.class)
+      .when(servicioSubastaMock)
+      .crearSubasta(subastaMock, imagenMock);
     // ejecucion
-    ModelAndView modelAndView = controladorSubasta.crearSubasta(subastaMock);
+    ModelAndView modelAndView = controladorSubasta.crearSubasta(subastaMock, imagenMock);
     // valido que la vista sea la correcta y que se lanzo el mensaje de error
     assertThat(modelAndView.getViewName(), equalToIgnoringCase("crear-subasta"));
     assertThat(
@@ -70,9 +75,9 @@ public class ControladorSubastaTest {
   public void errorEnRegistrarSubastaDeberiaVolverAFormularioYMostrarError()
     throws SubastaInvalidaExeption {
     // preparacion: obligo a que se haga una runtimeException
-    doThrow(RuntimeException.class).when(servicioSubastaMock).crearSubasta(subastaMock);
+    doThrow(RuntimeException.class).when(servicioSubastaMock).crearSubasta(subastaMock, imagenMock);
     // ejercucion
-    ModelAndView modelAndView = controladorSubasta.crearSubasta(subastaMock);
+    ModelAndView modelAndView = controladorSubasta.crearSubasta(subastaMock, imagenMock);
     // valido
     assertThat(modelAndView.getViewName(), equalToIgnoringCase("crear-subasta"));
     assertThat(
