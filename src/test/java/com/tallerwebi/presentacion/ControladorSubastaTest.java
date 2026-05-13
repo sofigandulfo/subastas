@@ -2,6 +2,7 @@ package com.tallerwebi.presentacion;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -111,5 +112,32 @@ public class ControladorSubastaTest {
       modelAndView.getModel().get("error").toString(),
       equalToIgnoringCase("Subasta no encontrada")
     );
+  }
+
+  //test para imagen dinamica:
+
+  @Test
+  public void verDetalleConSubastaQuetieneImagenDeberiaAgregarImagenBase64AlModeloEnFormaDeTexto() {
+    //PREPARACION cuando llame al servicio con long 1 retorna la subasta mockeada
+    //            cuando llame a la subasta con su imagen retorna imagen mockeada
+    byte[] imagenBytes = new byte[] { 1, 2, 3 };
+    when(servicioSubastaMock.obtenerSubasta(1L)).thenReturn(subastaMock);
+    when(subastaMock.getImagen()).thenReturn(imagenBytes);
+    //ejecuto el modelo
+    ModelAndView modelAndView = controladorSubasta.verDetalle(1L);
+    //verifico haber obtenido en el modelo clave ImagenBase64 y es un texto
+    assertThat(modelAndView.getModel().get("imagenBase64"), instanceOf((String.class)));
+  }
+
+  @Test
+  public void verDetalleConSubastaSinImagenNoDeberiaAgregarImagenBase64AlModelo() {
+    //PREPARACION cuando llame al servicio con long 1 retorna la subasta mockeada
+    //            cuando llame a la subasta con su imagen retorna imagen mockeada
+    when(servicioSubastaMock.obtenerSubasta(1L)).thenReturn(subastaMock);
+    when(subastaMock.getImagen()).thenReturn(null);
+    //ejecuto el modelo
+    ModelAndView modelAndView = controladorSubasta.verDetalle(1L);
+    //verifico haber obtenido en el modelo clave ImagenBase64 y es un texto
+    assertThat(modelAndView.getModel().get("imagenBase64"), nullValue());
   }
 }
