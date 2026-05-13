@@ -5,103 +5,124 @@
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Detalle Subasta</title>
+
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <style>
-        .main-container {
-            max-width: 600px;
-            margin: 20px auto;
-            padding: 10px;
-        }
-    </style>
 </head>
 
 <body class="w3-light-grey">
 
-    <div class="main-container">
+    <div class="w3-content w3-padding-32" width="95%">
 
         <div class="w3-card-4 w3-white w3-round-large">
 
-            <div class="w3-container w3-blue-grey w3-round-small">
-                <h2 class="w3-center">Detalle de la Subasta</h2>
+            <div class="w3-container w3-amber w3-padding w3-round-large">
+                <h2 class="w3-center w3-xxlarge w3-sans-serif">
+                    Detalle de la Subasta
+                </h2>
             </div>
+
             <div class="w3-container w3-padding-24">
+
                 <div class="w3-margin-bottom">
-                    <label class="w3-text-grey w3-small">NOMBRE DEL PRODUCTO</label>
-                    <p class="w3-xlarge w3-border-bottom" th:text="${subasta.nombre}" style="margin-top:0">Nombre de la
+                    <label class="w3-text-grey w3-small">
+                        <b>NOMBRE DEL PRODUCTO</b>
+                    </label>
+                    <p class="w3-xlarge w3-border-bottom w3-padding-small" th:text="${subasta.nombre}">Nombre de la
                         subasta</p>
                 </div>
+
                 <div class="w3-margin-bottom">
-                    <label class="w3-text-grey w3-small">DESCRIPCIÓN</label>
-                    <p th:text="${subasta.descripcion}">Descripción detallada aquí...</p>
+                    <label class="w3-text-grey w3-small"><b>DESCRIPCIÓN</b></label>
+
+                    <div class="w3-panel w3-pale-yellow w3-leftbar w3-border-amber w3-round">
+                        <p th:text="${subasta.descripcion}">Descripción detallada aquí...</p>
+                    </div>
                 </div>
 
-                <!-- Agregué el precio actual -->
-                <div class="w3-margin-bottom w3-padding w3-light-blue w3-round">
-                    <label class="w3-text-grey w3-small">PRECIO ACTUAL</label>
-                    <p class="w3-xxlarge w3-text-blue-grey" style="margin-top:0">
-                        <b th:text="'$' + ${#numbers.formatDecimal(subasta.precioActual, 1, 2)}">$0.00</b>
-                    </p>
+                <div class="w3-row-padding w3-margin-top">
+
+                    <div class="w3-col l6 m6 s12 w3-margin-bottom">
+                        <div class="w3-panel w3-pale-green w3-round-large">
+
+                            <label class="w3-text-grey w3-small"><b>PRECIO INICIAL</b></label>
+
+                            <p class="w3-xlarge w3-text-green">
+                                <b th:text="'$' + ${#numbers.formatDecimal(subasta.precioInicial, 1, 2)}">$0.00</b>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="w3-col l6 m6 s12 w3-margin-bottom">
+                        <div class="w3-panel w3-pale-red w3-round-large">
+
+                            <label class="w3-text-grey w3-small"><b>PRECIO MÁXIMO</b></label>
+
+                            <p class="w3-xlarge w3-text-red">
+                                <b th:text="'$' + ${#numbers.formatDecimal(subasta.precioMaximo, 1, 2)}">$0.00</b>
+                            </p>
+                        </div>
+                    </div>
+
                 </div>
 
-                <div class="w3-row-padding w3-margin-bottom" style="margin: 0 -16px;">
-                    <div class="w3-half w3-col s6">
-                        <label class="w3-text-grey w3-small">PRECIO INICIAL</label>
-                        <p class="w3-large w3-text-green">
-                            <b th:text="'$' + ${#numbers.formatDecimal(subasta.precioInicial, 1, 2)}">$0.00</b>
+                <div class="w3-row-padding">
+
+                    <div class="w3-col l6 m6 s12 w3-margin-bottom">
+                        <label class="w3-text-grey w3-small"><b>CATEGORÍA</b></label>
+                        <p>
+                            <span class="w3-tag w3-amber w3-round-large w3-padding"
+                                th:text="${subasta.categoria}">Categoría</span>
                         </p>
                     </div>
-                    <div class="w3-half w3-col s6">
-                        <label class="w3-text-grey w3-small">PRECIO MÁXIMO</label>
-                        <p class="w3-large w3-text-red">
-                            <b th:text="'$' + ${#numbers.formatDecimal(subasta.precioMaximo, 1, 2)}">$0.00</b>
-                        </p>
+
+                    <div class="w3-col l6 m6 s12 w3-margin-bottom">
+                        <label class="w3-text-grey w3-small"> <b>ESTADO</b> </label>
+                        <p class="w3-large" th:text="${subasta.estado}">Nuevo / Usado</p>
                     </div>
+
                 </div>
-                <div class="w3-row-padding" style="margin: 0 -16px;">
-                    <div class="w3-half w3-col s6">
-                        <label class="w3-text-grey w3-small">CATEGORÍA</label>
-                        <p><span class="w3-tag w3-light-blue w3-round" th:text="${subasta.categoria}">Categoría</span>
-                        </p>
-                    </div>
-                    <div class="w3-half w3-col s6">
-                        <label class="w3-text-grey w3-small">ESTADO</label>
-                        <p th:text="${subasta.estado}">Nuevo / Usado</p>
-                    </div>
-                    <div th:if="${imagenBase64 != null}" class="w3-half w3-col s6">
+
+                <div class="w3-margin-top w3-center">
+                    <div th:if="${imagenBase64 != null}" class="w3-padding">
                         <img th:src="@{'data:image/jpeg;base64,' + ${imagenBase64}}" alt="Imagen de la subasta"
-                            style="max-width: 400px;">
+                            class="w3-image w3-round-large w3-border">
                     </div>
-                    <p th:unless="${imagenBase64 != null}">Sin imagen cargada</p>
+
+                    <div th:unless="${imagenBase64 != null}" class="w3-panel w3-pale-red w3-round-large">
+                        <p>Sin imagen cargada</p>
+                    </div>
                 </div>
+
                 <hr>
 
-
-                <div class="w3-row-padding" style="margin: 0 -16px;">
-
-                    <div class="w3-half w3-margin-bottom">
+                <div class="w3-row-padding w3-margin-top">
+                    <div class="w3-col l6 m6 s12 w3-margin-bottom">
                         <a th:href="@{/editar-subasta/{id}(id=${subasta.id})}"
-                            class="w3-button w3-amber w3-block w3-round w3-large">
-                            Editar
-                        </a>
+                            class="w3-button w3-amber w3-hover-dark-grey w3-block w3-round-large w3-large"> Editar</a>
                     </div>
 
-                    <div class="w3-half w3-margin-bottom">
+                    <div class="w3-col l6 m6 s12 w3-margin-bottom">
                         <form th:action="@{/eliminar-subasta/{id}(id=${subasta.id})}" method="POST">
-                            <button type="submit" class="w3-button w3-red w3-block w3-round w3-large"
-                                onclick="return confirm('¿Estás seguro de que deseas eliminar esta subasta?')">
-                                Borrar
-                            </button>
+                            <button type="submit"
+                                class="w3-button w3-red w3-hover-dark-grey w3-block w3-round-large w3-large"
+                                onclick="return confirm('¿Estás seguro de que deseas eliminar esta subasta?')">Borrar</button>
                         </form>
                     </div>
                 </div>
-                <hr>
-                <a th:href="@{/subastas}" class="w3-button w3-blue-grey w3-block w3-round w3-large">
-                    Volver al listado
-                </a>
+
             </div>
+
+            <div class="w3-container w3-padding">
+                <a th:href="@{/subastas}"
+                    class="w3-button w3-dark-grey w3-hover-black w3-block w3-round-large w3-large">Volver al listado</a>
+            </div>
+
         </div>
+
     </div>
+
 </body>
 
 </html>
