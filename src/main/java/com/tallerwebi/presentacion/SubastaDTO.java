@@ -58,11 +58,11 @@ public class SubastaDTO {
     this.categoria = categoria;
   }
 
-  public String estadoArticulo() {
+  public String getEstadoArticulo() {
     return estadoArticulo;
   }
 
-  public void setEstado(String estadoArticulo) {
+  public void setEstadoArticulo(String estadoArticulo) {
     this.estadoArticulo = estadoArticulo;
   }
 }

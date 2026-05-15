@@ -61,10 +61,10 @@ public class DetalleSubasta {
   }
 
   public byte[] getImagen() {
-    return imagen;
+    return imagen == null ? null : imagen.clone();
   }
 
   public void setImagen(byte[] imagen) {
-    this.imagen = imagen;
+    this.imagen = imagen == null ? null : imagen.clone();
   }
 }
