@@ -32,7 +32,7 @@ public class ControladorOferta {
     modelo.put("subasta", subasta);
 
     // 2. Mandamos un objeto Oferta vacío para que Thymeleaf pueda "atar" el monto que el usuario escriba en el input
-    modelo.put(VISTA_OFERTA, new Oferta());
+    modelo.put(VISTA_OFERTA, new OfertaDTO());
 
     // 3. Devolvemos la vista "oferta" con el bolso cargado
     return new ModelAndView(VISTA_OFERTA, modelo);
@@ -41,11 +41,11 @@ public class ControladorOferta {
   @PostMapping("/ofertar/{id}")
   public ModelAndView realizarOferta(
     @PathVariable("id") Long idSubasta,
-    @ModelAttribute(VISTA_OFERTA) Oferta oferta
+    @ModelAttribute(VISTA_OFERTA) OfertaDTO ofertaDTO
   ) {
     try {
       // 1. Intentamos procesar la oferta a través del servicio
-      servicioOferta.procesarOferta(idSubasta, oferta);
+      servicioOferta.procesarOferta(idSubasta, ofertaDTO.entidad());
 
       // 2. Si tod0 sale bien, redirigimos al detalle de la subasta para ver el nuevo precio
       return new ModelAndView("redirect:/detalle-subasta?id=" + idSubasta);
@@ -55,7 +55,7 @@ public class ControladorOferta {
       modelo.put("error", "La oferta ingresada no es válida.");
       // Le volvemos a pasar la subasta y la oferta para que el HTML pueda renderizarse de nuevo sin romper
       modelo.put("subasta", servicioSubasta.obtenerSubasta(idSubasta));
-      modelo.put(VISTA_OFERTA, oferta);
+      modelo.put(VISTA_OFERTA, ofertaDTO);
 
       return new ModelAndView(VISTA_OFERTA, modelo);
     } catch (SubastaNoEncontradaException e) {

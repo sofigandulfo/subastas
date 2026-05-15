@@ -26,6 +26,10 @@ public class Oferta {
 
   public Oferta() {}
 
+  public Oferta(double monto) {
+    this.monto = monto;
+  }
+
   public long getId() {
     return this.id;
   }

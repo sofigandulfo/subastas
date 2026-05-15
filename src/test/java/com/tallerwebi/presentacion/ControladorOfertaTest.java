@@ -20,6 +20,8 @@ public class ControladorOfertaTest {
   private ServicioOferta servicioOfertaMock;
   private ServicioSubasta servicioSubastaMock;
   private ControladorOferta controladorOferta;
+  private OfertaDTO ofertaDTO;
+  private Oferta ofertaMock;
 
   @BeforeEach
   public void init() {
@@ -27,6 +29,9 @@ public class ControladorOfertaTest {
     servicioOfertaMock = mock(ServicioOferta.class);
     servicioSubastaMock = mock(ServicioSubasta.class);
     controladorOferta = new ControladorOferta(servicioOfertaMock, servicioSubastaMock);
+    ofertaMock = mock(Oferta.class);
+    ofertaDTO = mock(OfertaDTO.class);
+    when(ofertaDTO.entidad()).thenReturn(ofertaMock);
   }
 
   @Test
@@ -50,7 +55,7 @@ public class ControladorOfertaTest {
     assertThat(mav.getModel().get("subasta"), instanceOf(Subasta.class));
 
     // 3. Verificamos que la vista haya recibido un objeto Oferta vacío (para atajar el th:object)
-    assertThat(mav.getModel().get("oferta"), instanceOf(Oferta.class));
+    assertThat(mav.getModel().get("oferta"), instanceOf(OfertaDTO.class));
   }
 
   @Test
@@ -58,18 +63,16 @@ public class ControladorOfertaTest {
     throws OfertaInvalidaException, SubastaNoEncontradaException {
     // Preparación
     Long idSubasta = 1L;
-    Oferta ofertaValida = new Oferta();
-    ofertaValida.setMonto(1500.0);
 
     // Ejecución
-    ModelAndView mav = controladorOferta.realizarOferta(idSubasta, ofertaValida);
+    ModelAndView mav = controladorOferta.realizarOferta(idSubasta, ofertaDTO);
 
     // Validación
     // 1. Verificamos que redirija al detalle
     assertThat(mav.getViewName(), equalToIgnoringCase("redirect:/detalle-subasta?id=" + idSubasta));
 
     // 2. Verificamos que el controlador realmente le pidió al servicio que procese la oferta
-    verify(servicioOfertaMock, times(1)).procesarOferta(idSubasta, ofertaValida);
+    verify(servicioOfertaMock, times(1)).procesarOferta(idSubasta, ofertaMock);
   }
 
   @Test
@@ -77,20 +80,18 @@ public class ControladorOfertaTest {
     throws OfertaInvalidaException, SubastaNoEncontradaException {
     // Preparación
     Long idSubasta = 1L;
-    Oferta ofertaInvalida = new Oferta();
-    ofertaInvalida.setMonto(100.0);
     Subasta subastaMock = new Subasta();
 
     // Hacemos que el servicio simule que falló y tire la excepción
     doThrow(OfertaInvalidaException.class)
       .when(servicioOfertaMock)
-      .procesarOferta(idSubasta, ofertaInvalida);
+      .procesarOferta(idSubasta, ofertaMock);
 
     // Necesitamos devolver la subasta mockeada para recargar la página sin que pinche el HTML
     when(servicioSubastaMock.obtenerSubasta(idSubasta)).thenReturn(subastaMock);
 
     // Ejecución
-    ModelAndView mav = controladorOferta.realizarOferta(idSubasta, ofertaInvalida);
+    ModelAndView mav = controladorOferta.realizarOferta(idSubasta, ofertaDTO);
 
     // Validación
     // Verificamos que nos deje en la vista "oferta" (el formulario) y NO redirija
