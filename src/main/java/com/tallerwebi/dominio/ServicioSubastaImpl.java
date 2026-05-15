@@ -29,7 +29,7 @@ public class ServicioSubastaImpl implements ServicioSubasta {
         throw new RuntimeException(e);
       }
     }
-    subasta.setEstadoSubasta("ACTIVA");
+    subasta.setEstadoSubasta(EstadoSubasta.ACTIVA);
     subasta.setPrecioActual(subasta.getPrecioInicial());
     return repositorioSubasta.guardarSubasta(subasta);
   }

@@ -98,8 +98,8 @@ public class ServicioSubastaTest {
 
     servicioSubasta.crearSubasta(subasta, null);
 
-    String resultadoEsperado = "ACTIVA";
-    String resultadoObtenido = subasta.getEstadoSubasta();
+    EstadoSubasta resultadoEsperado = EstadoSubasta.ACTIVA;
+    EstadoSubasta resultadoObtenido = subasta.getEstadoSubasta();
     assertEquals(resultadoEsperado, resultadoObtenido);
   }
 

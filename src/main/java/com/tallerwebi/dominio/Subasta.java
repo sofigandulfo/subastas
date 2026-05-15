@@ -1,5 +1,6 @@
 package com.tallerwebi.dominio;
 
+import java.time.LocalDateTime;
 import javax.persistence.*;
 
 @Entity
@@ -15,8 +16,13 @@ public class Subasta {
   private double precioMaximo;
   private String categoria;
   private String estadoArticulo;
-  private String estadoSubasta;
+  private EstadoSubasta estadoSubasta;
   private double precioActual;
+
+  private LocalDateTime fechaCierre;
+
+  @ManyToOne
+  private Usuario ganador;
 
   @Lob
   private byte[] imagen;
@@ -89,11 +95,11 @@ public class Subasta {
     this.estadoArticulo = estado;
   }
 
-  public String getEstadoSubasta() {
+  public EstadoSubasta getEstadoSubasta() {
     return estadoSubasta;
   }
 
-  public void setEstadoSubasta(String estadoSubasta) {
+  public void setEstadoSubasta(EstadoSubasta estadoSubasta) {
     this.estadoSubasta = estadoSubasta;
   }
 
@@ -119,5 +125,21 @@ public class Subasta {
 
   public void setPrecioActual(double precioActual) {
     this.precioActual = precioActual;
+  }
+
+  public LocalDateTime getFechaCierre() {
+    return fechaCierre;
+  }
+
+  public void setFechaCierre(LocalDateTime fechaCierre) {
+    this.fechaCierre = fechaCierre;
+  }
+
+  public Usuario getGanador() {
+    return ganador;
+  }
+
+  public void setGanador(Usuario ganador) {
+    this.ganador = ganador;
   }
 }

@@ -17,11 +17,20 @@ public class Oferta {
   @ManyToOne
   private Subasta subasta;
 
+  @ManyToOne
+  private Usuario usuario;
+
   private double monto;
 
   public Oferta(double monto, Subasta subasta) {
     this.monto = monto;
     this.subasta = subasta;
+  }
+
+  public Oferta(double monto, Subasta subasta, Usuario usuario) {
+    this.monto = monto;
+    this.subasta = subasta;
+    this.usuario = usuario;
   }
 
   public Oferta() {}
@@ -32,6 +41,14 @@ public class Oferta {
 
   public void setId(long id) {
     this.id = id;
+  }
+
+  public Usuario getUsuario() {
+    return usuario;
+  }
+
+  public void setUsuario(Usuario usuario) {
+    this.usuario = usuario;
   }
 
   public double getMonto() {
