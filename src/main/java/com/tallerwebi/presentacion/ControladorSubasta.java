@@ -30,16 +30,17 @@ public class ControladorSubasta {
   @GetMapping("/crear-subasta")
   public ModelAndView irAlFormulario() {
     ModelMap modelo = new ModelMap();
-    modelo.put(KEY_SUBASTA, new Subasta());
+    modelo.put(KEY_SUBASTA, new SubastaDTO());
     return new ModelAndView(VISTA_CREAR_SUBASTA, modelo);
   }
 
   @PostMapping("/crear-subasta")
   public ModelAndView crearSubasta(
-    @ModelAttribute("subasta") Subasta subasta,
+    @ModelAttribute("subasta") SubastaDTO subastaDTO,
     @RequestParam("imagen") MultipartFile imagen
   ) throws SubastaInvalidaExeption {
     try {
+      Subasta subasta = subastaDTO.entidad();
       Subasta subastaGuardada = servicioSubasta.crearSubasta(subasta, imagen);
       return new ModelAndView("redirect:/detalle-subasta?id=" + subastaGuardada.getId());
     } catch (SubastaInvalidaExeption e) {
@@ -59,8 +60,11 @@ public class ControladorSubasta {
       return new ModelAndView(VISTA_CREAR_SUBASTA, "error", "Subasta no encontrada");
     }
     modelo.put(KEY_SUBASTA, subasta);
-    if (subasta.getImagen() != null) {
-      modelo.put("imagenBase64", Base64.getEncoder().encodeToString(subasta.getImagen()));
+    if (subasta.getDetalle().getImagen() != null) {
+      modelo.put(
+        "imagenBase64",
+        Base64.getEncoder().encodeToString(subasta.getDetalle().getImagen())
+      );
     }
     return new ModelAndView("detalle-subasta", modelo);
   }

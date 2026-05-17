@@ -34,12 +34,12 @@ public class ServicioSubastaTest {
 
     servicioSubasta.crearSubasta(subasta, null);
 
-    assertEquals("Notebook", subasta.getNombre());
-    assertEquals("Notebook 16gb", subasta.getDescripcion());
+    assertEquals("Notebook", subasta.getDetalle().getNombre());
+    assertEquals("Notebook 16gb", subasta.getDetalle().getDescripcion());
     assertEquals(1000.0, subasta.getPrecioInicial());
     assertEquals(5000.0, subasta.getPrecioMaximo());
-    assertEquals("Tecnologia", subasta.getCategoria());
-    assertEquals("nuevo", subasta.getEstado());
+    assertEquals("Tecnologia", subasta.getDetalle().getCategoria());
+    assertEquals("nuevo", subasta.getDetalle().getEstadoArticulo());
   }
 
   @Test
@@ -53,19 +53,19 @@ public class ServicioSubastaTest {
       "nuevo"
     );
 
-    subasta.setNombre("Mouse");
-    subasta.setDescripcion("Mouse inalambrico");
+    subasta.getDetalle().setNombre("Mouse");
+    subasta.getDetalle().setDescripcion("Mouse inalambrico");
     subasta.setPrecioInicial(500.0);
     subasta.setPrecioMaximo(2000.0);
-    subasta.setCategoria("Perifericos");
-    subasta.setEstado("usado");
+    subasta.getDetalle().setCategoria("Perifericos");
+    subasta.getDetalle().setEstadoArticulo("usado");
 
-    assertEquals("Mouse", subasta.getNombre());
-    assertEquals("Mouse inalambrico", subasta.getDescripcion());
+    assertEquals("Mouse", subasta.getDetalle().getNombre());
+    assertEquals("Mouse inalambrico", subasta.getDetalle().getDescripcion());
     assertEquals(500.0, subasta.getPrecioInicial());
     assertEquals(2000.0, subasta.getPrecioMaximo());
-    assertEquals("Perifericos", subasta.getCategoria());
-    assertEquals("usado", subasta.getEstado());
+    assertEquals("Perifericos", subasta.getDetalle().getCategoria());
+    assertEquals("usado", subasta.getDetalle().getEstadoArticulo());
   }
 
   @Test
@@ -98,8 +98,8 @@ public class ServicioSubastaTest {
 
     servicioSubasta.crearSubasta(subasta, null);
 
-    String resultadoEsperado = "ACTIVA";
-    String resultadoObtenido = subasta.getEstadoSubasta();
+    EstadoSubasta resultadoEsperado = EstadoSubasta.ACTIVA;
+    EstadoSubasta resultadoObtenido = subasta.getEstadoSubasta();
     assertEquals(resultadoEsperado, resultadoObtenido);
   }
 

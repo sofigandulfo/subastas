@@ -10,6 +10,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.tallerwebi.dominio.DetalleSubasta;
 import com.tallerwebi.dominio.ServicioSubasta;
 import com.tallerwebi.dominio.Subasta;
 import com.tallerwebi.dominio.excepcion.SubastaInvalidaExeption;
@@ -24,10 +25,15 @@ public class ControladorSubastaTest {
   private Subasta subastaMock;
   private ServicioSubasta servicioSubastaMock;
   private MultipartFile imagenMock;
+  private SubastaDTO subastaDTO;
+  private DetalleSubasta detalleMock;
 
   @BeforeEach
   public void init() {
+    subastaDTO = mock(SubastaDTO.class);
     subastaMock = mock(Subasta.class);
+    detalleMock = mock(DetalleSubasta.class);
+    when(subastaMock.getDetalle()).thenReturn(detalleMock);
     servicioSubastaMock = mock(ServicioSubasta.class);
     controladorSubasta = new ControladorSubasta(servicioSubastaMock);
     imagenMock = mock(MultipartFile.class);
@@ -41,16 +47,17 @@ public class ControladorSubastaTest {
     // se encuentra en el form para crear la subasta?
     assertThat(modelAndView.getViewName(), equalToIgnoringCase("crear-subasta"));
     // verifico que haya un objeto subasta vacío en el modelo para cargarle datos
-    assertThat(modelAndView.getModel().get("subasta"), instanceOf(Subasta.class));
+    assertThat(modelAndView.getModel().get("subasta"), instanceOf(SubastaDTO.class));
   }
 
   @Test
   public void crearSubastaConDatosValidosDeberiaRedirigirAVistaDetalleSubasta()
     throws SubastaInvalidaExeption {
+    when(subastaDTO.entidad()).thenReturn(subastaMock);
     when(servicioSubastaMock.crearSubasta(subastaMock, imagenMock)).thenReturn(subastaMock);
     when(subastaMock.getId()).thenReturn(1L);
 
-    ModelAndView modelAndView = controladorSubasta.crearSubasta(subastaMock, imagenMock);
+    ModelAndView modelAndView = controladorSubasta.crearSubasta(subastaDTO, imagenMock);
     assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/detalle-subasta?id=1"));
     verify(servicioSubastaMock, times(1)).crearSubasta(subastaMock, imagenMock);
   }
@@ -58,12 +65,13 @@ public class ControladorSubastaTest {
   @Test
   public void crearSubastaConDatosInvalidosDeberiaVolverAlFormularioConError()
     throws SubastaInvalidaExeption {
+    when(subastaDTO.entidad()).thenReturn(subastaMock);
     // preparacion: simulo que el servicio lanza una exception
     doThrow(SubastaInvalidaExeption.class)
       .when(servicioSubastaMock)
       .crearSubasta(subastaMock, imagenMock);
     // ejecucion
-    ModelAndView modelAndView = controladorSubasta.crearSubasta(subastaMock, imagenMock);
+    ModelAndView modelAndView = controladorSubasta.crearSubasta(subastaDTO, imagenMock);
     // valido que la vista sea la correcta y que se lanzo el mensaje de error
     assertThat(modelAndView.getViewName(), equalToIgnoringCase("crear-subasta"));
     assertThat(
@@ -78,7 +86,7 @@ public class ControladorSubastaTest {
     // preparacion: obligo a que se haga una runtimeException
     doThrow(RuntimeException.class).when(servicioSubastaMock).crearSubasta(subastaMock, imagenMock);
     // ejercucion
-    ModelAndView modelAndView = controladorSubasta.crearSubasta(subastaMock, imagenMock);
+    ModelAndView modelAndView = controladorSubasta.crearSubasta(subastaDTO, imagenMock);
     // valido
     assertThat(modelAndView.getViewName(), equalToIgnoringCase("crear-subasta"));
     assertThat(
@@ -122,7 +130,7 @@ public class ControladorSubastaTest {
     //            cuando llame a la subasta con su imagen retorna imagen mockeada
     byte[] imagenBytes = new byte[] { 1, 2, 3 };
     when(servicioSubastaMock.obtenerSubasta(1L)).thenReturn(subastaMock);
-    when(subastaMock.getImagen()).thenReturn(imagenBytes);
+    when(detalleMock.getImagen()).thenReturn(imagenBytes);
     //ejecuto el modelo
     ModelAndView modelAndView = controladorSubasta.verDetalle(1L);
     //verifico haber obtenido en el modelo clave ImagenBase64 y es un texto
@@ -134,7 +142,7 @@ public class ControladorSubastaTest {
     //PREPARACION cuando llame al servicio con long 1 retorna la subasta mockeada
     //            cuando llame a la subasta con su imagen retorna imagen mockeada
     when(servicioSubastaMock.obtenerSubasta(1L)).thenReturn(subastaMock);
-    when(subastaMock.getImagen()).thenReturn(null);
+    when(detalleMock.getImagen()).thenReturn(null);
     //ejecuto el modelo
     ModelAndView modelAndView = controladorSubasta.verDetalle(1L);
     //verifico haber obtenido en el modelo clave ImagenBase64 y es un texto

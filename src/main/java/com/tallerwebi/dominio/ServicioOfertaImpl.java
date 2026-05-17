@@ -29,7 +29,11 @@ public class ServicioOfertaImpl implements ServicioOferta {
     Subasta subasta = repositorioSubasta.obtenerSubasta(idSubasta);
 
     // Verificamos que la subasta exista
-    if (subasta == null || subasta.getNombre() == null || subasta.getNombre().isBlank()) {
+    if (
+      subasta == null ||
+      subasta.getDetalle().getNombre() == null ||
+      subasta.getDetalle().getNombre().isBlank()
+    ) {
       throw new SubastaNoEncontradaException();
     }
 

@@ -1,5 +1,6 @@
 package com.tallerwebi.dominio;
 
+import java.time.LocalDateTime;
 import javax.persistence.*;
 
 @Entity
@@ -9,17 +10,17 @@ public class Subasta {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  private String nombre;
-  private String descripcion;
   private double precioInicial;
   private double precioMaximo;
-  private String categoria;
-  private String estadoArticulo;
-  private String estadoSubasta;
+  private EstadoSubasta estadoSubasta;
   private double precioActual;
+  private LocalDateTime fechaCierre;
 
-  @Lob
-  private byte[] imagen;
+  @ManyToOne
+  private Usuario ganador;
+
+  @Embedded
+  private DetalleSubasta detalle;
 
   public Subasta(
     String nombre,
@@ -29,33 +30,14 @@ public class Subasta {
     String categoria,
     String estadoArticulo
   ) {
-    this.nombre = nombre;
-    this.descripcion = descripcion;
+    this.detalle = new DetalleSubasta(nombre, descripcion, categoria, estadoArticulo);
     this.precioInicial = precioInicial;
     this.precioMaximo = precioMaximo;
-    this.categoria = categoria;
-    this.estadoArticulo = estadoArticulo;
     this.precioActual = precioInicial;
   }
 
   // creo un constructor vacio para el formulario html
   public Subasta() {}
-
-  public String getNombre() {
-    return nombre;
-  }
-
-  public void setNombre(String nombre) {
-    this.nombre = nombre;
-  }
-
-  public String getDescripcion() {
-    return descripcion;
-  }
-
-  public void setDescripcion(String descripcion) {
-    this.descripcion = descripcion;
-  }
 
   public double getPrecioInicial() {
     return precioInicial;
@@ -73,27 +55,11 @@ public class Subasta {
     this.precioMaximo = precioMaximo;
   }
 
-  public String getCategoria() {
-    return categoria;
+  public EstadoSubasta getEstadoSubasta() {
+    return this.estadoSubasta;
   }
 
-  public void setCategoria(String categoria) {
-    this.categoria = categoria;
-  }
-
-  public String getEstado() {
-    return estadoArticulo;
-  }
-
-  public void setEstado(String estado) {
-    this.estadoArticulo = estado;
-  }
-
-  public String getEstadoSubasta() {
-    return estadoSubasta;
-  }
-
-  public void setEstadoSubasta(String estadoSubasta) {
+  public void setEstadoSubasta(EstadoSubasta estadoSubasta) {
     this.estadoSubasta = estadoSubasta;
   }
 
@@ -105,19 +71,35 @@ public class Subasta {
     this.id = id;
   }
 
-  public byte[] getImagen() {
-    return imagen != null ? imagen.clone() : null;
-  }
-
-  public void setImagen(byte[] imagen) {
-    this.imagen = imagen != null ? imagen.clone() : null;
-  }
-
   public double getPrecioActual() {
     return precioActual;
   }
 
   public void setPrecioActual(double precioActual) {
     this.precioActual = precioActual;
+  }
+
+  public LocalDateTime getFechaCierre() {
+    return fechaCierre;
+  }
+
+  public void setFechaCierre(LocalDateTime fechaCierre) {
+    this.fechaCierre = fechaCierre;
+  }
+
+  public Usuario getGanador() {
+    return ganador;
+  }
+
+  public void setGanador(Usuario ganador) {
+    this.ganador = ganador;
+  }
+
+  public DetalleSubasta getDetalle() {
+    return detalle;
+  }
+
+  public void setDetalle(DetalleSubasta detalle) {
+    this.detalle = detalle;
   }
 }
