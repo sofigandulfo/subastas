@@ -16,58 +16,58 @@ import org.junit.jupiter.api.Test;
 
 public class RespositorioSubastaTest {
 
-    private RepositorioSubasta repositorioSubasta;
-    private SessionFactory sessionFactoryMock;
-    private Session sessionMock;
-    private Criteria criteriaMock;
+  private RepositorioSubasta repositorioSubasta;
+  private SessionFactory sessionFactoryMock;
+  private Session sessionMock;
+  private Criteria criteriaMock;
 
-    @BeforeEach
-    public void init(){
-        sessionFactoryMock = mock(SessionFactory.class); 
-        sessionMock = mock(Session.class);
-        criteriaMock = mock(Criteria.class);
+  @BeforeEach
+  public void init() {
+    sessionFactoryMock = mock(SessionFactory.class);
+    sessionMock = mock(Session.class);
+    criteriaMock = mock(Criteria.class);
 
-        when(sessionFactoryMock.getCurrentSession()).thenReturn(sessionMock);
-        when(sessionMock.createCriteria(Subasta.class)).thenReturn(criteriaMock);
-        when(criteriaMock.add(any(Criterion.class))).thenReturn(criteriaMock);
-   
-        repositorioSubasta = new RepositorioSubastaImpl(sessionFactoryMock);
-    }
+    when(sessionFactoryMock.getCurrentSession()).thenReturn(sessionMock);
+    when(sessionMock.createCriteria(Subasta.class)).thenReturn(criteriaMock);
+    when(criteriaMock.add(any(Criterion.class))).thenReturn(criteriaMock);
 
-    @Test
-    public void guardarSubastaDeberiaLlamarAlMetodoSaveDeLaSesion(){
-        Subasta subasta = new Subasta();
+    repositorioSubasta = new RepositorioSubastaImpl(sessionFactoryMock);
+  }
 
-        repositorioSubasta.guardarSubasta(subasta);
+  @Test
+  public void guardarSubastaDeberiaLlamarAlMetodoSaveDeLaSesion() {
+    Subasta subasta = new Subasta();
 
-        verify(sessionMock, times(1)).save(subasta);
-    }
+    repositorioSubasta.guardarSubasta(subasta);
 
-    @Test
-    public void guardarSubastaDeberiaRetornarLaMismaSubasta(){
-        Subasta subasta = new Subasta();
+    verify(sessionMock, times(1)).save(subasta);
+  }
 
-        Subasta resultado = repositorioSubasta.guardarSubasta(subasta);
+  @Test
+  public void guardarSubastaDeberiaRetornarLaMismaSubasta() {
+    Subasta subasta = new Subasta();
 
-        assertThat(resultado, equalTo(subasta));
-    }
+    Subasta resultado = repositorioSubasta.guardarSubasta(subasta);
 
-    @Test
-    public void obtenerSubastaDeberiaRetornarSubastaSiExiste(){
-        Subasta subasta = new Subasta();
-        when(criteriaMock.uniqueResult()).thenReturn(subasta);
+    assertThat(resultado, equalTo(subasta));
+  }
 
-        Subasta subastaObtenida = repositorioSubasta.obtenerSubasta(1L);
+  @Test
+  public void obtenerSubastaDeberiaRetornarSubastaSiExiste() {
+    Subasta subasta = new Subasta();
+    when(criteriaMock.uniqueResult()).thenReturn(subasta);
 
-        assertThat(subastaObtenida, equalTo(subasta));
-    }
+    Subasta subastaObtenida = repositorioSubasta.obtenerSubasta(1L);
 
-    @Test
-    public void obtenerSubastaDeberiaRetornarNullSiNoExiste(){
-        when(criteriaMock.uniqueResult()).thenReturn(null);
+    assertThat(subastaObtenida, equalTo(subasta));
+  }
 
-        Subasta subastaObtenida = repositorioSubasta.obtenerSubasta(1L);
+  @Test
+  public void obtenerSubastaDeberiaRetornarNullSiNoExiste() {
+    when(criteriaMock.uniqueResult()).thenReturn(null);
 
-        assertThat(subastaObtenida, equalTo(null));
-    }
+    Subasta subastaObtenida = repositorioSubasta.obtenerSubasta(1L);
+
+    assertThat(subastaObtenida, equalTo(null));
+  }
 }
