@@ -8,6 +8,7 @@ import static org.mockito.Mockito.*;
 
 import com.tallerwebi.dominio.excepcion.SubastaInvalidaExeption;
 import java.time.LocalDateTime;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,11 +16,13 @@ public class ServicioSubastaTest {
 
   private ServicioSubasta servicioSubasta;
   private RepositorioSubasta repositorioSubasta;
+  private RepositorioOferta repositorioOferta;
 
   @BeforeEach
   public void init() {
     repositorioSubasta = mock(RepositorioSubasta.class);
-    servicioSubasta = new ServicioSubastaImpl(repositorioSubasta);
+    repositorioOferta = mock(RepositorioOferta.class);
+    servicioSubasta = new ServicioSubastaImpl(repositorioSubasta, repositorioOferta);
   }
 
   @Test
@@ -286,6 +289,145 @@ public class ServicioSubastaTest {
 
     // ejecucion
     servicioSubasta.verificarPrecioMaximo(1L);
+
+    // validacion
+    verify(repositorioSubasta, times(1)).guardarSubasta(subasta);
+  }
+
+  @Test
+  public void queAlVencerLaFechaDeCierreLaSubastaPasaAEstadoCerrada() {
+    // preparacion
+    Subasta subasta = new Subasta(
+      "Notebook",
+      "Notebook 16gb",
+      1000.0,
+      3000.0,
+      "Tecnologia",
+      "nuevo"
+    );
+    subasta.setEstadoSubasta(EstadoSubasta.CUENTA_ATRAS);
+    subasta.setFechaCierre(LocalDateTime.now().minusHours(1)); // fecha ya vencida
+    when(repositorioSubasta.obtenerSubastasPorVencer()).thenReturn(List.of(subasta));
+
+    // ejecucion
+    servicioSubasta.cerrarSubastasPorTiempo();
+
+    // validacion
+    assertEquals(EstadoSubasta.CERRADA, subasta.getEstadoSubasta());
+  }
+
+  @Test
+  public void queAlCerrarLaSubastaSeArmaElPodioConLosTresMejoresOfertadores() {
+    // preparacion
+    Subasta subasta = new Subasta(
+      "Notebook",
+      "Notebook 16gb",
+      1000.0,
+      3000.0,
+      "Tecnologia",
+      "nuevo"
+    );
+    subasta.setFechaCierre(LocalDateTime.now().minusHours(1));
+
+    Usuario usuario1 = new Usuario();
+    usuario1.setId(1L);
+    Usuario usuario2 = new Usuario();
+    usuario2.setId(2L);
+    Usuario usuario3 = new Usuario();
+    usuario3.setId(3L);
+
+    Oferta oferta1 = new Oferta(3000.0, subasta, usuario1);
+    Oferta oferta2 = new Oferta(2000.0, subasta, usuario2);
+    Oferta oferta3 = new Oferta(1500.0, subasta, usuario3);
+
+    when(repositorioSubasta.obtenerSubastasPorVencer()).thenReturn(List.of(subasta));
+    when(repositorioOferta.obtenerMejoresOfertasPorSubasta(subasta.getId()))
+      .thenReturn(List.of(oferta1, oferta2, oferta3));
+
+    // ejecucion
+    servicioSubasta.cerrarSubastasPorTiempo();
+
+    // validacion
+    assertEquals(usuario1, subasta.getPodio().get(0));
+    assertEquals(usuario2, subasta.getPodio().get(1));
+    assertEquals(usuario3, subasta.getPodio().get(2));
+  }
+
+  @Test
+  public void queAlCerrarLaSubastaConMenosDeTresOfertasElPodioTengaSoloLasQueHay() {
+    // preparacion
+    Subasta subasta = new Subasta(
+      "Notebook",
+      "Notebook 16gb",
+      1000.0,
+      3000.0,
+      "Tecnologia",
+      "nuevo"
+    );
+    subasta.setFechaCierre(LocalDateTime.now().minusHours(1));
+
+    Usuario usuario1 = new Usuario();
+    usuario1.setId(1L);
+    Usuario usuario2 = new Usuario();
+    usuario2.setId(2L);
+
+    Oferta oferta1 = new Oferta(3000.0, subasta, usuario1);
+    Oferta oferta2 = new Oferta(2000.0, subasta, usuario2);
+
+    when(repositorioSubasta.obtenerSubastasPorVencer()).thenReturn(List.of(subasta));
+    when(repositorioOferta.obtenerMejoresOfertasPorSubasta(subasta.getId()))
+      .thenReturn(List.of(oferta1, oferta2));
+
+    // ejecucion
+    servicioSubasta.cerrarSubastasPorTiempo();
+
+    // validacion
+    assertEquals(2, subasta.getPodio().size());
+    assertEquals(usuario1, subasta.getPodio().get(0));
+    assertEquals(usuario2, subasta.getPodio().get(1));
+  }
+
+  @Test
+  public void queAlCerrarLaSubastaSinOfertasElPodioQuedeVacio() {
+    // preparacion
+    Subasta subasta = new Subasta(
+      "Notebook",
+      "Notebook 16gb",
+      1000.0,
+      3000.0,
+      "Tecnologia",
+      "nuevo"
+    );
+    subasta.setFechaCierre(LocalDateTime.now().minusHours(1));
+
+    when(repositorioSubasta.obtenerSubastasPorVencer()).thenReturn(List.of(subasta));
+    when(repositorioOferta.obtenerMejoresOfertasPorSubasta(subasta.getId())).thenReturn(List.of());
+
+    // ejecucion
+    servicioSubasta.cerrarSubastasPorTiempo();
+
+    // validacion
+    assertEquals(0, subasta.getPodio().size());
+  }
+
+  @Test
+  public void queAlCerrarLaSubastaSeGuardaEnElRepositorio() {
+    // preparacion
+    Subasta subasta = new Subasta(
+      "Notebook",
+      "Notebook 16gb",
+      1000.0,
+      3000.0,
+      "Tecnologia",
+      "nuevo"
+    );
+    subasta.setFechaCierre(LocalDateTime.now().minusHours(1));
+
+    when(repositorioSubasta.obtenerSubastasPorVencer()).thenReturn(List.of(subasta));
+    when(repositorioOferta.obtenerMejoresOfertasPorSubasta(subasta.getId())).thenReturn(List.of());
+
+    // ejecucion
+    servicioSubasta.cerrarSubastasPorTiempo();
 
     // validacion
     verify(repositorioSubasta, times(1)).guardarSubasta(subasta);

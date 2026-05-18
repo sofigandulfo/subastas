@@ -3,6 +3,8 @@ package com.tallerwebi.dominio;
 import com.tallerwebi.dominio.excepcion.SubastaInvalidaExeption;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,10 +15,15 @@ import org.springframework.web.multipart.MultipartFile;
 public class ServicioSubastaImpl implements ServicioSubasta {
 
   private RepositorioSubasta repositorioSubasta;
+  private RepositorioOferta repositorioOferta;
 
   @Autowired
-  public ServicioSubastaImpl(RepositorioSubasta repositorioSubasta) {
+  public ServicioSubastaImpl(
+    RepositorioSubasta repositorioSubasta,
+    RepositorioOferta repositorioOferta
+  ) {
     this.repositorioSubasta = repositorioSubasta;
+    this.repositorioOferta = repositorioOferta;
   }
 
   @Override
@@ -41,6 +48,25 @@ public class ServicioSubastaImpl implements ServicioSubasta {
       subasta.setEstadoSubasta(EstadoSubasta.CUENTA_ATRAS);
       subasta.setFechaCierre(LocalDateTime.now().plusHours(2));
       repositorioSubasta.guardarSubasta(subasta);
+    }
+  }
+
+  @Override
+  public void cerrarSubastasPorTiempo() {
+    List<Subasta> subastas = repositorioSubasta.obtenerSubastasPorVencer();
+    for (Subasta subasta : subastas) {
+      if (subasta.getFechaCierre().isBefore(LocalDateTime.now())) {
+        List<Oferta> mejoresOfertas = repositorioOferta.obtenerMejoresOfertasPorSubasta(
+          subasta.getId()
+        );
+        List<Usuario> podio = new ArrayList<>();
+        for (int i = 0; i < Math.min(3, mejoresOfertas.size()); i++) {
+          podio.add(mejoresOfertas.get(i).getUsuario());
+        }
+        subasta.setPodio(podio);
+        subasta.setEstadoSubasta(EstadoSubasta.CERRADA);
+        repositorioSubasta.guardarSubasta(subasta);
+      }
     }
   }
 

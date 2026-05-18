@@ -7,6 +7,7 @@ import static org.mockito.Mockito.*;
 
 import com.tallerwebi.dominio.RepositorioSubasta;
 import com.tallerwebi.dominio.Subasta;
+import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -69,5 +70,23 @@ public class RespositorioSubastaTest {
     Subasta subastaObtenida = repositorioSubasta.obtenerSubasta(1L);
 
     assertThat(subastaObtenida, equalTo(null));
+  }
+
+  @Test
+  public void obtenerSubastasPorVencerDeberiaRetornarSubastasVencidas() {
+    // preparacion
+    Subasta subasta = new Subasta();
+    org.hibernate.query.Query queryMock = mock(org.hibernate.query.Query.class);
+
+    when(sessionMock.createQuery(anyString(), eq(Subasta.class))).thenReturn(queryMock);
+    when(queryMock.setParameter(anyString(), any())).thenReturn(queryMock);
+    when(queryMock.getResultList()).thenReturn(List.of(subasta));
+
+    // ejecucion
+    List<Subasta> resultado = repositorioSubasta.obtenerSubastasPorVencer();
+
+    // validacion
+    assertThat(resultado.size(), equalTo(1));
+    assertThat(resultado.get(0), equalTo(subasta));
   }
 }

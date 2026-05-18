@@ -92,6 +92,13 @@
                     <div th:if="${error}" class="w3-panel w3-pale-red w3-border w3-border-red w3-round">
                         <p class="w3-text-red"><b th:text="${error}"></b></p>
                     </div>
+
+                    <label class="w3-text-dark-grey">
+                        <b>Fecha de Finalización</b>
+                    </label>
+
+                    <input th:field="*{fechaCierre}" class="w3-input w3-border w3-round w3-margin-bottom"
+                           type="datetime-local">
                     
                     <button type="submit"
                         class="w3-button w3-amber w3-hover-dark-grey w3-round w3-block w3-margin-top w3-sans-serif">

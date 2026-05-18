@@ -7,4 +7,5 @@ public interface ServicioSubasta {
   Subasta obtenerSubasta(Long id);
   Subasta crearSubasta(Subasta subasta, MultipartFile imagen) throws SubastaInvalidaExeption;
   void verificarPrecioMaximo(Long subastaId);
+  void cerrarSubastasPorTiempo();
 }
