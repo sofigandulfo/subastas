@@ -24,7 +24,7 @@ public class ServicioSubastaImpl implements ServicioSubasta {
     validarSubasta(subasta);
     if (imagen != null && !imagen.isEmpty()) {
       try {
-        subasta.setImagen(imagen.getBytes());
+        subasta.getDetalle().setImagen(imagen.getBytes());
       } catch (IOException e) {
         throw new RuntimeException(e);
       }
@@ -35,7 +35,7 @@ public class ServicioSubastaImpl implements ServicioSubasta {
   }
 
   private void validarSubasta(Subasta subasta) throws SubastaInvalidaExeption {
-    if (subasta.getNombre() == null || subasta.getNombre().isBlank()) {
+    if (subasta.getDetalle().getNombre() == null || subasta.getDetalle().getNombre().isBlank()) {
       throw new SubastaInvalidaExeption();
     } else if (subasta.getPrecioInicial() < 0) {
       throw new SubastaInvalidaExeption();
