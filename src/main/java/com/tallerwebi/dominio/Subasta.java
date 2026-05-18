@@ -34,6 +34,7 @@ public class Subasta {
     this.precioInicial = precioInicial;
     this.precioMaximo = precioMaximo;
     this.precioActual = precioInicial;
+    this.estadoSubasta = EstadoSubasta.ACTIVA;
   }
 
   // creo un constructor vacio para el formulario html

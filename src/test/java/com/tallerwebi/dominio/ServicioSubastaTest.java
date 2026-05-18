@@ -1,12 +1,13 @@
 package com.tallerwebi.dominio;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import com.tallerwebi.dominio.excepcion.SubastaInvalidaExeption;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -180,5 +181,113 @@ public class ServicioSubastaTest {
     subasta.setPrecioActual(1100.0);
 
     assertEquals(1100.0, subasta.getPrecioActual());
+  }
+
+  @Test
+  public void queAlIgualarElPrecioMaximoLaSubastaPasaAEstadoCuentaAtras() {
+    Subasta subasta = new Subasta(
+      "Notebook",
+      "Notebook 16gb",
+      1000.0,
+      3000.0,
+      "Tecnologia",
+      "nuevo"
+    );
+    subasta.setPrecioActual(3000.0); // igualamos el precio maximo
+    when(repositorioSubasta.obtenerSubasta(1L)).thenReturn(subasta);
+
+    servicioSubasta.verificarPrecioMaximo(1L);
+
+    assertEquals(EstadoSubasta.CUENTA_ATRAS, subasta.getEstadoSubasta());
+  }
+
+  @Test
+  public void queAlIgualarElPrecioMaximoLaFechaDeCierreSeSetiaADosHorasDesdeAhora() {
+    // preparacion
+    Subasta subasta = new Subasta(
+      "Notebook",
+      "Notebook 16gb",
+      1000.0,
+      3000.0,
+      "Tecnologia",
+      "nuevo"
+    );
+    subasta.setPrecioActual(3000.0);
+    when(repositorioSubasta.obtenerSubasta(1L)).thenReturn(subasta);
+
+    LocalDateTime antes = LocalDateTime.now();
+
+    // ejecucion
+    servicioSubasta.verificarPrecioMaximo(1L);
+
+    LocalDateTime despues = LocalDateTime.now();
+
+    // validacion
+    assertThat(subasta.getFechaCierre(), greaterThanOrEqualTo(antes.plusHours(2)));
+    assertThat(subasta.getFechaCierre(), lessThanOrEqualTo(despues.plusHours(2)));
+  }
+
+  @Test
+  public void queAlNoIgualarElPrecioMaximoLaSubastaNoDeberiaActualizarEstado() {
+    // preparacion
+    Subasta subasta = new Subasta(
+      "Notebook",
+      "Notebook 16gb",
+      1000.0,
+      3000.0,
+      "Tecnologia",
+      "nuevo"
+    );
+    subasta.setPrecioActual(2000.0); // menor al precio maximo
+    when(repositorioSubasta.obtenerSubasta(1L)).thenReturn(subasta);
+
+    // ejecucion
+    servicioSubasta.verificarPrecioMaximo(1L);
+
+    // validacion
+    assertEquals(EstadoSubasta.ACTIVA, subasta.getEstadoSubasta());
+    assertNull(subasta.getFechaCierre());
+  }
+
+  @Test
+  public void queAlSuperarElPrecioMaximoLaSubastaPasaAEstadoCuentaAtras() {
+    // preparacion
+    Subasta subasta = new Subasta(
+      "Notebook",
+      "Notebook 16gb",
+      1000.0,
+      3000.0,
+      "Tecnologia",
+      "nuevo"
+    );
+    subasta.setPrecioActual(4000.0); // supera el precio maximo
+    when(repositorioSubasta.obtenerSubasta(1L)).thenReturn(subasta);
+
+    // ejecucion
+    servicioSubasta.verificarPrecioMaximo(1L);
+
+    // validacion
+    assertEquals(EstadoSubasta.CUENTA_ATRAS, subasta.getEstadoSubasta());
+  }
+
+  @Test
+  public void queAlIgualarElPrecioMaximoSeGuardaLaSubastaEnElRepositorio() {
+    // preparacion
+    Subasta subasta = new Subasta(
+      "Notebook",
+      "Notebook 16gb",
+      1000.0,
+      3000.0,
+      "Tecnologia",
+      "nuevo"
+    );
+    subasta.setPrecioActual(3000.0);
+    when(repositorioSubasta.obtenerSubasta(1L)).thenReturn(subasta);
+
+    // ejecucion
+    servicioSubasta.verificarPrecioMaximo(1L);
+
+    // validacion
+    verify(repositorioSubasta, times(1)).guardarSubasta(subasta);
   }
 }

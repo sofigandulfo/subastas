@@ -2,6 +2,7 @@ package com.tallerwebi.dominio;
 
 import com.tallerwebi.dominio.excepcion.SubastaInvalidaExeption;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,9 +30,18 @@ public class ServicioSubastaImpl implements ServicioSubasta {
         throw new RuntimeException(e);
       }
     }
-    subasta.setEstadoSubasta(EstadoSubasta.ACTIVA);
     subasta.setPrecioActual(subasta.getPrecioInicial());
     return repositorioSubasta.guardarSubasta(subasta);
+  }
+
+  @Override
+  public void verificarPrecioMaximo(Long subastaId) {
+    Subasta subasta = repositorioSubasta.obtenerSubasta(subastaId);
+    if (subasta.getPrecioActual() >= subasta.getPrecioMaximo()) {
+      subasta.setEstadoSubasta(EstadoSubasta.CUENTA_ATRAS);
+      subasta.setFechaCierre(LocalDateTime.now().plusHours(2));
+      repositorioSubasta.guardarSubasta(subasta);
+    }
   }
 
   private void validarSubasta(Subasta subasta) throws SubastaInvalidaExeption {
