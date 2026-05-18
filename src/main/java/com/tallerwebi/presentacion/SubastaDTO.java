@@ -1,6 +1,7 @@
 package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.Subasta;
+import java.time.LocalDateTime;
 
 public class SubastaDTO {
 
@@ -11,11 +12,21 @@ public class SubastaDTO {
   private double precioMaximo;
   private String categoria;
   private String estadoArticulo;
+  private LocalDateTime fechaCierre;
 
   public SubastaDTO() {}
 
   public Subasta entidad() {
-    return new Subasta(nombre, descripcion, precioInicial, precioMaximo, categoria, estadoArticulo);
+    Subasta subasta = new Subasta(
+      nombre,
+      descripcion,
+      precioInicial,
+      precioMaximo,
+      categoria,
+      estadoArticulo
+    );
+    subasta.setFechaCierre(fechaCierre);
+    return subasta;
   }
 
   public String getNombre() {
@@ -64,5 +75,13 @@ public class SubastaDTO {
 
   public void setEstadoArticulo(String estadoArticulo) {
     this.estadoArticulo = estadoArticulo;
+  }
+
+  public LocalDateTime getFechaCierre() {
+    return fechaCierre;
+  }
+
+  public void setFechaCierre(LocalDateTime fechaCierre) {
+    this.fechaCierre = fechaCierre;
   }
 }

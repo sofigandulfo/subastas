@@ -2,6 +2,7 @@ package com.tallerwebi.infraestructura;
 
 import com.tallerwebi.dominio.Oferta;
 import com.tallerwebi.dominio.RepositorioOferta;
+import java.util.List;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -19,5 +20,20 @@ public class RepositorioOfertaImpl implements RepositorioOferta {
   @Override
   public void guardarOferta(Oferta oferta) {
     sessionFactory.getCurrentSession().save(oferta);
+  }
+
+  @Override
+  public List<Oferta> obtenerMejoresOfertasPorSubasta(Long subastaId) {
+    return sessionFactory
+      .getCurrentSession()
+      .createQuery(
+        "SELECT o FROM Oferta o " +
+        "WHERE o.subasta.id = :subastaId " +
+        "AND o.monto = (SELECT MAX(o2.monto) FROM Oferta o2 WHERE o2.usuario = o.usuario AND o2.subasta.id = :subastaId) " +
+        "ORDER BY o.monto DESC",
+        Oferta.class
+      )
+      .setParameter("subastaId", subastaId)
+      .getResultList();
   }
 }

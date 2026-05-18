@@ -1,6 +1,8 @@
 package com.tallerwebi.dominio;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.*;
 
 @Entity
@@ -16,8 +18,9 @@ public class Subasta {
   private double precioActual;
   private LocalDateTime fechaCierre;
 
-  @ManyToOne
-  private Usuario ganador;
+  @ManyToMany
+  @OrderColumn
+  private List<Usuario> podio = new ArrayList<>();
 
   @Embedded
   private DetalleSubasta detalle;
@@ -34,6 +37,7 @@ public class Subasta {
     this.precioInicial = precioInicial;
     this.precioMaximo = precioMaximo;
     this.precioActual = precioInicial;
+    this.estadoSubasta = EstadoSubasta.ACTIVA;
   }
 
   // creo un constructor vacio para el formulario html
@@ -87,12 +91,12 @@ public class Subasta {
     this.fechaCierre = fechaCierre;
   }
 
-  public Usuario getGanador() {
-    return ganador;
+  public List<Usuario> getPodio() {
+    return podio;
   }
 
-  public void setGanador(Usuario ganador) {
-    this.ganador = ganador;
+  public void setPodio(List<Usuario> podio) {
+    this.podio = podio;
   }
 
   public DetalleSubasta getDetalle() {

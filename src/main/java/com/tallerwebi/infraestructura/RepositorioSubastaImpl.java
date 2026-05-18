@@ -1,7 +1,10 @@
 package com.tallerwebi.infraestructura;
 
+import com.tallerwebi.dominio.EstadoSubasta;
 import com.tallerwebi.dominio.RepositorioSubasta;
 import com.tallerwebi.dominio.Subasta;
+import java.time.LocalDateTime;
+import java.util.List;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,5 +33,20 @@ public class RepositorioSubastaImpl implements RepositorioSubasta {
       .createCriteria(Subasta.class)
       .add(Restrictions.eq("id", id))
       .uniqueResult();
+  }
+
+  @Override
+  public List<Subasta> obtenerSubastasPorVencer() {
+    return sessionFactory
+      .getCurrentSession()
+      .createQuery(
+        "FROM Subasta WHERE fechaCierre < :ahora " +
+        "AND (estadoSubasta = :activa OR estadoSubasta = :cuentaAtras)",
+        Subasta.class
+      )
+      .setParameter("ahora", LocalDateTime.now())
+      .setParameter("activa", EstadoSubasta.ACTIVA)
+      .setParameter("cuentaAtras", EstadoSubasta.CUENTA_ATRAS)
+      .getResultList();
   }
 }
