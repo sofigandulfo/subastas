@@ -43,6 +43,9 @@ public class ControladorOferta {
     @ModelAttribute(VISTA_OFERTA) OfertaDTO ofertaDTO
   ) {
     try {
+      // antes de aceptar una oferta, revisa si la subasta ya vencio
+      servicioSubasta.cerrarSubastasPorTiempo();
+
       // 1. Intentamos procesar la oferta a través del servicio
       servicioOferta.procesarOferta(idSubasta, ofertaDTO.entidad());
 

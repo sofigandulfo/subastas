@@ -23,7 +23,7 @@
                     <button class="btn btn-lg btn-primary btn-block" type="submit">Ofertar</button>
                     <p th:if="${error != null}" class="alert alert-danger" th:text="'Error ' + ${error}"></p>
                 </form>
-                <a href="#" class="btn btn-secondary mt-2">Volver</a>
+                <a th:href="@{/detalle-subasta(id=${subasta.id})}" class="btn btn-secondary mt-2">Volver</a>
             </div>
         </div>
     </main>
