@@ -1,6 +1,7 @@
 package com.tallerwebi.presentacion;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
@@ -11,8 +12,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.tallerwebi.dominio.DetalleSubasta;
+import com.tallerwebi.dominio.EstadoSubasta;
+import com.tallerwebi.dominio.Oferta;
+import com.tallerwebi.dominio.ServicioOferta;
 import com.tallerwebi.dominio.ServicioSubasta;
 import com.tallerwebi.dominio.Subasta;
+import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.excepcion.SubastaInvalidaExeption;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,6 +32,7 @@ public class ControladorSubastaTest {
   private MultipartFile imagenMock;
   private SubastaDTO subastaDTO;
   private DetalleSubasta detalleMock;
+  private ServicioOferta servicioOfertaMock;
 
   @BeforeEach
   public void init() {
@@ -35,7 +41,8 @@ public class ControladorSubastaTest {
     detalleMock = mock(DetalleSubasta.class);
     when(subastaMock.getDetalle()).thenReturn(detalleMock);
     servicioSubastaMock = mock(ServicioSubasta.class);
-    controladorSubasta = new ControladorSubasta(servicioSubastaMock);
+    servicioOfertaMock = mock(ServicioOferta.class);
+    controladorSubasta = new ControladorSubasta(servicioSubastaMock, servicioOfertaMock);
     imagenMock = mock(MultipartFile.class);
   }
 
@@ -147,5 +154,26 @@ public class ControladorSubastaTest {
     ModelAndView modelAndView = controladorSubasta.verDetalle(1L);
     //verifico haber obtenido en el modelo clave ImagenBase64 y es un texto
     assertThat(modelAndView.getModel().get("imagenBase64"), nullValue());
+  }
+
+  @Test
+  public void verDetalleDeSubastaCerradaDeberiaAgregarGanadorYMontoGanadorAlModelo() {
+    Usuario ganador = new Usuario();
+    ganador.setEmail("test@unlam.edu.ar");
+
+    Oferta ofertaGanadora = new Oferta();
+    ofertaGanadora.setUsuario(ganador);
+    ofertaGanadora.setMonto(2500.0);
+
+    when(servicioSubastaMock.obtenerSubasta(1L)).thenReturn(subastaMock);
+    when(subastaMock.getId()).thenReturn(1L);
+    when(subastaMock.getEstadoSubasta()).thenReturn(EstadoSubasta.CERRADA);
+    when(servicioOfertaMock.obtenerMejorOfertaPorSubasta(1L)).thenReturn(ofertaGanadora);
+
+    ModelAndView modelAndView = controladorSubasta.verDetalle(1L);
+
+    assertThat(modelAndView.getViewName(), equalToIgnoringCase("detalle-subasta"));
+    assertThat(modelAndView.getModel().get("ganador"), equalTo(ganador));
+    assertThat(modelAndView.getModel().get("montoGanador"), equalTo(2500.0));
   }
 }

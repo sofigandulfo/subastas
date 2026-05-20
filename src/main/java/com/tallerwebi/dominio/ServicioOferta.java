@@ -6,4 +6,6 @@ import com.tallerwebi.dominio.excepcion.SubastaNoEncontradaException;
 public interface ServicioOferta {
   void procesarOferta(long idSubasta, Oferta nuevaOferta)
     throws OfertaInvalidaException, SubastaNoEncontradaException;
+
+  Oferta obtenerMejorOfertaPorSubasta(Long subastaId);
 }
