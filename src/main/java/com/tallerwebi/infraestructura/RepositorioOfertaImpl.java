@@ -36,4 +36,17 @@ public class RepositorioOfertaImpl implements RepositorioOferta {
       .setParameter("subastaId", subastaId)
       .getResultList();
   }
+
+  @Override
+  public Oferta obtenerMejorOfertaPorSubasta(Long subastaId) {
+    return sessionFactory
+      .getCurrentSession()
+      .createQuery(
+        "SELECT o FROM Oferta o " + "WHERE o.subasta.id = :subastaId " + "ORDER BY o.monto DESC",
+        Oferta.class
+      )
+      .setParameter("subastaId", subastaId)
+      .setMaxResults(1)
+      .uniqueResult();
+  }
 }

@@ -1,5 +1,8 @@
 package com.tallerwebi.presentacion;
 
+import com.tallerwebi.dominio.EstadoSubasta;
+import com.tallerwebi.dominio.Oferta;
+import com.tallerwebi.dominio.ServicioOferta;
 import com.tallerwebi.dominio.ServicioSubasta;
 import com.tallerwebi.dominio.Subasta;
 import com.tallerwebi.dominio.excepcion.SubastaInvalidaExeption;
@@ -18,12 +21,14 @@ import org.springframework.web.servlet.ModelAndView;
 public class ControladorSubasta {
 
   private ServicioSubasta servicioSubasta;
+  private ServicioOferta servicioOferta;
   private static final String VISTA_CREAR_SUBASTA = "crear-subasta";
   private static final String KEY_SUBASTA = "subasta";
 
   @Autowired
-  public ControladorSubasta(ServicioSubasta servicioSubasta) {
+  public ControladorSubasta(ServicioSubasta servicioSubasta, ServicioOferta servicioOferta) {
     this.servicioSubasta = servicioSubasta;
+    this.servicioOferta = servicioOferta;
   }
 
   // CREAR METODOS POST Y GET! Formulario
@@ -53,8 +58,11 @@ public class ControladorSubasta {
   // metodo get detalle-subasta:
   @GetMapping("/detalle-subasta")
   public ModelAndView verDetalle(@RequestParam Long id) {
+    servicioSubasta.cerrarSubastasPorTiempo();
+
     Subasta subasta = servicioSubasta.obtenerSubasta(id);
     ModelMap modelo = new ModelMap();
+
     if (subasta == null) {
       modelo.put(KEY_SUBASTA, new Subasta());
       return new ModelAndView(VISTA_CREAR_SUBASTA, "error", "Subasta no encontrada");
@@ -65,6 +73,15 @@ public class ControladorSubasta {
         "imagenBase64",
         Base64.getEncoder().encodeToString(subasta.getDetalle().getImagen())
       );
+    }
+
+    if (subasta.getEstadoSubasta() == EstadoSubasta.CERRADA) {
+      Oferta ofertaGanadora = servicioOferta.obtenerMejorOfertaPorSubasta(subasta.getId());
+
+      if (ofertaGanadora != null) {
+        modelo.put("ganador", ofertaGanadora.getUsuario());
+        modelo.put("montoGanador", ofertaGanadora.getMonto());
+      }
     }
     return new ModelAndView("detalle-subasta", modelo);
   }

@@ -29,7 +29,7 @@
                     <label class="w3-text-grey w3-small">
                         <b>NOMBRE DEL PRODUCTO</b>
                     </label>
-                    <p class="w3-xlarge w3-border-bottom w3-padding-small" th:text="${subasta.nombre}">Nombre de la
+                    <p class="w3-xlarge w3-border-bottom w3-padding-small" th:text="${subasta.detalle.nombre}">Nombre de la
                         subasta</p>
                 </div>
 
@@ -37,7 +37,7 @@
                     <label class="w3-text-grey w3-small"><b>DESCRIPCIÓN</b></label>
 
                     <div class="w3-panel w3-pale-yellow w3-leftbar w3-border-amber w3-round">
-                        <p th:text="${subasta.descripcion}">Descripción detallada aquí...</p>
+                        <p th:text="${subasta.detalle.descripcion}">Descripción detallada aquí...</p>
                     </div>
                 </div>
 
@@ -65,6 +65,31 @@
                         </div>
                     </div>
 
+                    <div class="w3-col l6 m6 s12 w3-margin-bottom">
+                        <div class="w3-panel w3-pale-blue w3-round-large">
+                            <label class="w3-text-grey w3-small"><b>PRECIO ACTUAL</b></label>
+
+                            <p class="w3-xlarge w3-text-blue">
+                                <b th:text="'$' + ${#numbers.formatDecimal(subasta.precioActual, 1, 2)}">$0.00</b>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="w3-col l6 m6 s12 w3-margin-bottom">
+                         <div class="w3-panel w3-pale-blue w3-round-large">
+                             <p th:if="${subasta.estadoSubasta.name() == 'CUENTA_ATRAS'}">
+                                 Cuenta atrás hasta:
+                                 <strong th:text="${subasta.fechaCierre}"></strong>
+                             </p>
+                         </div>
+                        <div class="w3-panel w3-pale-blue w3-round-large">
+                            <p th:if="${subasta.estadoSubasta.name() == 'ACTIVA'}">
+                                Fecha de finalización:
+                                <strong th:text="${subasta.fechaCierre}"></strong>
+                            </p>
+                        </div>
+                    </div>
+                   
                 </div>
 
                 <div class="w3-row-padding">
@@ -73,13 +98,13 @@
                         <label class="w3-text-grey w3-small"><b>CATEGORÍA</b></label>
                         <p>
                             <span class="w3-tag w3-amber w3-round-large w3-padding"
-                                th:text="${subasta.categoria}">Categoría</span>
+                                th:text="${subasta.detalle.categoria}">Categoría</span>
                         </p>
                     </div>
 
                     <div class="w3-col l6 m6 s12 w3-margin-bottom">
                         <label class="w3-text-grey w3-small"> <b>ESTADO</b> </label>
-                        <p class="w3-large" th:text="${subasta.estado}">Nuevo / Usado</p>
+                        <p class="w3-large" th:text="${subasta.detalle.estadoArticulo}">Nuevo / Usado</p>
                     </div>
 
                 </div>
@@ -95,8 +120,19 @@
                     </div>
                 </div>
 
+                
+
                 <hr>
 
+                <div class="w3-container w3-padding">
+                    <a th:if="${subasta.estadoSubasta.name() != 'CERRADA'}" th:href="@{/ofertar/{id}(id=${subasta.id})}" class="w3-button w3-amber w3-hover-dark-grey w3-block w3-round-large w3-large">
+                    Ofertar
+                    </a>
+                </div>
+
+                <!-- 
+                ESTOS BOTONES UTILIZARLOS PARA LA VISTA DEL ADMIN DE LA RIFA
+                
                 <div class="w3-row-padding w3-margin-top">
                     <div class="w3-col l6 m6 s12 w3-margin-bottom">
                         <a th:href="@{/editar-subasta/{id}(id=${subasta.id})}"
@@ -110,12 +146,33 @@
                                 onclick="return confirm('¿Estás seguro de que deseas eliminar esta subasta?')">Borrar</button>
                         </form>
                     </div>
+                </div> -->
+
+                <div th:if="${subasta.estadoSubasta.name() == 'CERRADA'}" class="w3-panel w3-pale-green w3-border w3-border-green w3-round">
+                    <h3>Subasta finalizada</h3>
+
+                    <p th:if="${ganador != null}">
+                        Ganador:
+                        <strong th:text="${ganador.email}"></strong>
+                    </p>
+
+                    <p th:if="${ganador != null}">
+                        Monto ganador:
+                        <strong th:text="${montoGanador}"></strong>
+                    </p>
+
+                    <p th:if="${ganador == null}">
+                        La subasta finalizó sin ofertas
+                    </p>
                 </div>
 
             </div>
 
             <div class="w3-container w3-padding">
-                <a th:href="@{/subastas}"
+                <!-- por ahora que no hay lista de subastas redirigir a crear-subasta 
+                <a th:href="@{/subastas}" 
+                 -->
+                <a th:href="@{/crear-subasta}"
                     class="w3-button w3-dark-grey w3-hover-black w3-block w3-round-large w3-large">Volver al listado</a>
             </div>
 
