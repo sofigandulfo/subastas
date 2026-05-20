@@ -2,6 +2,7 @@ package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.Subasta;
 import java.time.LocalDateTime;
+import org.springframework.format.annotation.DateTimeFormat;
 
 public class SubastaDTO {
 
@@ -12,6 +13,8 @@ public class SubastaDTO {
   private double precioMaximo;
   private String categoria;
   private String estadoArticulo;
+
+  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   private LocalDateTime fechaCierre;
 
   public SubastaDTO() {}

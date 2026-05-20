@@ -46,6 +46,7 @@ public class ServicioSubastaImpl implements ServicioSubasta {
     Subasta subasta = repositorioSubasta.obtenerSubasta(subastaId);
     if (subasta.getPrecioActual() >= subasta.getPrecioMaximo()) {
       subasta.setEstadoSubasta(EstadoSubasta.CUENTA_ATRAS);
+      // para probarlo podemos usar .plusMinutes en vez de .plusHours
       subasta.setFechaCierre(LocalDateTime.now().plusHours(2));
       repositorioSubasta.guardarSubasta(subasta);
     }
@@ -71,19 +72,39 @@ public class ServicioSubastaImpl implements ServicioSubasta {
   }
 
   private void validarSubasta(Subasta subasta) throws SubastaInvalidaExeption {
-    if (subasta.getDetalle().getNombre() == null || subasta.getDetalle().getNombre().isBlank()) {
-      throw new SubastaInvalidaExeption();
-    } else if (subasta.getPrecioInicial() < 0) {
-      throw new SubastaInvalidaExeption();
-    } else if (
-      subasta.getPrecioMaximo() < 0 || subasta.getPrecioMaximo() < subasta.getPrecioInicial()
-    ) {
-      throw new SubastaInvalidaExeption();
-    }
+    validarNombreSubasta(subasta);
+    validarPreciosSubasta(subasta);
+    validarFechaCierreSubasta(subasta);
   }
 
   @Override
   public Subasta obtenerSubasta(Long id) {
     return repositorioSubasta.obtenerSubasta(id);
+  }
+
+  private void validarNombreSubasta(Subasta subasta) throws SubastaInvalidaExeption {
+    if (subasta.getDetalle().getNombre() == null || subasta.getDetalle().getNombre().isBlank()) {
+      throw new SubastaInvalidaExeption();
+    }
+  }
+
+  private void validarPreciosSubasta(Subasta subasta) throws SubastaInvalidaExeption {
+    if (subasta.getPrecioInicial() < 0) {
+      throw new SubastaInvalidaExeption();
+    }
+
+    if (subasta.getPrecioMaximo() < 0 || subasta.getPrecioMaximo() < subasta.getPrecioInicial()) {
+      throw new SubastaInvalidaExeption();
+    }
+  }
+
+  private void validarFechaCierreSubasta(Subasta subasta) throws SubastaInvalidaExeption {
+    if (subasta.getFechaCierre() == null) {
+      throw new SubastaInvalidaExeption();
+    }
+
+    if (subasta.getFechaCierre().isBefore(LocalDateTime.now())) {
+      throw new SubastaInvalidaExeption();
+    }
   }
 }

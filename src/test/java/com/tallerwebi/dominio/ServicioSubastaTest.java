@@ -35,6 +35,7 @@ public class ServicioSubastaTest {
       "Tecnologia",
       "nuevo"
     );
+    subasta.setFechaCierre(LocalDateTime.now().plusDays(1));
 
     servicioSubasta.crearSubasta(subasta, null);
 
@@ -83,6 +84,7 @@ public class ServicioSubastaTest {
       "Tecnologia",
       "nuevo"
     );
+    subasta.setFechaCierre(LocalDateTime.now().plusDays(1));
 
     servicioSubasta.crearSubasta(subasta, null);
 
@@ -99,6 +101,8 @@ public class ServicioSubastaTest {
       "Tecnologia",
       "nuevo"
     );
+
+    subasta.setFechaCierre(LocalDateTime.now().plusDays(1));
 
     servicioSubasta.crearSubasta(subasta, null);
 
@@ -431,5 +435,44 @@ public class ServicioSubastaTest {
 
     // validacion
     verify(repositorioSubasta, times(1)).guardarSubasta(subasta);
+  }
+
+  @Test
+  public void queNoSePuedaCrearUnaSubastaSinFechaDeCierre() {
+    Subasta subasta = new Subasta(
+      "Notebook",
+      "Notebook 16gb",
+      1000.0,
+      3000.0,
+      "Tecnologia",
+      "nuevo"
+    );
+
+    assertThrows(
+      SubastaInvalidaExeption.class,
+      () -> {
+        servicioSubasta.crearSubasta(subasta, null);
+      }
+    );
+  }
+
+  @Test
+  public void queNoSePuedaCrearUnaSubastaConFechaDeCierrePasada() {
+    Subasta subasta = new Subasta(
+      "Notebook",
+      "Notebook 16gb",
+      1000.0,
+      3000.0,
+      "Tecnologia",
+      "nuevo"
+    );
+    subasta.setFechaCierre(LocalDateTime.now().minusDays(1));
+
+    assertThrows(
+      SubastaInvalidaExeption.class,
+      () -> {
+        servicioSubasta.crearSubasta(subasta, null);
+      }
+    );
   }
 }
