@@ -27,7 +27,7 @@ public class ServicioSubastaImpl implements ServicioSubasta {
   }
 
   @Override
-  public Subasta crearSubasta(Subasta subasta, MultipartFile imagen)
+  public Subasta crearSubasta(Subasta subasta, MultipartFile imagen, Usuario creador)
     throws SubastaInvalidaExeption {
     validarSubasta(subasta);
     if (imagen != null && !imagen.isEmpty()) {
@@ -38,6 +38,7 @@ public class ServicioSubastaImpl implements ServicioSubasta {
       }
     }
     subasta.setPrecioActual(subasta.getPrecioInicial());
+    subasta.setCreador(creador);
     return repositorioSubasta.guardarSubasta(subasta);
   }
 

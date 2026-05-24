@@ -5,8 +5,10 @@ import com.tallerwebi.dominio.Oferta;
 import com.tallerwebi.dominio.ServicioOferta;
 import com.tallerwebi.dominio.ServicioSubasta;
 import com.tallerwebi.dominio.Subasta;
+import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.excepcion.SubastaInvalidaExeption;
 import java.util.Base64;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -31,7 +33,6 @@ public class ControladorSubasta {
     this.servicioOferta = servicioOferta;
   }
 
-  // CREAR METODOS POST Y GET! Formulario
   @GetMapping("/crear-subasta")
   public ModelAndView irAlFormulario() {
     ModelMap modelo = new ModelMap();
@@ -42,11 +43,16 @@ public class ControladorSubasta {
   @PostMapping("/crear-subasta")
   public ModelAndView crearSubasta(
     @ModelAttribute("subasta") SubastaDTO subastaDTO,
-    @RequestParam("imagen") MultipartFile imagen
+    @RequestParam("imagen") MultipartFile imagen,
+    HttpServletRequest request
   ) throws SubastaInvalidaExeption {
     try {
+      Long usuarioId = (Long) request.getSession().getAttribute("USUARIO_ID");
+      Usuario creador = new Usuario();
+      creador.setId(usuarioId);
+
       Subasta subasta = subastaDTO.entidad();
-      Subasta subastaGuardada = servicioSubasta.crearSubasta(subasta, imagen);
+      Subasta subastaGuardada = servicioSubasta.crearSubasta(subasta, imagen, creador);
       return new ModelAndView("redirect:/detalle-subasta?id=" + subastaGuardada.getId());
     } catch (SubastaInvalidaExeption e) {
       return new ModelAndView(VISTA_CREAR_SUBASTA, "error", "Los datos ingresados son invalidos");
@@ -55,9 +61,8 @@ public class ControladorSubasta {
     }
   }
 
-  // metodo get detalle-subasta:
   @GetMapping("/detalle-subasta")
-  public ModelAndView verDetalle(@RequestParam Long id) {
+  public ModelAndView verDetalle(@RequestParam Long id, HttpServletRequest request) {
     servicioSubasta.cerrarSubastasPorTiempo();
 
     Subasta subasta = servicioSubasta.obtenerSubasta(id);
@@ -67,6 +72,16 @@ public class ControladorSubasta {
       modelo.put(KEY_SUBASTA, new Subasta());
       return new ModelAndView(VISTA_CREAR_SUBASTA, "error", "Subasta no encontrada");
     }
+
+    Long usuarioId = (Long) request.getSession().getAttribute("USUARIO_ID");
+    if (usuarioId != null) {
+      Usuario usuarioEnSesion = new Usuario();
+      usuarioEnSesion.setId(usuarioId);
+      modelo.put("esCreador", subasta.esCreador(usuarioEnSesion));
+    } else {
+      modelo.put("esCreador", false);
+    }
+
     modelo.put(KEY_SUBASTA, subasta);
     if (subasta.getDetalle().getImagen() != null) {
       modelo.put(

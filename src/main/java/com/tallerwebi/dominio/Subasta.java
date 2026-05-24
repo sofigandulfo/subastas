@@ -18,6 +18,9 @@ public class Subasta {
   private double precioActual;
   private LocalDateTime fechaCierre;
 
+  @ManyToOne
+  private Usuario creador;
+
   @ManyToMany
   @OrderColumn
   private List<Usuario> podio = new ArrayList<>();
@@ -40,8 +43,22 @@ public class Subasta {
     this.estadoSubasta = EstadoSubasta.ACTIVA;
   }
 
-  // creo un constructor vacio para el formulario html
   public Subasta() {}
+
+  public Boolean esCreador(Usuario creador) {
+    if (creador.equals(this.creador)) {
+      return true;
+    }
+    return false;
+  }
+
+  public Usuario getCreador() {
+    return creador;
+  }
+
+  public void setCreador(Usuario creador) {
+    this.creador = creador;
+  }
 
   public double getPrecioInicial() {
     return precioInicial;

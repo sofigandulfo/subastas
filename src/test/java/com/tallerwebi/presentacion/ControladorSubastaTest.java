@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -19,6 +20,8 @@ import com.tallerwebi.dominio.ServicioSubasta;
 import com.tallerwebi.dominio.Subasta;
 import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.excepcion.SubastaInvalidaExeption;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,6 +36,9 @@ public class ControladorSubastaTest {
   private SubastaDTO subastaDTO;
   private DetalleSubasta detalleMock;
   private ServicioOferta servicioOfertaMock;
+  private Usuario usuarioCreador;
+  private HttpServletRequest requestMock;
+  private HttpSession sessionMock;
 
   @BeforeEach
   public void init() {
@@ -44,6 +50,12 @@ public class ControladorSubastaTest {
     servicioOfertaMock = mock(ServicioOferta.class);
     controladorSubasta = new ControladorSubasta(servicioSubastaMock, servicioOfertaMock);
     imagenMock = mock(MultipartFile.class);
+    usuarioCreador = new Usuario();
+    usuarioCreador.setId(1L);
+    requestMock = mock(HttpServletRequest.class);
+    sessionMock = mock(HttpSession.class);
+    when(requestMock.getSession()).thenReturn(sessionMock);
+    when(sessionMock.getAttribute("USUARIO_ID")).thenReturn(null);
   }
 
   @Test
@@ -61,24 +73,35 @@ public class ControladorSubastaTest {
   public void crearSubastaConDatosValidosDeberiaRedirigirAVistaDetalleSubasta()
     throws SubastaInvalidaExeption {
     when(subastaDTO.entidad()).thenReturn(subastaMock);
-    when(servicioSubastaMock.crearSubasta(subastaMock, imagenMock)).thenReturn(subastaMock);
+    when(servicioSubastaMock.crearSubasta(subastaMock, imagenMock, usuarioCreador))
+      .thenReturn(subastaMock);
     when(subastaMock.getId()).thenReturn(1L);
+    when(sessionMock.getAttribute("USUARIO_ID")).thenReturn(1L);
 
-    ModelAndView modelAndView = controladorSubasta.crearSubasta(subastaDTO, imagenMock);
+    ModelAndView modelAndView = controladorSubasta.crearSubasta(
+      subastaDTO,
+      imagenMock,
+      requestMock
+    );
     assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/detalle-subasta?id=1"));
-    verify(servicioSubastaMock, times(1)).crearSubasta(subastaMock, imagenMock);
+    verify(servicioSubastaMock, times(1)).crearSubasta(subastaMock, imagenMock, usuarioCreador);
   }
 
   @Test
   public void crearSubastaConDatosInvalidosDeberiaVolverAlFormularioConError()
     throws SubastaInvalidaExeption {
+    when(sessionMock.getAttribute("USUARIO_ID")).thenReturn(1L);
     when(subastaDTO.entidad()).thenReturn(subastaMock);
     // preparacion: simulo que el servicio lanza una exception
     doThrow(SubastaInvalidaExeption.class)
       .when(servicioSubastaMock)
-      .crearSubasta(subastaMock, imagenMock);
+      .crearSubasta(subastaMock, imagenMock, usuarioCreador);
     // ejecucion
-    ModelAndView modelAndView = controladorSubasta.crearSubasta(subastaDTO, imagenMock);
+    ModelAndView modelAndView = controladorSubasta.crearSubasta(
+      subastaDTO,
+      imagenMock,
+      requestMock
+    );
     // valido que la vista sea la correcta y que se lanzo el mensaje de error
     assertThat(modelAndView.getViewName(), equalToIgnoringCase("crear-subasta"));
     assertThat(
@@ -90,10 +113,17 @@ public class ControladorSubastaTest {
   @Test
   public void errorEnRegistrarSubastaDeberiaVolverAFormularioYMostrarError()
     throws SubastaInvalidaExeption {
+    when(sessionMock.getAttribute("USUARIO_ID")).thenReturn(1L);
     // preparacion: obligo a que se haga una runtimeException
-    doThrow(RuntimeException.class).when(servicioSubastaMock).crearSubasta(subastaMock, imagenMock);
+    doThrow(RuntimeException.class)
+      .when(servicioSubastaMock)
+      .crearSubasta(subastaMock, imagenMock, usuarioCreador);
     // ejercucion
-    ModelAndView modelAndView = controladorSubasta.crearSubasta(subastaDTO, imagenMock);
+    ModelAndView modelAndView = controladorSubasta.crearSubasta(
+      subastaDTO,
+      imagenMock,
+      requestMock
+    );
     // valido
     assertThat(modelAndView.getViewName(), equalToIgnoringCase("crear-subasta"));
     assertThat(
@@ -104,24 +134,27 @@ public class ControladorSubastaTest {
 
   @Test
   public void verDetalleConIdValidoDeberiaRetornarVistaDetalleConSubasta() {
-    //preparacion->No me importa la logica del SERVICIO por lo que mockeo
-    //lo que debe devolver cuando le pida la subasta con id 1.
-    //Simulo: "existe una subasta con id 1 en la BD"
-    when(servicioSubastaMock.obtenerSubasta(1L)).thenReturn(subastaMock); //cuando le pido al servicio una subasta con id 1L me retorna una subasta falsa.
-    //ejecucion ->Llamo al CONTROLADOR
-    ModelAndView modelAndView = controladorSubasta.verDetalle(1L); //mostrame la vista y el modelo de subasta id 1L
-    //valido-> Verifico que el controlador devuelva la vista y un objeto de tipo subasta en el modelo
+    // preparacion->No me importa la logica del SERVICIO por lo que mockeo
+    // lo que debe devolver cuando le pida la subasta con id 1.
+    // Simulo: "existe una subasta con id 1 en la BD"
+    when(servicioSubastaMock.obtenerSubasta(1L)).thenReturn(subastaMock); // cuando le pido al servicio una subasta con
+    // id 1L me retorna una subasta falsa.
+    // ejecucion ->Llamo al CONTROLADOR
+    ModelAndView modelAndView = controladorSubasta.verDetalle(1L, requestMock); // mostrame la vista y el modelo de subasta id 1L
+    // valido-> Verifico que el controlador devuelva la vista y un objeto de tipo
+    // subasta en el modelo
     assertThat(modelAndView.getViewName(), equalToIgnoringCase("detalle-subasta"));
     assertThat(modelAndView.getModel().get("subasta"), instanceOf(Subasta.class));
   }
 
   @Test
   public void verDetalleConIdInexistenteDeberiaVolverAlFormularioConError() {
-    //preparacion-> El servicio devuelve null al llamar un id por ejemplo 200L
+    // preparacion-> El servicio devuelve null al llamar un id por ejemplo 200L
     when(servicioSubastaMock.obtenerSubasta(200L)).thenReturn(null);
-    //ejecucion
-    ModelAndView modelAndView = controladorSubasta.verDetalle(200L);
-    //verifico que no paso a la vista de detalle con una subasta y me haya llevado al formulario con error
+    // ejecucion
+    ModelAndView modelAndView = controladorSubasta.verDetalle(200L, requestMock);
+    // verifico que no paso a la vista de detalle con una subasta y me haya llevado
+    // al formulario con error
     assertThat(modelAndView.getViewName(), equalToIgnoringCase("crear-subasta"));
     assertThat(
       modelAndView.getModel().get("error").toString(),
@@ -129,30 +162,30 @@ public class ControladorSubastaTest {
     );
   }
 
-  //test para imagen dinamica:
+  // test para imagen dinamica:
 
   @Test
   public void verDetalleConSubastaQuetieneImagenDeberiaAgregarImagenBase64AlModeloEnFormaDeTexto() {
-    //PREPARACION cuando llame al servicio con long 1 retorna la subasta mockeada
-    //            cuando llame a la subasta con su imagen retorna imagen mockeada
+    // PREPARACION cuando llame al servicio con long 1 retorna la subasta mockeada
+    // cuando llame a la subasta con su imagen retorna imagen mockeada
     byte[] imagenBytes = new byte[] { 1, 2, 3 };
     when(servicioSubastaMock.obtenerSubasta(1L)).thenReturn(subastaMock);
     when(detalleMock.getImagen()).thenReturn(imagenBytes);
-    //ejecuto el modelo
-    ModelAndView modelAndView = controladorSubasta.verDetalle(1L);
-    //verifico haber obtenido en el modelo clave ImagenBase64 y es un texto
+    // ejecuto el modelo
+    ModelAndView modelAndView = controladorSubasta.verDetalle(1L, requestMock);
+    // verifico haber obtenido en el modelo clave ImagenBase64 y es un texto
     assertThat(modelAndView.getModel().get("imagenBase64"), instanceOf((String.class)));
   }
 
   @Test
   public void verDetalleConSubastaSinImagenNoDeberiaAgregarImagenBase64AlModelo() {
-    //PREPARACION cuando llame al servicio con long 1 retorna la subasta mockeada
-    //            cuando llame a la subasta con su imagen retorna imagen mockeada
+    // PREPARACION cuando llame al servicio con long 1 retorna la subasta mockeada
+    // cuando llame a la subasta con su imagen retorna imagen mockeada
     when(servicioSubastaMock.obtenerSubasta(1L)).thenReturn(subastaMock);
     when(detalleMock.getImagen()).thenReturn(null);
-    //ejecuto el modelo
-    ModelAndView modelAndView = controladorSubasta.verDetalle(1L);
-    //verifico haber obtenido en el modelo clave ImagenBase64 y es un texto
+    // ejecuto el modelo
+    ModelAndView modelAndView = controladorSubasta.verDetalle(1L, requestMock);
+    // verifico haber obtenido en el modelo clave ImagenBase64 y es un texto
     assertThat(modelAndView.getModel().get("imagenBase64"), nullValue());
   }
 
@@ -170,10 +203,55 @@ public class ControladorSubastaTest {
     when(subastaMock.getEstadoSubasta()).thenReturn(EstadoSubasta.CERRADA);
     when(servicioOfertaMock.obtenerMejorOfertaPorSubasta(1L)).thenReturn(ofertaGanadora);
 
-    ModelAndView modelAndView = controladorSubasta.verDetalle(1L);
+    ModelAndView modelAndView = controladorSubasta.verDetalle(1L, requestMock);
 
     assertThat(modelAndView.getViewName(), equalToIgnoringCase("detalle-subasta"));
     assertThat(modelAndView.getModel().get("ganador"), equalTo(ganador));
     assertThat(modelAndView.getModel().get("montoGanador"), equalTo(2500.0));
+  }
+
+  @Test
+  public void verDetallesinSesionDeberiaVerElDetalleDelaSubasta() {
+    HttpServletRequest requestMock = mock(HttpServletRequest.class);
+    HttpSession sessionMock = mock(HttpSession.class);
+    when(requestMock.getSession()).thenReturn(sessionMock);
+    when(sessionMock.getAttribute("USUARIO_ID")).thenReturn(null); // sin sesion
+
+    when(servicioSubastaMock.obtenerSubasta(1L)).thenReturn(subastaMock);
+
+    ModelAndView mav = controladorSubasta.verDetalle(1L, requestMock);
+
+    assertThat(mav.getViewName(), equalToIgnoringCase("detalle-subasta"));
+    assertThat(mav.getModel().get("esCreador"), equalTo(false));
+  }
+
+  @Test
+  public void verDetalleConSesionYEsCreadorDeberiaAgregarEsCreadorTrueAlModelo() {
+    HttpServletRequest requestMock = mock(HttpServletRequest.class);
+    HttpSession sessionMock = mock(HttpSession.class);
+    when(requestMock.getSession()).thenReturn(sessionMock);
+    when(sessionMock.getAttribute("USUARIO_ID")).thenReturn(1L); // usuario id=1
+
+    when(servicioSubastaMock.obtenerSubasta(1L)).thenReturn(subastaMock);
+    when(subastaMock.esCreador(any())).thenReturn(true); // es el creador
+
+    ModelAndView mav = controladorSubasta.verDetalle(1L, requestMock);
+
+    assertThat(mav.getModel().get("esCreador"), equalTo(true));
+  }
+
+  @Test
+  public void verDetalleConSesionYNoEsCreadorDeberiaAgregarEsCreadorFalseAlModelo() {
+    HttpServletRequest requestMock = mock(HttpServletRequest.class);
+    HttpSession sessionMock = mock(HttpSession.class);
+    when(requestMock.getSession()).thenReturn(sessionMock);
+    when(sessionMock.getAttribute("USUARIO_ID")).thenReturn(2L); // usuario id=2
+
+    when(servicioSubastaMock.obtenerSubasta(1L)).thenReturn(subastaMock);
+    when(subastaMock.esCreador(any())).thenReturn(false); // no es el creador
+
+    ModelAndView mav = controladorSubasta.verDetalle(1L, requestMock);
+
+    assertThat(mav.getModel().get("esCreador"), equalTo(false));
   }
 }
