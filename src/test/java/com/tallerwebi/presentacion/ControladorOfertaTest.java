@@ -11,6 +11,8 @@ import com.tallerwebi.dominio.ServicioSubasta;
 import com.tallerwebi.dominio.Subasta;
 import com.tallerwebi.dominio.excepcion.OfertaInvalidaException;
 import com.tallerwebi.dominio.excepcion.SubastaNoEncontradaException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.servlet.ModelAndView;
@@ -22,6 +24,8 @@ public class ControladorOfertaTest {
   private ControladorOferta controladorOferta;
   private OfertaDTO ofertaDTO;
   private Oferta ofertaMock;
+  private HttpServletRequest requestMock;
+  private HttpSession sessionMock;
 
   @BeforeEach
   public void init() {
@@ -32,6 +36,10 @@ public class ControladorOfertaTest {
     ofertaMock = mock(Oferta.class);
     ofertaDTO = mock(OfertaDTO.class);
     when(ofertaDTO.entidad()).thenReturn(ofertaMock);
+    requestMock = mock(HttpServletRequest.class);
+    sessionMock = mock(HttpSession.class);
+    when(requestMock.getSession()).thenReturn(sessionMock);
+    when(sessionMock.getAttribute("USUARIO_ID")).thenReturn(1L);
   }
 
   @Test
@@ -45,7 +53,7 @@ public class ControladorOfertaTest {
     when(servicioSubastaMock.obtenerSubasta(idSubasta)).thenReturn(subastaMock);
 
     // Ejecución (simulamos que el usuario entra a la URL por GET)
-    ModelAndView mav = controladorOferta.irAFormularioOferta(idSubasta);
+    ModelAndView mav = controladorOferta.irAFormularioOferta(idSubasta, requestMock);
 
     // Validación
     // 1. Verificamos que el controlador nos devuelva el nombre de la vista correcta ("oferta")

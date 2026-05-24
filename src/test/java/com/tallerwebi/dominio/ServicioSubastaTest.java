@@ -17,12 +17,51 @@ public class ServicioSubastaTest {
   private ServicioSubasta servicioSubasta;
   private RepositorioSubasta repositorioSubasta;
   private RepositorioOferta repositorioOferta;
+  private Usuario usuarioCreador;
 
   @BeforeEach
   public void init() {
     repositorioSubasta = mock(RepositorioSubasta.class);
     repositorioOferta = mock(RepositorioOferta.class);
     servicioSubasta = new ServicioSubastaImpl(repositorioSubasta, repositorioOferta);
+    usuarioCreador = new Usuario();
+    usuarioCreador.setId(1L);
+  }
+
+  @Test
+  public void cuandoUnUsuarioCreaUnaSubastaSeLoAsignaComoUsuarioCreadorCorrectamente()
+    throws SubastaInvalidaExeption {
+    Subasta subasta = new Subasta("Notebook", "desc", 1000.0, 5000.0, "Tecnologia", "nuevo");
+    subasta.setFechaCierre(LocalDateTime.now().plusDays(1));
+    servicioSubasta.crearSubasta(subasta, null, usuarioCreador);
+    assertSame(usuarioCreador, subasta.getCreador());
+  }
+
+  @Test
+  public void cuandoUnUsuarioCreaUnaSubastaSeLoReconoceComoCreador() {
+    Subasta subasta = new Subasta("Notebook", "desc", 1000.0, 5000.0, "Tecnologia", "nuevo");
+    subasta.setCreador(usuarioCreador);
+
+    assertTrue(subasta.esCreador(usuarioCreador));
+  }
+
+  @Test
+  public void cuandoPreguntoSiUnUsuarioQueNoCreoLaSubastaEsCreadorDevuelveFalse() {
+    Subasta subasta = new Subasta("Notebook", "desc", 1000.0, 5000.0, "Tecnologia", "nuevo");
+    subasta.setCreador(usuarioCreador);
+    Usuario otroUsuario = new Usuario();
+    otroUsuario.setId(2L);
+    assertFalse(subasta.esCreador(otroUsuario));
+  }
+
+  @Test
+  public void cuandoPreguntoSiUnUsuarioSinIdEsCreadorDevuelveFalse() {
+    Subasta subasta = new Subasta("Notebook", "desc", 1000.0, 5000.0, "Tecnologia", "nuevo");
+    subasta.setCreador(usuarioCreador);
+
+    Usuario usuarioSinId = new Usuario();
+
+    assertFalse(subasta.esCreador(usuarioSinId));
   }
 
   @Test
@@ -37,7 +76,7 @@ public class ServicioSubastaTest {
     );
     subasta.setFechaCierre(LocalDateTime.now().plusDays(1));
 
-    servicioSubasta.crearSubasta(subasta, null);
+    servicioSubasta.crearSubasta(subasta, null, usuarioCreador);
 
     assertEquals("Notebook", subasta.getDetalle().getNombre());
     assertEquals("Notebook 16gb", subasta.getDetalle().getDescripcion());
@@ -86,7 +125,7 @@ public class ServicioSubastaTest {
     );
     subasta.setFechaCierre(LocalDateTime.now().plusDays(1));
 
-    servicioSubasta.crearSubasta(subasta, null);
+    servicioSubasta.crearSubasta(subasta, null, usuarioCreador);
 
     verify(this.repositorioSubasta, times(1)).guardarSubasta(subasta);
   }
@@ -104,7 +143,7 @@ public class ServicioSubastaTest {
 
     subasta.setFechaCierre(LocalDateTime.now().plusDays(1));
 
-    servicioSubasta.crearSubasta(subasta, null);
+    servicioSubasta.crearSubasta(subasta, null, usuarioCreador);
 
     EstadoSubasta resultadoEsperado = EstadoSubasta.ACTIVA;
     EstadoSubasta resultadoObtenido = subasta.getEstadoSubasta();
@@ -115,7 +154,10 @@ public class ServicioSubastaTest {
   public void queNoSePuedaCrearUnaSubastaSinNombre() {
     Subasta subasta = new Subasta("", "Notebook 16gb", 1000.0, 5000.0, "Tecnologia", "nuevo");
 
-    assertThrows(SubastaInvalidaExeption.class, () -> servicioSubasta.crearSubasta(subasta, null));
+    assertThrows(
+      SubastaInvalidaExeption.class,
+      () -> servicioSubasta.crearSubasta(subasta, null, usuarioCreador)
+    );
   }
 
   @Test
@@ -129,7 +171,10 @@ public class ServicioSubastaTest {
       "nuevo"
     );
 
-    assertThrows(SubastaInvalidaExeption.class, () -> servicioSubasta.crearSubasta(subasta, null));
+    assertThrows(
+      SubastaInvalidaExeption.class,
+      () -> servicioSubasta.crearSubasta(subasta, null, usuarioCreador)
+    );
   }
 
   @Test
@@ -143,7 +188,10 @@ public class ServicioSubastaTest {
       "nuevo"
     );
 
-    assertThrows(SubastaInvalidaExeption.class, () -> servicioSubasta.crearSubasta(subasta, null));
+    assertThrows(
+      SubastaInvalidaExeption.class,
+      () -> servicioSubasta.crearSubasta(subasta, null, usuarioCreador)
+    );
   }
 
   @Test
@@ -157,7 +205,10 @@ public class ServicioSubastaTest {
       "nuevo"
     );
 
-    assertThrows(SubastaInvalidaExeption.class, () -> servicioSubasta.crearSubasta(subasta, null));
+    assertThrows(
+      SubastaInvalidaExeption.class,
+      () -> servicioSubasta.crearSubasta(subasta, null, usuarioCreador)
+    );
   }
 
   @Test
@@ -451,7 +502,7 @@ public class ServicioSubastaTest {
     assertThrows(
       SubastaInvalidaExeption.class,
       () -> {
-        servicioSubasta.crearSubasta(subasta, null);
+        servicioSubasta.crearSubasta(subasta, null, usuarioCreador);
       }
     );
   }
@@ -471,7 +522,7 @@ public class ServicioSubastaTest {
     assertThrows(
       SubastaInvalidaExeption.class,
       () -> {
-        servicioSubasta.crearSubasta(subasta, null);
+        servicioSubasta.crearSubasta(subasta, null, usuarioCreador);
       }
     );
   }

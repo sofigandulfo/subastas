@@ -5,6 +5,7 @@ import com.tallerwebi.dominio.ServicioSubasta;
 import com.tallerwebi.dominio.Subasta;
 import com.tallerwebi.dominio.excepcion.OfertaInvalidaException;
 import com.tallerwebi.dominio.excepcion.SubastaNoEncontradaException;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
@@ -23,14 +24,20 @@ public class ControladorOferta {
   }
 
   @GetMapping("/ofertar/{id}")
-  public ModelAndView irAFormularioOferta(@PathVariable("id") Long idSubasta) {
-    ModelMap modelo = new ModelMap();
-
+  public ModelAndView irAFormularioOferta(
+    @PathVariable("id") Long idSubasta,
+    HttpServletRequest request
+  ) {
+    if (request.getSession().getAttribute("USUARIO_ID") == null) {
+      return new ModelAndView("redirect:/login");
+    }
     // 1. Buscamos la subasta para que el HTML pueda mostrar el precio actual
     Subasta subasta = servicioSubasta.obtenerSubasta(idSubasta);
+    ModelMap modelo = new ModelMap();
     modelo.put("subasta", subasta);
 
-    // 2. Mandamos un objeto Oferta vacío para que Thymeleaf pueda "atar" el monto que el usuario escriba en el input
+    // 2. Mandamos un objeto Oferta vacío para que Thymeleaf pueda "atar" el monto
+    // que el usuario escriba en el input
     modelo.put(VISTA_OFERTA, new OfertaDTO());
 
     // 3. Devolvemos la vista "oferta" con el bolso cargado
@@ -49,13 +56,15 @@ public class ControladorOferta {
       // 1. Intentamos procesar la oferta a través del servicio
       servicioOferta.procesarOferta(idSubasta, ofertaDTO.entidad());
 
-      // 2. Si tod0 sale bien, redirigimos al detalle de la subasta para ver el nuevo precio
+      // 2. Si tod0 sale bien, redirigimos al detalle de la subasta para ver el nuevo
+      // precio
       return new ModelAndView("redirect:/detalle-subasta?id=" + idSubasta);
     } catch (OfertaInvalidaException e) {
       ModelMap modelo = new ModelMap();
       // 3. Si la oferta es inválida, atajamos el error
       modelo.put("error", "La oferta ingresada no es válida.");
-      // Le volvemos a pasar la subasta y la oferta para que el HTML pueda renderizarse de nuevo sin romper
+      // Le volvemos a pasar la subasta y la oferta para que el HTML pueda
+      // renderizarse de nuevo sin romper
       modelo.put("subasta", servicioSubasta.obtenerSubasta(idSubasta));
       modelo.put(VISTA_OFERTA, ofertaDTO);
 

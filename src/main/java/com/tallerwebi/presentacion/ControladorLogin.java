@@ -40,9 +40,13 @@ public class ControladorLogin {
     );
     if (usuarioBuscado != null) {
       request.getSession().setAttribute("ROL", usuarioBuscado.getRol());
+      request.getSession().setAttribute("USUARIO_ID", usuarioBuscado.getId());
       return new ModelAndView("redirect:/home");
     } else {
-      /* Se instancia el ModelMap solo cuando es necesario (en el flujo de error) para evitar anomalías en el flujo de datos (DU-anomaly de PMD) */
+      /*
+       * Se instancia el ModelMap solo cuando es necesario (en el flujo de error) para
+       * evitar anomalías en el flujo de datos (DU-anomaly de PMD)
+       */
       ModelMap model = new ModelMap();
       model.put("error", "Usuario o clave incorrecta");
       return new ModelAndView("login", model);
@@ -78,6 +82,12 @@ public class ControladorLogin {
 
   @RequestMapping(path = "/", method = RequestMethod.GET)
   public ModelAndView inicio() {
+    return new ModelAndView("redirect:/login");
+  }
+
+  @RequestMapping(path = "/logout", method = RequestMethod.GET)
+  public ModelAndView logout(HttpServletRequest request) {
+    request.getSession().invalidate();
     return new ModelAndView("redirect:/login");
   }
 }
