@@ -1,6 +1,7 @@
 package com.tallerwebi.dominio;
 
 import com.tallerwebi.dominio.excepcion.SubastaInvalidaExeption;
+import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface ServicioSubasta {
@@ -9,4 +10,5 @@ public interface ServicioSubasta {
     throws SubastaInvalidaExeption;
   void verificarPrecioMaximo(Long subastaId);
   void cerrarSubastasPorTiempo();
+  List<Subasta> obtenerTodasLasSubastas();
 }

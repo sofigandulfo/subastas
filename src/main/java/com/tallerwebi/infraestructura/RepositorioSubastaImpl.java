@@ -49,4 +49,12 @@ public class RepositorioSubastaImpl implements RepositorioSubasta {
       .setParameter("cuentaAtras", EstadoSubasta.CUENTA_ATRAS)
       .getResultList();
   }
+
+  @Override
+  public List<Subasta> obtenerTodasLasSubastas() {
+    return sessionFactory
+      .getCurrentSession()
+      .createQuery("FROM Subasta", Subasta.class)
+      .getResultList();
+  }
 }

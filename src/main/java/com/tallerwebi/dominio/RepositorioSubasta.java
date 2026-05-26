@@ -6,4 +6,5 @@ public interface RepositorioSubasta {
   Subasta guardarSubasta(Subasta subasta);
   Subasta obtenerSubasta(Long id);
   List<Subasta> obtenerSubastasPorVencer();
+  List<Subasta> obtenerTodasLasSubastas();
 }

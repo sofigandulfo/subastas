@@ -33,6 +33,13 @@ public class ControladorSubasta {
     this.servicioOferta = servicioOferta;
   }
 
+  @GetMapping("/subastas")
+  public ModelAndView listarSubastas() {
+    ModelMap modelo = new ModelMap();
+    modelo.put("subastas", servicioSubasta.obtenerTodasLasSubastas());
+    return new ModelAndView("subastas", modelo);
+  }
+
   @GetMapping("/crear-subasta")
   public ModelAndView irAlFormulario() {
     ModelMap modelo = new ModelMap();
@@ -48,6 +55,9 @@ public class ControladorSubasta {
   ) throws SubastaInvalidaExeption {
     try {
       Long usuarioId = (Long) request.getSession().getAttribute("USUARIO_ID");
+      if (usuarioId == null) {
+        return new ModelAndView("redirect:/login");
+      }
       Usuario creador = new Usuario();
       creador.setId(usuarioId);
 
@@ -92,7 +102,6 @@ public class ControladorSubasta {
 
     if (subasta.getEstadoSubasta() == EstadoSubasta.CERRADA) {
       Oferta ofertaGanadora = servicioOferta.obtenerMejorOfertaPorSubasta(subasta.getId());
-
       if (ofertaGanadora != null) {
         modelo.put("ganador", ofertaGanadora.getUsuario());
         modelo.put("montoGanador", ofertaGanadora.getMonto());

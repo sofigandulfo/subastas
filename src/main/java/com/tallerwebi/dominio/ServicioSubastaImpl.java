@@ -108,4 +108,9 @@ public class ServicioSubastaImpl implements ServicioSubasta {
       throw new SubastaInvalidaExeption();
     }
   }
+
+  @Override
+  public List<Subasta> obtenerTodasLasSubastas() {
+    return repositorioSubasta.obtenerTodasLasSubastas();
+  }
 }
