@@ -3,6 +3,7 @@ package com.tallerwebi.presentacion;
 import com.tallerwebi.dominio.ServicioOferta;
 import com.tallerwebi.dominio.ServicioSubasta;
 import com.tallerwebi.dominio.Subasta;
+import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.excepcion.OfertaInvalidaException;
 import com.tallerwebi.dominio.excepcion.SubastaNoEncontradaException;
 import javax.servlet.http.HttpServletRequest;
@@ -47,17 +48,25 @@ public class ControladorOferta {
   @PostMapping("/ofertar/{id}")
   public ModelAndView realizarOferta(
     @PathVariable("id") Long idSubasta,
-    @ModelAttribute(VISTA_OFERTA) OfertaDTO ofertaDTO
+    @ModelAttribute(VISTA_OFERTA) OfertaDTO ofertaDTO,
+    HttpServletRequest request
   ) {
     try {
+      // 1. Sacamos el usuario de la sesión
+      Long usuarioId = (Long) request.getSession().getAttribute("USUARIO_ID");
+      if (usuarioId == null) {
+        return new ModelAndView("redirect:/login");
+      }
+      Usuario ofertante = new Usuario();
+      ofertante.setId(usuarioId);
+
       // antes de aceptar una oferta, revisa si la subasta ya vencio
       servicioSubasta.cerrarSubastasPorTiempo();
 
-      // 1. Intentamos procesar la oferta a través del servicio
-      servicioOferta.procesarOferta(idSubasta, ofertaDTO.entidad());
+      // 2. Le pasamos el ofertante al servicio
+      servicioOferta.procesarOferta(idSubasta, ofertaDTO.entidad(), ofertante);
 
-      // 2. Si tod0 sale bien, redirigimos al detalle de la subasta para ver el nuevo
-      // precio
+      // 3. Si tod0 sale bien, redirigimos al detalle de la subasta para ver el nuevo precio
       return new ModelAndView("redirect:/detalle-subasta?id=" + idSubasta);
     } catch (OfertaInvalidaException e) {
       ModelMap modelo = new ModelMap();

@@ -5,10 +5,7 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
 import static org.mockito.Mockito.*;
 
-import com.tallerwebi.dominio.Oferta;
-import com.tallerwebi.dominio.ServicioOferta;
-import com.tallerwebi.dominio.ServicioSubasta;
-import com.tallerwebi.dominio.Subasta;
+import com.tallerwebi.dominio.*;
 import com.tallerwebi.dominio.excepcion.OfertaInvalidaException;
 import com.tallerwebi.dominio.excepcion.SubastaNoEncontradaException;
 import javax.servlet.http.HttpServletRequest;
@@ -73,14 +70,15 @@ public class ControladorOfertaTest {
     Long idSubasta = 1L;
 
     // Ejecución
-    ModelAndView mav = controladorOferta.realizarOferta(idSubasta, ofertaDTO);
+    ModelAndView mav = controladorOferta.realizarOferta(idSubasta, ofertaDTO, requestMock);
 
     // Validación
     // 1. Verificamos que redirija al detalle
     assertThat(mav.getViewName(), equalToIgnoringCase("redirect:/detalle-subasta?id=" + idSubasta));
 
     // 2. Verificamos que el controlador realmente le pidió al servicio que procese la oferta
-    verify(servicioOfertaMock, times(1)).procesarOferta(idSubasta, ofertaMock);
+    verify(servicioOfertaMock, times(1))
+      .procesarOferta(eq(idSubasta), eq(ofertaMock), any(Usuario.class));
   }
 
   @Test
@@ -93,13 +91,13 @@ public class ControladorOfertaTest {
     // Hacemos que el servicio simule que falló y tire la excepción
     doThrow(OfertaInvalidaException.class)
       .when(servicioOfertaMock)
-      .procesarOferta(idSubasta, ofertaMock);
+      .procesarOferta(eq(idSubasta), eq(ofertaMock), any(Usuario.class));
 
     // Necesitamos devolver la subasta mockeada para recargar la página sin que pinche el HTML
     when(servicioSubastaMock.obtenerSubasta(idSubasta)).thenReturn(subastaMock);
 
     // Ejecución
-    ModelAndView mav = controladorOferta.realizarOferta(idSubasta, ofertaDTO);
+    ModelAndView mav = controladorOferta.realizarOferta(idSubasta, ofertaDTO, requestMock);
 
     // Validación
     // Verificamos que nos deje en la vista "oferta" (el formulario) y NO redirija

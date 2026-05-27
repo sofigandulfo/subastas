@@ -23,6 +23,7 @@ public class ServicioOfertaTest {
   private ServicioSubasta servicioSubastaMock;
   private RepositorioUsuario repositorioUsuarioMock;
   private ServicioAutoPuja servicioAutoPujaMock;
+  private Usuario ofertantePrueba;
 
   @BeforeEach
   public void init() {
@@ -40,6 +41,9 @@ public class ServicioOfertaTest {
         repositorioUsuarioMock,
         servicioAutoPujaMock
       );
+
+    ofertantePrueba = new Usuario();
+    ofertantePrueba.setId(1L);
   }
 
   @Test
@@ -89,15 +93,12 @@ public class ServicioOfertaTest {
     // Le enseñamos al mock qué responder cuando el servicio intente buscar la subasta
     when(repositorioSubastaMock.obtenerSubasta(1L)).thenReturn(subasta);
 
-    Usuario usuario = new Usuario();
-    when(repositorioUsuarioMock.buscar("test@unlam.edu.ar")).thenReturn(usuario);
-
-    servicioOferta.procesarOferta(1L, nuevaOferta);
+    servicioOferta.procesarOferta(1L, nuevaOferta, ofertantePrueba);
 
     // Validamos que el precio actual de la subasta se actualizó
     assertEquals(1100.0, subasta.getPrecioActual());
 
-    assertEquals(usuario, nuevaOferta.getUsuario());
+    assertEquals(ofertantePrueba, nuevaOferta.getUsuario());
 
     // Ademas validamos que el servicio haya llamado al metodo guardarOferta
     verify(repositorioOfertaMock, times(1)).guardarOferta(nuevaOferta);
@@ -122,7 +123,7 @@ public class ServicioOfertaTest {
     assertThrows(
       OfertaInvalidaException.class,
       () -> {
-        servicioOferta.procesarOferta(1L, nuevaOferta);
+        servicioOferta.procesarOferta(1L, nuevaOferta, ofertantePrueba);
       }
     );
     verify(servicioSubastaMock, never()).verificarPrecioMaximo(1L);
@@ -139,7 +140,7 @@ public class ServicioOfertaTest {
     assertThrows(
       SubastaNoEncontradaException.class,
       () -> {
-        servicioOferta.procesarOferta(1L, nuevaOferta);
+        servicioOferta.procesarOferta(1L, nuevaOferta, ofertantePrueba);
       }
     );
     verify(servicioSubastaMock, never()).verificarPrecioMaximo(1L);
@@ -165,7 +166,7 @@ public class ServicioOfertaTest {
     assertThrows(
       OfertaInvalidaException.class,
       () -> {
-        servicioOferta.procesarOferta(1L, nuevaOferta);
+        servicioOferta.procesarOferta(1L, nuevaOferta, ofertantePrueba);
       }
     );
 
@@ -192,7 +193,7 @@ public class ServicioOfertaTest {
     assertThrows(
       OfertaInvalidaException.class,
       () -> {
-        servicioOferta.procesarOferta(1L, nuevaOferta);
+        servicioOferta.procesarOferta(1L, nuevaOferta, ofertantePrueba);
       }
     );
 
