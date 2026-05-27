@@ -7,4 +7,5 @@ public interface RepositorioSubasta {
   Subasta obtenerSubasta(Long id);
   List<Subasta> obtenerSubastasPorVencer();
   List<Subasta> obtenerTodasLasSubastas();
+  List<Subasta> buscarSubastasDelCreador(Long idCreador);
 }

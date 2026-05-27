@@ -57,4 +57,13 @@ public class RepositorioSubastaImpl implements RepositorioSubasta {
       .createQuery("FROM Subasta", Subasta.class)
       .getResultList();
   }
+
+  @Override
+  public List<Subasta> buscarSubastasDelCreador(Long idCreador) {
+    return sessionFactory
+            .getCurrentSession()
+            .createQuery("FROM Subasta s WHERE s.creador.id = :idCreador", Subasta.class)
+            .setParameter("idCreador", idCreador)
+            .getResultList();
+  }
 }

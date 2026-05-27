@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Mi Perfil - Historial</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+<body class="w3-light-grey">
+
+<div class="w3-content w3-padding-32">
+    <div class="w3-card-4 w3-white w3-round-large w3-padding">
+
+        <h2 class="w3-center w3-amber w3-text-white w3-padding w3-round-large">Mi Perfil</h2>
+
+        <div class="w3-row-padding w3-margin-top">
+
+            <div class="w3-half">
+                <h3>Mis Ventas (Creadas por mí)</h3>
+                <ul class="w3-ul w3-border w3-hoverable">
+                    <li th:each="venta : ${misVentas}" class="w3-padding-16">
+                        <span th:text="${venta.detalle.nombre}" class="w3-large">Nombre Artículo</span><br>
+                        <span th:text="'Estado: ' + ${venta.estadoSubasta}">Estado</span>
+
+                        <div class="w3-margin-top">
+                            <span th:if="${venta.estadoSubasta.name() == 'ACTIVA' or venta.estadoSubasta.name() == 'CUENTA_ATRAS'}" class="w3-tag w3-blue">En curso</span>
+                            <span th:if="${venta.estadoSubasta.name() == 'CERRADA' and !venta.podio.isEmpty()}" class="w3-tag w3-green">¡Vendido!</span>
+                            <span th:if="${venta.estadoSubasta.name() == 'CERRADA' and venta.podio.isEmpty()}" class="w3-tag w3-red">Sin ofertas</span>
+                        </div>
+                    </li>
+                </ul>
+                <p th:if="${misVentas.isEmpty()}" class="w3-text-grey">Aún no has creado ninguna subasta.</p>
+            </div>
+
+            <div class="w3-half">
+                <h3>Mis Pujas (Como ofertador)</h3>
+                <ul class="w3-ul w3-border w3-hoverable">
+                    <li th:each="puja : ${misPujas}" class="w3-padding-16">
+                        <span th:text="${puja.detalle.nombre}" class="w3-large">Nombre Artículo</span><br>
+                        <span th:text="'Estado: ' + ${puja.estadoSubasta}">Estado</span>
+
+                        <div class="w3-margin-top">
+                            <span th:if="${puja.estadoSubasta.name() == 'ACTIVA' or puja.estadoSubasta.name() == 'CUENTA_ATRAS'}" class="w3-tag w3-blue">En juego</span>
+
+                            <span th:if="${puja.estadoSubasta.name() == 'CERRADA' and puja.podio != null}" th:with="gano=${#lists.contains(puja.podio, usuarioId)}">
+                                <span th:if="${gano}" class="w3-tag w3-green">¡Ganaste!</span>
+                                <span th:unless="${gano}" class="w3-tag w3-red">Perdiste</span>
+                            </span>
+                        </div>
+                    </li>
+                </ul>
+                <p th:if="${misPujas.isEmpty()}" class="w3-text-grey">Aún no has participado en ninguna subasta.</p>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

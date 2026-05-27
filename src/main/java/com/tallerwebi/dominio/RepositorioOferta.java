@@ -6,4 +6,5 @@ public interface RepositorioOferta {
   void guardarOferta(Oferta oferta);
   List<Oferta> obtenerMejoresOfertasPorSubasta(Long subastaId);
   Oferta obtenerMejorOfertaPorSubasta(Long subastaId);
+  List<Subasta> buscarSubastasDondeOferto(Long idUsuario);
 }
