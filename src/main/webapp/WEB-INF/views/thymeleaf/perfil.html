@@ -46,9 +46,9 @@
                                 <span th:unless="${estadoPujas.get(puja.id)}" class="w3-tag w3-red w3-round">Superado</span>
                             </span>
 
-                            <span th:if="${puja.estadoSubasta.name() == 'CERRADA' and puja.podio != null}" th:with="gano=${#lists.contains(puja.podio, usuarioId)}">
-                                <span th:if="${gano}" class="w3-tag w3-green">¡Ganaste!</span>
-                                <span th:unless="${gano}" class="w3-tag w3-red">Perdiste</span>
+                            <span th:if="${puja.estadoSubasta.name() == 'CERRADA' and not #lists.isEmpty(puja.podio)}">
+                                <span th:if="${puja.podio[0].id == usuarioId}" class="w3-tag w3-green">¡Ganaste!</span>
+                                <span th:unless="${puja.podio[0].id == usuarioId}" class="w3-tag w3-red">Perdiste</span>
                             </span>
                         </div>
                     </li>

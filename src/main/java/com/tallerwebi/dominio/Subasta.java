@@ -21,7 +21,7 @@ public class Subasta {
   @ManyToOne
   private Usuario creador;
 
-  @ManyToMany
+  @ManyToMany(fetch = FetchType.EAGER)
   @OrderColumn
   private List<Usuario> podio = new ArrayList<>();
 
