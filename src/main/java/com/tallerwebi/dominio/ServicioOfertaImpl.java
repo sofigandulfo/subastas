@@ -16,18 +16,21 @@ public class ServicioOfertaImpl implements ServicioOferta {
   private RepositorioOferta repositorioOferta;
   private ServicioSubasta servicioSubasta;
   private RepositorioUsuario repositorioUsuario;
+  private ServicioAutoPuja servicioAutoPuja;
 
   @Autowired
   public ServicioOfertaImpl(
     RepositorioSubasta repositorioSubasta,
     RepositorioOferta repositorioOferta,
     ServicioSubasta servicioSubasta,
-    RepositorioUsuario repositorioUsuario
+    RepositorioUsuario repositorioUsuario,
+    ServicioAutoPuja servicioAutoPuja
   ) {
     this.repositorioSubasta = repositorioSubasta;
     this.repositorioOferta = repositorioOferta;
     this.servicioSubasta = servicioSubasta;
     this.repositorioUsuario = repositorioUsuario;
+    this.servicioAutoPuja = servicioAutoPuja;
   }
 
   @Override
@@ -53,6 +56,8 @@ public class ServicioOfertaImpl implements ServicioOferta {
 
     // Ademas guardamos la oferta
     repositorioOferta.guardarOferta(nuevaOferta);
+
+    servicioAutoPuja.procesarAutoPujas(subasta, nuevaOferta);
 
     servicioSubasta.verificarPrecioMaximo(idSubasta);
   }

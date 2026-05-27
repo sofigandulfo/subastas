@@ -39,11 +39,11 @@ public class Oferta {
     this.monto = monto;
   }
 
-  public long getId() {
+  public Long getId() {
     return this.id;
   }
 
-  public void setId(long id) {
+  public void setId(Long id) {
     this.id = id;
   }
 
@@ -69,5 +69,18 @@ public class Oferta {
 
   public void setSubasta(Subasta subasta) {
     this.subasta = subasta;
+  }
+
+  @Override
+  public boolean equals(Object otro) {
+    if (this == otro) return true;
+    if (otro == null || getClass() != otro.getClass()) return false;
+    if (id == null) return false;
+    return id.equals(((Oferta) otro).id);
+  }
+
+  @Override
+  public int hashCode() {
+    return id != null ? id.hashCode() : 0;
   }
 }
