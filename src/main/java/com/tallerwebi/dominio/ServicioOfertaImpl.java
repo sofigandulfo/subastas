@@ -44,6 +44,9 @@ public class ServicioOfertaImpl implements ServicioOferta {
     validarSubastaVigente(subasta);
     validarSubastaNoCerrada(subasta);
 
+    // Validamos que el ofertante no sea el creador de la subasta
+    validarQueElOfertanteNoSeaElCreador(subasta, ofertante);
+
     // Validamos el monto de la oferta
     validarMontoOferta(nuevaOferta, subasta);
 
@@ -100,6 +103,13 @@ public class ServicioOfertaImpl implements ServicioOferta {
   private void validarMontoOferta(Oferta nuevaOferta, Subasta subasta)
     throws OfertaInvalidaException {
     if (nuevaOferta.getMonto() <= subasta.getPrecioActual()) {
+      throw new OfertaInvalidaException();
+    }
+  }
+
+  private void validarQueElOfertanteNoSeaElCreador(Subasta subasta, Usuario ofertante)
+    throws OfertaInvalidaException {
+    if (subasta.esCreador(ofertante)) {
       throw new OfertaInvalidaException();
     }
   }

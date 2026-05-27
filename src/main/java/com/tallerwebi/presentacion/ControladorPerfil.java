@@ -1,9 +1,12 @@
 package com.tallerwebi.presentacion;
 
+import com.tallerwebi.dominio.Oferta;
 import com.tallerwebi.dominio.ServicioOferta;
 import com.tallerwebi.dominio.ServicioSubasta;
 import com.tallerwebi.dominio.Subasta;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -36,9 +39,19 @@ public class ControladorPerfil {
     List<Subasta> misVentas = servicioSubasta.obtenerSubastasDelCreador(usuarioId);
     List<Subasta> misPujas = servicioOferta.obtenerSubastasDondeParticipe(usuarioId);
 
+    Map<Long, Boolean> estadoPujas = new HashMap<>();
+
+    for (Subasta puja : misPujas) {
+      Oferta mejorOferta = servicioOferta.obtenerMejorOfertaPorSubasta(puja.getId());
+      boolean vaGanando =
+        (mejorOferta != null && mejorOferta.getUsuario().getId().equals(usuarioId));
+      estadoPujas.put(puja.getId(), vaGanando);
+    }
+
+    modelo.put("estadoPujas", estadoPujas);
     modelo.put("misVentas", misVentas);
     modelo.put("misPujas", misPujas);
-    modelo.put("usuarioId", usuarioId); // Clave para saber si ganó o perdió en el HTML
+    modelo.put("usuarioId", usuarioId);
 
     return new ModelAndView("perfil", modelo);
   }

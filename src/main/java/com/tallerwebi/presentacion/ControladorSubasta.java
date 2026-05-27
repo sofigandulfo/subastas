@@ -107,6 +107,25 @@ public class ControladorSubasta {
         modelo.put("montoGanador", ofertaGanadora.getMonto());
       }
     }
+
+    // Le avisamos al usuario si va ganando o va perdiendo
+    Oferta mejorOfertaActual = servicioOferta.obtenerMejorOfertaPorSubasta(id);
+    boolean voyGanando =
+      mejorOfertaActual != null &&
+      usuarioId != null &&
+      mejorOfertaActual.getUsuario().getId().equals(usuarioId);
+
+    boolean participe =
+      usuarioId != null &&
+      servicioOferta
+        .obtenerSubastasDondeParticipe(usuarioId)
+        .stream()
+        .anyMatch(s -> s.getId().equals(id));
+
+    modelo.put("voyGanando", voyGanando);
+    modelo.put("participe", participe);
+    modelo.put("mejorOferta", mejorOfertaActual);
+
     return new ModelAndView("detalle-subasta", modelo);
   }
 }
