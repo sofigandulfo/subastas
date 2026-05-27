@@ -2,6 +2,7 @@ package com.tallerwebi.dominio;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -21,6 +22,7 @@ public class ServicioOfertaTest {
   private ServicioOferta servicioOferta;
   private ServicioSubasta servicioSubastaMock;
   private RepositorioUsuario repositorioUsuarioMock;
+  private ServicioAutoPuja servicioAutoPujaMock;
 
   @BeforeEach
   public void init() {
@@ -28,13 +30,15 @@ public class ServicioOfertaTest {
     repositorioOfertaMock = mock(RepositorioOferta.class);
     servicioSubastaMock = mock(ServicioSubasta.class);
     repositorioUsuarioMock = mock(RepositorioUsuario.class);
+    servicioAutoPujaMock = mock(ServicioAutoPuja.class);
     // Le inyectamos ambos mocks al constructor del servicio
     servicioOferta =
       new ServicioOfertaImpl(
         repositorioSubastaMock,
         repositorioOfertaMock,
         servicioSubastaMock,
-        repositorioUsuarioMock
+        repositorioUsuarioMock,
+        servicioAutoPujaMock
       );
   }
 
@@ -97,7 +101,7 @@ public class ServicioOfertaTest {
 
     // Ademas validamos que el servicio haya llamado al metodo guardarOferta
     verify(repositorioOfertaMock, times(1)).guardarOferta(nuevaOferta);
-
+    verify(servicioAutoPujaMock, times(1)).procesarAutoPujas(subasta, nuevaOferta);
     verify(servicioSubastaMock, times(1)).verificarPrecioMaximo(1L);
   }
 
@@ -122,6 +126,7 @@ public class ServicioOfertaTest {
       }
     );
     verify(servicioSubastaMock, never()).verificarPrecioMaximo(1L);
+    verify(servicioAutoPujaMock, never()).procesarAutoPujas(any(Subasta.class), any(Oferta.class));
   }
 
   @Test
@@ -138,6 +143,7 @@ public class ServicioOfertaTest {
       }
     );
     verify(servicioSubastaMock, never()).verificarPrecioMaximo(1L);
+    verify(servicioAutoPujaMock, never()).procesarAutoPujas(any(Subasta.class), any(Oferta.class));
   }
 
   @Test
@@ -164,6 +170,7 @@ public class ServicioOfertaTest {
     );
 
     verify(repositorioOfertaMock, never()).guardarOferta(nuevaOferta);
+    verify(servicioAutoPujaMock, never()).procesarAutoPujas(any(Subasta.class), any(Oferta.class));
   }
 
   @Test
@@ -190,6 +197,7 @@ public class ServicioOfertaTest {
     );
 
     verify(repositorioOfertaMock, never()).guardarOferta(nuevaOferta);
+    verify(servicioAutoPujaMock, never()).procesarAutoPujas(any(Subasta.class), any(Oferta.class));
   }
 
   @Test

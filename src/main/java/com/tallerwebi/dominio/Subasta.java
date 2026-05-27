@@ -123,4 +123,17 @@ public class Subasta {
   public void setDetalle(DetalleSubasta detalle) {
     this.detalle = detalle;
   }
+
+  @Override
+  public boolean equals(Object otro) {
+    if (this == otro) return true;
+    if (otro == null || getClass() != otro.getClass()) return false;
+    if (id == null) return false;
+    return id.equals(((Subasta) otro).id);
+  }
+
+  @Override
+  public int hashCode() {
+    return id != null ? id.hashCode() : 0;
+  }
 }
