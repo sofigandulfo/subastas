@@ -80,7 +80,7 @@ public class ControladorPerfilTest {
         // 1. Verificamos que devuelva la vista "perfil"
         assertThat(mav.getViewName(), equalToIgnoringCase("perfil"));
 
-        // 2. Verificamos que el modelo tenga el ID del usuario (para la lógica del HTML de ganar/perder)
+        // 2. Verificamos que el modelo tenga el ID del usuario
         assertThat(mav.getModel().get("usuarioId"), equalTo(idUsuario));
 
         // 3. Verificamos que las listas de ventas y pujas hayan llegado intactas a la vista
