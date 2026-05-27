@@ -11,4 +11,5 @@ public interface ServicioSubasta {
   void verificarPrecioMaximo(Long subastaId);
   void cerrarSubastasPorTiempo();
   List<Subasta> obtenerTodasLasSubastas();
+  List<Subasta> obtenerSubastasDelCreador(Long idCreador);
 }

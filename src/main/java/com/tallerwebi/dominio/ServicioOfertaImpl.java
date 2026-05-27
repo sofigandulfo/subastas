@@ -3,6 +3,7 @@ package com.tallerwebi.dominio;
 import com.tallerwebi.dominio.excepcion.OfertaInvalidaException;
 import com.tallerwebi.dominio.excepcion.SubastaNoEncontradaException;
 import java.time.LocalDateTime;
+import java.util.List;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -59,6 +60,11 @@ public class ServicioOfertaImpl implements ServicioOferta {
   @Override
   public Oferta obtenerMejorOfertaPorSubasta(Long subastaId) {
     return repositorioOferta.obtenerMejorOfertaPorSubasta(subastaId);
+  }
+
+  @Override
+  public List<Subasta> obtenerSubastasDondeParticipe(Long idUsuario) {
+    return repositorioOferta.buscarSubastasDondeOferto(idUsuario);
   }
 
   private void validarSubastaExistente(Subasta subasta) throws SubastaNoEncontradaException {
