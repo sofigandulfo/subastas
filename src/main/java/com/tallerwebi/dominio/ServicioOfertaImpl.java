@@ -34,7 +34,7 @@ public class ServicioOfertaImpl implements ServicioOferta {
   }
 
   @Override
-  public void procesarOferta(long idSubasta, Oferta nuevaOferta)
+  public void procesarOferta(long idSubasta, Oferta nuevaOferta, Usuario ofertante)
     throws OfertaInvalidaException, SubastaNoEncontradaException {
     // Buscamos la subasta usando el repositorio
     Subasta subasta = repositorioSubasta.obtenerSubasta(idSubasta);
@@ -47,11 +47,12 @@ public class ServicioOfertaImpl implements ServicioOferta {
     // Validamos el monto de la oferta
     validarMontoOferta(nuevaOferta, subasta);
 
-    Usuario usuario = repositorioUsuario.buscar("test@unlam.edu.ar");
+    // Esto no va mas
+    // Usuario usuario = repositorioUsuario.buscar("test@unlam.edu.ar");
 
     // Si no lanzó excepcion, vinculamos la oferta con la subasta y actualizamos el precio
     nuevaOferta.setSubasta(subasta);
-    nuevaOferta.setUsuario(usuario);
+    nuevaOferta.setUsuario(ofertante);
     subasta.setPrecioActual(nuevaOferta.getMonto());
 
     // Ademas guardamos la oferta

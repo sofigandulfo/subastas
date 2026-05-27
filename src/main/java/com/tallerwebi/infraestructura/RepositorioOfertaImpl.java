@@ -2,9 +2,8 @@ package com.tallerwebi.infraestructura;
 
 import com.tallerwebi.dominio.Oferta;
 import com.tallerwebi.dominio.RepositorioOferta;
-import java.util.List;
-
 import com.tallerwebi.dominio.Subasta;
+import java.util.List;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -55,9 +54,12 @@ public class RepositorioOfertaImpl implements RepositorioOferta {
   @Override
   public List<Subasta> buscarSubastasDondeOferto(Long idUsuario) {
     return sessionFactory
-            .getCurrentSession()
-            .createQuery("SELECT DISTINCT o.subasta FROM Oferta o WHERE o.usuario.id = :idUsuario", Subasta.class)
-            .setParameter("idUsuario", idUsuario)
-            .getResultList();
+      .getCurrentSession()
+      .createQuery(
+        "SELECT DISTINCT o.subasta FROM Oferta o WHERE o.usuario.id = :idUsuario",
+        Subasta.class
+      )
+      .setParameter("idUsuario", idUsuario)
+      .getResultList();
   }
 }
