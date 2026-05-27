@@ -213,4 +213,31 @@ public class ServicioOfertaTest {
 
     verify(repositorioOfertaMock, times(1)).obtenerMejorOfertaPorSubasta(1L);
   }
+
+  @Test
+  void alIntentarOfertarEnUnaSubastaPropiaDeberiaTirarExcepcion() {
+    Subasta subasta = new Subasta(
+      "Notebook",
+      "Notebook 16gb",
+      1000.0,
+      5000.0,
+      "Tecnologia",
+      "nuevo"
+    );
+    subasta.setCreador(ofertantePrueba);
+
+    Oferta nuevaOferta = new Oferta(1100.0, subasta);
+
+    when(repositorioSubastaMock.obtenerSubasta(1L)).thenReturn(subasta);
+
+    assertThrows(
+      OfertaInvalidaException.class,
+      () -> {
+        servicioOferta.procesarOferta(1L, nuevaOferta, ofertantePrueba);
+      }
+    );
+
+    // verificamos que no se haya guardado nada
+    verify(repositorioOfertaMock, never()).guardarOferta(any(Oferta.class));
+  }
 }

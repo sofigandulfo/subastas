@@ -41,6 +41,11 @@
                         <div class="w3-margin-top">
                             <span th:if="${puja.estadoSubasta.name() == 'ACTIVA' or puja.estadoSubasta.name() == 'CUENTA_ATRAS'}" class="w3-tag w3-blue">En juego</span>
 
+                            <span th:if="${puja.estadoSubasta.name() == 'ACTIVA' or puja.estadoSubasta.name() == 'CUENTA_ATRAS'}">
+                                <span th:if="${estadoPujas.get(puja.id)}" class="w3-tag w3-green w3-round">Vas ganando</span>
+                                <span th:unless="${estadoPujas.get(puja.id)}" class="w3-tag w3-red w3-round">Superado</span>
+                            </span>
+
                             <span th:if="${puja.estadoSubasta.name() == 'CERRADA' and puja.podio != null}" th:with="gano=${#lists.contains(puja.podio, usuarioId)}">
                                 <span th:if="${gano}" class="w3-tag w3-green">¡Ganaste!</span>
                                 <span th:unless="${gano}" class="w3-tag w3-red">Perdiste</span>
@@ -51,6 +56,11 @@
                 <p th:if="${misPujas.isEmpty()}" class="w3-text-grey">Aún no has participado en ninguna subasta.</p>
             </div>
 
+            <div class="w3-container w3-padding w3-margin-top w3-center">
+                <a th:href="@{/subastas}" class="w3-button w3-dark-grey w3-hover-black w3-round-large w3-large">
+                    Volver al Listado
+                </a>
+            </div>
         </div>
     </div>
 </div>
