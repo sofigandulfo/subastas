@@ -25,13 +25,13 @@ public class ControladorLogin {
   @RequestMapping("/login")
   public ModelAndView irALogin() {
     ModelMap modelo = new ModelMap();
-    modelo.put("datosLogin", new DatosLogin());
+    modelo.put("datosLogin", new LoginDTO());
     return new ModelAndView("login", modelo);
   }
 
   @RequestMapping(path = "/validar-login", method = RequestMethod.POST)
   public ModelAndView validarLogin(
-    @ModelAttribute("datosLogin") DatosLogin datosLogin,
+    @ModelAttribute("datosLogin") LoginDTO datosLogin,
     HttpServletRequest request
   ) {
     Usuario usuarioBuscado = servicioLogin.consultarUsuario(

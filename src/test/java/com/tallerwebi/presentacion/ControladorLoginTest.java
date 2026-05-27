@@ -18,14 +18,14 @@ public class ControladorLoginTest {
 
   private ControladorLogin controladorLogin;
   private Usuario usuarioMock;
-  private DatosLogin datosLoginMock;
+  private LoginDTO datosLoginMock;
   private HttpServletRequest requestMock;
   private HttpSession sessionMock;
   private ServicioLogin servicioLoginMock;
 
   @BeforeEach
   public void init() {
-    datosLoginMock = new DatosLogin("dami@unlam.com", "123");
+    datosLoginMock = new LoginDTO("dami@unlam.com", "123");
     usuarioMock = mock(Usuario.class);
     when(usuarioMock.getEmail()).thenReturn("dami@unlam.com");
     requestMock = mock(HttpServletRequest.class);
@@ -120,7 +120,7 @@ public class ControladorLoginTest {
 
     // validacion
     assertThat(modelAndView.getViewName(), equalToIgnoringCase("login"));
-    assertThat(modelAndView.getModel().get("datosLogin"), instanceOf(DatosLogin.class));
+    assertThat(modelAndView.getModel().get("datosLogin"), instanceOf(LoginDTO.class));
   }
 
   @Test
