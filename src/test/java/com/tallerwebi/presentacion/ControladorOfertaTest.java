@@ -3,6 +3,8 @@ package com.tallerwebi.presentacion;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 import com.tallerwebi.dominio.*;
@@ -107,5 +109,12 @@ public class ControladorOfertaTest {
       mav.getModel().get("error").toString(),
       equalToIgnoringCase("La oferta ingresada no es válida.")
     );
+  }
+
+  @Test
+  public void cuandoElUsuarioNoInicioSesionEIntentaOfertarDeberiaRedirigirALogin() {
+    when(sessionMock.getAttribute("USUARIO_ID")).thenReturn(null);
+    ModelAndView modelAndView = controladorOferta.irAFormularioOferta(1L, requestMock);
+    assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/login"));
   }
 }

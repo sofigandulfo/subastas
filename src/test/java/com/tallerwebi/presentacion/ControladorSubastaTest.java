@@ -20,6 +20,7 @@ import com.tallerwebi.dominio.ServicioSubasta;
 import com.tallerwebi.dominio.Subasta;
 import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.excepcion.SubastaInvalidaExeption;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.junit.jupiter.api.BeforeEach;
@@ -59,14 +60,22 @@ public class ControladorSubastaTest {
   }
 
   @Test
-  public void irACrearSubastaDeberiaRetornarVistaCrearSubastaConSubastaVacia() {
-    ModelAndView modelAndView = controladorSubasta.irAlFormulario();
+  public void irACrearSubastaConSesionDeberiaRetornarVistaCrearSubastaConSubastaVacia() {
+    when(sessionMock.getAttribute("USUARIO_ID")).thenReturn(1L);
+    ModelAndView modelAndView = controladorSubasta.irAlFormulario(requestMock);
     // verifico que la vista es la corresta: cuando el usuario ingresa
     // /crear-subasta
     // se encuentra en el form para crear la subasta?
     assertThat(modelAndView.getViewName(), equalToIgnoringCase("crear-subasta"));
     // verifico que haya un objeto subasta vacío en el modelo para cargarle datos
     assertThat(modelAndView.getModel().get("subasta"), instanceOf(SubastaDTO.class));
+  }
+
+  @Test
+  public void irACrearSubastaSinSesionMeDeberiaRedirigirALogin() {
+    when(sessionMock.getAttribute("USUARIO_ID")).thenReturn(null);
+    ModelAndView modelAndView = controladorSubasta.irAlFormulario(requestMock);
+    assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/login"));
   }
 
   @Test
@@ -253,5 +262,23 @@ public class ControladorSubastaTest {
     ModelAndView mav = controladorSubasta.verDetalle(1L, requestMock);
 
     assertThat(mav.getModel().get("esCreador"), equalTo(false));
+  }
+
+  @Test
+  public void listarSubastaConSesionDeberiaRetornarVistaSubastasConSesionActiva() {
+    when(sessionMock.getAttribute("USUARIO_ID")).thenReturn(1L);
+    when(servicioSubastaMock.obtenerTodasLasSubastas()).thenReturn(List.of());
+    ModelAndView modelAndView = controladorSubasta.listarSubastas(requestMock);
+    assertThat(modelAndView.getViewName(), equalToIgnoringCase("subastas"));
+    assertThat(modelAndView.getModel().get("estaLogueado"), equalTo(true));
+  }
+
+  @Test
+  public void listarSubastaSinSesionDeberiaRetornarVistaSubastasSinSesionActiva() {
+    when(sessionMock.getAttribute("USUARIO_ID")).thenReturn(null);
+    when(servicioSubastaMock.obtenerTodasLasSubastas()).thenReturn(List.of());
+    ModelAndView modelAndView = controladorSubasta.listarSubastas(requestMock);
+    assertThat(modelAndView.getViewName(), equalToIgnoringCase("subastas"));
+    assertThat(modelAndView.getModel().get("estaLogueado"), equalTo(false));
   }
 }
