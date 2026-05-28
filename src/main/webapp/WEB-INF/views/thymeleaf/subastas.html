@@ -29,8 +29,13 @@
                 <a th:href="@{/perfil}" class="w3-button w3-blue w3-round w3-hover-dark-grey w3-margin-right">
                     Mi Perfil
                 </a>
-                <a th:href="@{/logout}" class="w3-button w3-red w3-round w3-hover-dark-grey">
+                <a th:if="${estaLogueado}" th:href="@{/logout}" class="w3-button w3-red w3-round w3-hover-dark-grey">
                     Cerrar sesión
+                </a>
+
+                <a th:unless="${estaLogueado}" th:href="@{/login}"
+                    class="w3-button w3-green w3-round w3-hover-dark-grey">
+                    Iniciar sesión
                 </a>
             </div>
         </div>
