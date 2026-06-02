@@ -34,35 +34,35 @@
                         <b>Nombre</b>
                     </label>
 
-                    <input th:field="*{nombre}" class="w3-input w3-border w3-round w3-margin-bottom" type="text"
+                    <input id="nombre" th:field="*{nombre}" class="w3-input w3-border w3-round w3-margin-bottom" type="text"
                         placeholder="Ejemplo: Sillón" required>
 
                     <label class="w3-text-dark-grey">
                         <b>Descripcion</b>
                     </label>
 
-                    <input th:field="*{descripcion}" class="w3-input w3-border w3-round w3-margin-bottom" type="text"
+                    <input id="descripcion" th:field="*{descripcion}" class="w3-input w3-border w3-round w3-margin-bottom" type="text"
                         placeholder="Describe el producto">
 
                     <label class="w3-text-dark-grey">
                         <b>Precio Inicial</b>
                     </label>
 
-                    <input th:field="*{precioInicial}" class="w3-input w3-border w3-round w3-margin-bottom"
+                    <input id="precio-inicial" th:field="*{precioInicial}" class="w3-input w3-border w3-round w3-margin-bottom"
                         type="number" step="0.01" min="0" required>
 
                     <label class="w3-text-dark-grey">
                         <b>Precio Maximo</b>
                     </label>
 
-                    <input th:field="*{precioMaximo}" class="w3-input w3-border w3-round w3-margin-bottom" type="number"
+                    <input id="precio-maximo" th:field="*{precioMaximo}" class="w3-input w3-border w3-round w3-margin-bottom" type="number"
                         step="0.01" min="0">
 
                     <label class="w3-text-dark-grey">
                         <b>Categoria</b>
                     </label>
 
-                    <select th:field="*{categoria}" class="w3-select w3-border w3-round w3-margin-bottom">
+                    <select id="categoria" th:field="*{categoria}" class="w3-select w3-border w3-round w3-margin-bottom">
                         <option value="" disabled selected>Elegir categoria</option>
                         <option value="Electronica">Electrónica</option>
                         <option value="Entretenimiento">Entretenimiento</option>
@@ -76,7 +76,7 @@
                         <b>Estado</b>
                     </label>
 
-                    <select th:field="*{estadoArticulo}" class="w3-select w3-border w3-round w3-margin-bottom">
+                    <select id="estado-articulo" th:field="*{estadoArticulo}" class="w3-select w3-border w3-round w3-margin-bottom">
                         <option value="" disabled selected>Elegir estado</option>
                         <option value="Nuevo">Nuevo</option>
                         <option value="Usado">Usado</option>
@@ -86,21 +86,21 @@
                         <b>Imagen</b>
                     </label>
 
-                    <input type="file" name="imagen" accept="image/*"
+                    <input id="imagen" type="file" name="imagen" accept="image/*"
                         class="w3-input w3-border w3-round w3-margin-bottom">
                         
                     <div th:if="${error}" class="w3-panel w3-pale-red w3-border w3-border-red w3-round">
-                        <p class="w3-text-red"><b th:text="${error}"></b></p>
+                        <p id="mensaje-error-crear-subasta" class="w3-text-red"><b th:text="${error}"></b></p>
                     </div>
 
                     <label class="w3-text-dark-grey">
                         <b>Fecha de Finalización</b>
                     </label>
 
-                    <input th:field="*{fechaCierre}" class="w3-input w3-border w3-round w3-margin-bottom"
+                    <input id="fecha-cierre" th:field="*{fechaCierre}" class="w3-input w3-border w3-round w3-margin-bottom"
                            type="datetime-local" required>
                     
-                    <button type="submit"
+                    <button id="btn-publicar-subasta" type="submit"
                         class="w3-button w3-amber w3-hover-dark-grey w3-round w3-block w3-margin-top w3-sans-serif">
                         Publicar Subasta
                     </button>
