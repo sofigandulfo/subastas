@@ -14,22 +14,22 @@
 
         <div class="w3-card-4 w3-white w3-round-large w3-margin-bottom">
             <div class="w3-container w3-amber w3-round-large">
-                <h2 class="w3-center w3-xxlarge w3-text-white">Subastas Disponibles</h2>
+                <h2 id="titulo-subastas" class="w3-center w3-xxlarge w3-text-white">Subastas Disponibles</h2>
             </div>
         </div>
 
         <div class="w3-margin-bottom w3-display-container" style="height: 40px;">
             <div class="w3-display-left">
-                <a th:href="@{/crear-subasta}" class="w3-button w3-amber w3-round w3-hover-dark-grey">
+                <a id="btn-nueva-subasta" th:href="@{/crear-subasta}" class="w3-button w3-amber w3-round w3-hover-dark-grey" >
                     + Nueva Subasta
                 </a>
             </div>
 
             <div class="w3-display-right">
-                <a th:href="@{/perfil}" class="w3-button w3-blue w3-round w3-hover-dark-grey w3-margin-right">
+                <a id="btn-mi-perfil" th:href="@{/perfil}" class="w3-button w3-blue w3-round w3-hover-dark-grey w3-margin-right">
                     Mi Perfil
                 </a>
-                <a th:if="${estaLogueado}" th:href="@{/logout}" class="w3-button w3-red w3-round w3-hover-dark-grey">
+                <a id="btn-cerrar-sesion" th:href="@{/logout}" class="w3-button w3-red w3-round w3-hover-dark-grey">
                     Cerrar sesión
                 </a>
 
@@ -75,7 +75,7 @@
                         </p>
 
                         <a th:href="@{/detalle-subasta(id=${subasta.id})}"
-                            class="w3-button w3-amber w3-round w3-block w3-hover-dark-grey w3-margin-top">
+                            class="btn-ver-detalle w3-button w3-amber w3-round w3-block w3-hover-dark-grey w3-margin-top">
                             Ver detalle
                         </a>
 
