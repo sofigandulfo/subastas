@@ -26,6 +26,7 @@ public class ControladorSubasta {
   private ServicioOferta servicioOferta;
   private static final String VISTA_CREAR_SUBASTA = "crear-subasta";
   private static final String KEY_SUBASTA = "subasta";
+  private static final String USUARIO_ID = "USUARIO_ID";
 
   @Autowired
   public ControladorSubasta(ServicioSubasta servicioSubasta, ServicioOferta servicioOferta) {
@@ -34,14 +35,22 @@ public class ControladorSubasta {
   }
 
   @GetMapping("/subastas")
-  public ModelAndView listarSubastas() {
+  public ModelAndView listarSubastas(HttpServletRequest request) {
+    Long usuarioId = (Long) request.getSession().getAttribute(USUARIO_ID);
+
     ModelMap modelo = new ModelMap();
     modelo.put("subastas", servicioSubasta.obtenerTodasLasSubastas());
+    modelo.put("estaLogueado", usuarioId != null);
+
     return new ModelAndView("subastas", modelo);
   }
 
   @GetMapping("/crear-subasta")
-  public ModelAndView irAlFormulario() {
+  public ModelAndView irAlFormulario(HttpServletRequest request) {
+    Long usuarioId = (Long) request.getSession().getAttribute(USUARIO_ID);
+    if (usuarioId == null) {
+      return new ModelAndView("redirect:/login");
+    }
     ModelMap modelo = new ModelMap();
     modelo.put(KEY_SUBASTA, new SubastaDTO());
     return new ModelAndView(VISTA_CREAR_SUBASTA, modelo);
@@ -54,7 +63,7 @@ public class ControladorSubasta {
     HttpServletRequest request
   ) throws SubastaInvalidaExeption {
     try {
-      Long usuarioId = (Long) request.getSession().getAttribute("USUARIO_ID");
+      Long usuarioId = (Long) request.getSession().getAttribute(USUARIO_ID);
       if (usuarioId == null) {
         return new ModelAndView("redirect:/login");
       }
@@ -83,7 +92,7 @@ public class ControladorSubasta {
       return new ModelAndView(VISTA_CREAR_SUBASTA, "error", "Subasta no encontrada");
     }
 
-    Long usuarioId = (Long) request.getSession().getAttribute("USUARIO_ID");
+    Long usuarioId = (Long) request.getSession().getAttribute(USUARIO_ID);
     if (usuarioId != null) {
       Usuario usuarioEnSesion = new Usuario();
       usuarioEnSesion.setId(usuarioId);
