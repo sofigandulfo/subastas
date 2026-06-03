@@ -35,11 +35,19 @@ public class ControladorSubasta {
   }
 
   @GetMapping("/subastas")
-  public ModelAndView listarSubastas(HttpServletRequest request) {
+  public ModelAndView listarSubastas(
+    HttpServletRequest request,
+    @RequestParam(required = false) String busqueda
+  ) {
+    if (busqueda != null && busqueda.trim().isEmpty()) {
+      return new ModelAndView("redirect:/subastas");
+    }
+    
     Long usuarioId = (Long) request.getSession().getAttribute(USUARIO_ID);
 
     ModelMap modelo = new ModelMap();
-    modelo.put("subastas", servicioSubasta.obtenerTodasLasSubastas());
+    modelo.put("subastas", servicioSubasta.obtenerSubastas(busqueda));
+    modelo.put("busqueda", busqueda);
     modelo.put("estaLogueado", usuarioId != null);
 
     return new ModelAndView("subastas", modelo);
