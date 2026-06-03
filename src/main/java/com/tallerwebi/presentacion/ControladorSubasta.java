@@ -38,16 +38,26 @@ public class ControladorSubasta {
   }
 
   @GetMapping("/subastas")
-  public ModelAndView listarSubastas(HttpServletRequest request) {
-    ModelMap modelo = new ModelMap();
+  public ModelAndView listarSubastas(
+    HttpServletRequest request,
+    @RequestParam(required = false) String busqueda
+  ) {
+    if (busqueda != null && busqueda.trim().isEmpty()) {
+      return new ModelAndView("redirect:/subastas");
+    }
 
+    ModelMap modelo = new ModelMap();
+    
+    // Verificamos si hay sesión
     boolean estaLogueado = request.getSession().getAttribute(USUARIO_ID) != null;
     modelo.put("estaLogueado", estaLogueado);
 
-    List<Subasta> subastas = servicioSubasta.obtenerTodasLasSubastas();
-
+    // Buscamos las subastas (usando el método nuevo con buscador de tu compañero)
+    List<Subasta> subastas = servicioSubasta.obtenerSubastas(busqueda);
+    
+    // Armamos tu mapa de imágenes Base64
     Map<Long, String> imagenesBase64 = new HashMap<>();
-
+    
     for (Subasta subasta : subastas) {
       if (subasta.getDetalle().getImagen() != null) {
         String base64 = Base64.getEncoder().encodeToString(subasta.getDetalle().getImagen());
@@ -56,6 +66,7 @@ public class ControladorSubasta {
     }
 
     modelo.put("subastas", subastas);
+    modelo.put("busqueda", busqueda);
     modelo.put("imagenesBase64", imagenesBase64);
 
     return new ModelAndView("subastas", modelo);

@@ -40,6 +40,18 @@
             </div>
         </div>
 
+        <form th:action="@{/subastas}" method="get" class="w3-margin-bottom">
+                <div class="w3-row">
+                    <div class="w3-col s9">
+                        <input class="w3-input w3-border w3-round" type="text" name="busqueda" placeholder="Buscar subastas..." th:value="${busqueda}">
+                    </div>
+                    
+                    <div class="w3-col s3">
+                        <button type="submit" class="w3-button w3-amber w3-round w3-block">Buscar</button>
+                    </div>
+                </div>
+            </form>
+
         <div th:if="${#lists.isEmpty(subastas)}" class="w3-card-4 w3-white w3-round-large w3-padding-24 w3-center">
             <p class="w3-large w3-text-grey">No hay subastas disponibles por el momento.</p>
         </div>

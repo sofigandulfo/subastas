@@ -128,4 +128,13 @@ public class ServicioSubastaImpl implements ServicioSubasta {
   public List<Subasta> obtenerSubastasDelCreador(Long idCreador) {
     return repositorioSubasta.buscarSubastasDelCreador(idCreador);
   }
+
+  @Override
+  public List<Subasta> obtenerSubastas(String busqueda) {
+    if (busqueda != null && !busqueda.trim().isEmpty()) {
+      return repositorioSubasta.buscarSubastas(busqueda);
+    }
+
+    return repositorioSubasta.obtenerTodasLasSubastas();
+  }
 }

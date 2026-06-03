@@ -5,6 +5,7 @@ import com.tallerwebi.dominio.subasta.RepositorioSubasta;
 import com.tallerwebi.dominio.subasta.Subasta;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Locale;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +65,23 @@ public class RepositorioSubastaImpl implements RepositorioSubasta {
       .getCurrentSession()
       .createQuery("FROM Subasta s WHERE s.creador.id = :idCreador", Subasta.class)
       .setParameter("idCreador", idCreador)
+      .getResultList();
+  }
+
+  @Override
+  public List<Subasta> buscarSubastas(String busqueda) {
+    String textoBuscado = "%" + busqueda.toLowerCase(Locale.getDefault()) + "%";
+
+    return sessionFactory
+      .getCurrentSession()
+      .createQuery(
+        "FROM Subasta s " +
+        "WHERE lower(s.detalle.nombre) LIKE :busqueda " +
+        "OR lower(s.detalle.descripcion) LIKE :busqueda " +
+        "OR lower(s.detalle.categoria) LIKE :busqueda",
+        Subasta.class
+      )
+      .setParameter("busqueda", textoBuscado)
       .getResultList();
   }
 }
