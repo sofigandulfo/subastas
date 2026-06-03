@@ -50,7 +50,6 @@ public class ServicioSubastaTest {
   public void cuandoUnUsuarioCreaUnaSubastaSeLoReconoceComoCreador() {
     Subasta subasta = new Subasta("Notebook", "desc", 1000.0, 5000.0, "Tecnologia", "nuevo");
     subasta.setCreador(usuarioCreador);
-
     assertTrue(subasta.esCreador(usuarioCreador));
   }
 
@@ -67,9 +66,7 @@ public class ServicioSubastaTest {
   public void cuandoPreguntoSiUnUsuarioSinIdEsCreadorDevuelveFalse() {
     Subasta subasta = new Subasta("Notebook", "desc", 1000.0, 5000.0, "Tecnologia", "nuevo");
     subasta.setCreador(usuarioCreador);
-
     Usuario usuarioSinId = new Usuario();
-
     assertFalse(subasta.esCreador(usuarioSinId));
   }
 
@@ -84,9 +81,7 @@ public class ServicioSubastaTest {
       "nuevo"
     );
     subasta.setFechaCierre(LocalDateTime.now().plusDays(1));
-
     servicioSubasta.crearSubasta(subasta, null, usuarioCreador);
-
     assertEquals("Notebook", subasta.getDetalle().getNombre());
     assertEquals("Notebook 16gb", subasta.getDetalle().getDescripcion());
     assertEquals(1000.0, subasta.getPrecioInicial());
@@ -105,14 +100,12 @@ public class ServicioSubastaTest {
       "Tecnologia",
       "nuevo"
     );
-
     subasta.getDetalle().setNombre("Mouse");
     subasta.getDetalle().setDescripcion("Mouse inalambrico");
     subasta.setPrecioInicial(500.0);
     subasta.setPrecioMaximo(2000.0);
     subasta.getDetalle().setCategoria("Perifericos");
     subasta.getDetalle().setEstadoArticulo("usado");
-
     assertEquals("Mouse", subasta.getDetalle().getNombre());
     assertEquals("Mouse inalambrico", subasta.getDetalle().getDescripcion());
     assertEquals(500.0, subasta.getPrecioInicial());
@@ -133,9 +126,7 @@ public class ServicioSubastaTest {
       "nuevo"
     );
     subasta.setFechaCierre(LocalDateTime.now().plusDays(1));
-
     servicioSubasta.crearSubasta(subasta, null, usuarioCreador);
-
     verify(this.repositorioSubasta, times(1)).guardarSubasta(subasta);
   }
 
@@ -149,20 +140,14 @@ public class ServicioSubastaTest {
       "Tecnologia",
       "nuevo"
     );
-
     subasta.setFechaCierre(LocalDateTime.now().plusDays(1));
-
     servicioSubasta.crearSubasta(subasta, null, usuarioCreador);
-
-    EstadoSubasta resultadoEsperado = EstadoSubasta.ACTIVA;
-    EstadoSubasta resultadoObtenido = subasta.getEstadoSubasta();
-    assertEquals(resultadoEsperado, resultadoObtenido);
+    assertEquals(EstadoSubasta.ACTIVA, subasta.getEstadoSubasta());
   }
 
   @Test
   public void queNoSePuedaCrearUnaSubastaSinNombre() {
     Subasta subasta = new Subasta("", "Notebook 16gb", 1000.0, 5000.0, "Tecnologia", "nuevo");
-
     assertThrows(
       SubastaInvalidaExeption.class,
       () -> servicioSubasta.crearSubasta(subasta, null, usuarioCreador)
@@ -179,7 +164,6 @@ public class ServicioSubastaTest {
       "Tecnologia",
       "nuevo"
     );
-
     assertThrows(
       SubastaInvalidaExeption.class,
       () -> servicioSubasta.crearSubasta(subasta, null, usuarioCreador)
@@ -196,7 +180,6 @@ public class ServicioSubastaTest {
       "Tecnologia",
       "nuevo"
     );
-
     assertThrows(
       SubastaInvalidaExeption.class,
       () -> servicioSubasta.crearSubasta(subasta, null, usuarioCreador)
@@ -213,7 +196,6 @@ public class ServicioSubastaTest {
       "Tecnologia",
       "nuevo"
     );
-
     assertThrows(
       SubastaInvalidaExeption.class,
       () -> servicioSubasta.crearSubasta(subasta, null, usuarioCreador)
@@ -230,7 +212,6 @@ public class ServicioSubastaTest {
       "Tecnologia",
       "nuevo"
     );
-
     assertEquals(1000.0, subasta.getPrecioActual());
   }
 
@@ -244,9 +225,7 @@ public class ServicioSubastaTest {
       "Tecnologia",
       "nuevo"
     );
-
     subasta.setPrecioActual(1100.0);
-
     assertEquals(1100.0, subasta.getPrecioActual());
   }
 
@@ -260,17 +239,14 @@ public class ServicioSubastaTest {
       "Tecnologia",
       "nuevo"
     );
-    subasta.setPrecioActual(3000.0); // igualamos el precio maximo
+    subasta.setPrecioActual(3000.0);
     when(repositorioSubasta.obtenerSubasta(1L)).thenReturn(subasta);
-
     servicioSubasta.verificarPrecioMaximo(1L);
-
     assertEquals(EstadoSubasta.CUENTA_ATRAS, subasta.getEstadoSubasta());
   }
 
   @Test
   public void queAlIgualarElPrecioMaximoLaFechaDeCierreSeSetiaADosHorasDesdeAhora() {
-    // preparacion
     Subasta subasta = new Subasta(
       "Notebook",
       "Notebook 16gb",
@@ -281,22 +257,15 @@ public class ServicioSubastaTest {
     );
     subasta.setPrecioActual(3000.0);
     when(repositorioSubasta.obtenerSubasta(1L)).thenReturn(subasta);
-
     LocalDateTime antes = LocalDateTime.now();
-
-    // ejecucion
     servicioSubasta.verificarPrecioMaximo(1L);
-
     LocalDateTime despues = LocalDateTime.now();
-
-    // validacion
     assertThat(subasta.getFechaCierre(), greaterThanOrEqualTo(antes.plusHours(2)));
     assertThat(subasta.getFechaCierre(), lessThanOrEqualTo(despues.plusHours(2)));
   }
 
   @Test
   public void queAlNoIgualarElPrecioMaximoLaSubastaNoDeberiaActualizarEstado() {
-    // preparacion
     Subasta subasta = new Subasta(
       "Notebook",
       "Notebook 16gb",
@@ -305,20 +274,15 @@ public class ServicioSubastaTest {
       "Tecnologia",
       "nuevo"
     );
-    subasta.setPrecioActual(2000.0); // menor al precio maximo
+    subasta.setPrecioActual(2000.0);
     when(repositorioSubasta.obtenerSubasta(1L)).thenReturn(subasta);
-
-    // ejecucion
     servicioSubasta.verificarPrecioMaximo(1L);
-
-    // validacion
     assertEquals(EstadoSubasta.ACTIVA, subasta.getEstadoSubasta());
     assertNull(subasta.getFechaCierre());
   }
 
   @Test
   public void queAlSuperarElPrecioMaximoLaSubastaPasaAEstadoCuentaAtras() {
-    // preparacion
     Subasta subasta = new Subasta(
       "Notebook",
       "Notebook 16gb",
@@ -327,19 +291,14 @@ public class ServicioSubastaTest {
       "Tecnologia",
       "nuevo"
     );
-    subasta.setPrecioActual(4000.0); // supera el precio maximo
+    subasta.setPrecioActual(4000.0);
     when(repositorioSubasta.obtenerSubasta(1L)).thenReturn(subasta);
-
-    // ejecucion
     servicioSubasta.verificarPrecioMaximo(1L);
-
-    // validacion
     assertEquals(EstadoSubasta.CUENTA_ATRAS, subasta.getEstadoSubasta());
   }
 
   @Test
   public void queAlIgualarElPrecioMaximoSeGuardaLaSubastaEnElRepositorio() {
-    // preparacion
     Subasta subasta = new Subasta(
       "Notebook",
       "Notebook 16gb",
@@ -350,17 +309,12 @@ public class ServicioSubastaTest {
     );
     subasta.setPrecioActual(3000.0);
     when(repositorioSubasta.obtenerSubasta(1L)).thenReturn(subasta);
-
-    // ejecucion
     servicioSubasta.verificarPrecioMaximo(1L);
-
-    // validacion
     verify(repositorioSubasta, times(1)).guardarSubasta(subasta);
   }
 
   @Test
   public void queAlVencerLaFechaDeCierreLaSubastaPasaAEstadoCerrada() {
-    // preparacion
     Subasta subasta = new Subasta(
       "Notebook",
       "Notebook 16gb",
@@ -370,19 +324,14 @@ public class ServicioSubastaTest {
       "nuevo"
     );
     subasta.setEstadoSubasta(EstadoSubasta.CUENTA_ATRAS);
-    subasta.setFechaCierre(LocalDateTime.now().minusHours(1)); // fecha ya vencida
+    subasta.setFechaCierre(LocalDateTime.now().minusHours(1));
     when(repositorioSubasta.obtenerSubastasPorVencer()).thenReturn(List.of(subasta));
-
-    // ejecucion
     servicioSubasta.cerrarSubastasPorTiempo();
-
-    // validacion
     assertEquals(EstadoSubasta.CERRADA, subasta.getEstadoSubasta());
   }
 
   @Test
   public void queAlCerrarLaSubastaSeArmaElPodioConLosTresMejoresOfertadores() {
-    // preparacion
     Subasta subasta = new Subasta(
       "Notebook",
       "Notebook 16gb",
@@ -400,18 +349,21 @@ public class ServicioSubastaTest {
     Usuario usuario3 = new Usuario();
     usuario3.setId(3L);
 
+    // El repositorio ahora devuelve TODAS las ofertas ordenadas por monto DESC
+    // (puede haber varias del mismo usuario); el servicio filtra la mejor por usuario
     Oferta oferta1 = new Oferta(3000.0, subasta, usuario1);
+    Oferta oferta1b = new Oferta(2500.0, subasta, usuario1); // segunda oferta del mismo usuario
     Oferta oferta2 = new Oferta(2000.0, subasta, usuario2);
     Oferta oferta3 = new Oferta(1500.0, subasta, usuario3);
 
     when(repositorioSubasta.obtenerSubastasPorVencer()).thenReturn(List.of(subasta));
     when(repositorioOferta.obtenerMejoresOfertasPorSubasta(subasta.getId()))
-      .thenReturn(List.of(oferta1, oferta2, oferta3));
+      .thenReturn(List.of(oferta1, oferta1b, oferta2, oferta3));
 
-    // ejecucion
     servicioSubasta.cerrarSubastasPorTiempo();
 
-    // validacion
+    // el podio tiene 3 usuarios distintos, sin repetir
+    assertEquals(3, subasta.getPodio().size());
     assertEquals(usuario1, subasta.getPodio().get(0));
     assertEquals(usuario2, subasta.getPodio().get(1));
     assertEquals(usuario3, subasta.getPodio().get(2));
@@ -419,7 +371,6 @@ public class ServicioSubastaTest {
 
   @Test
   public void queAlCerrarLaSubastaConMenosDeTresOfertasElPodioTengaSoloLasQueHay() {
-    // preparacion
     Subasta subasta = new Subasta(
       "Notebook",
       "Notebook 16gb",
@@ -442,10 +393,8 @@ public class ServicioSubastaTest {
     when(repositorioOferta.obtenerMejoresOfertasPorSubasta(subasta.getId()))
       .thenReturn(List.of(oferta1, oferta2));
 
-    // ejecucion
     servicioSubasta.cerrarSubastasPorTiempo();
 
-    // validacion
     assertEquals(2, subasta.getPodio().size());
     assertEquals(usuario1, subasta.getPodio().get(0));
     assertEquals(usuario2, subasta.getPodio().get(1));
@@ -453,7 +402,6 @@ public class ServicioSubastaTest {
 
   @Test
   public void queAlCerrarLaSubastaSinOfertasElPodioQuedeVacio() {
-    // preparacion
     Subasta subasta = new Subasta(
       "Notebook",
       "Notebook 16gb",
@@ -463,20 +411,14 @@ public class ServicioSubastaTest {
       "nuevo"
     );
     subasta.setFechaCierre(LocalDateTime.now().minusHours(1));
-
     when(repositorioSubasta.obtenerSubastasPorVencer()).thenReturn(List.of(subasta));
     when(repositorioOferta.obtenerMejoresOfertasPorSubasta(subasta.getId())).thenReturn(List.of());
-
-    // ejecucion
     servicioSubasta.cerrarSubastasPorTiempo();
-
-    // validacion
     assertEquals(0, subasta.getPodio().size());
   }
 
   @Test
   public void queAlCerrarLaSubastaSeGuardaEnElRepositorio() {
-    // preparacion
     Subasta subasta = new Subasta(
       "Notebook",
       "Notebook 16gb",
@@ -486,14 +428,9 @@ public class ServicioSubastaTest {
       "nuevo"
     );
     subasta.setFechaCierre(LocalDateTime.now().minusHours(1));
-
     when(repositorioSubasta.obtenerSubastasPorVencer()).thenReturn(List.of(subasta));
     when(repositorioOferta.obtenerMejoresOfertasPorSubasta(subasta.getId())).thenReturn(List.of());
-
-    // ejecucion
     servicioSubasta.cerrarSubastasPorTiempo();
-
-    // validacion
     verify(repositorioSubasta, times(1)).guardarSubasta(subasta);
   }
 
@@ -507,12 +444,9 @@ public class ServicioSubastaTest {
       "Tecnologia",
       "nuevo"
     );
-
     assertThrows(
       SubastaInvalidaExeption.class,
-      () -> {
-        servicioSubasta.crearSubasta(subasta, null, usuarioCreador);
-      }
+      () -> servicioSubasta.crearSubasta(subasta, null, usuarioCreador)
     );
   }
 
@@ -527,12 +461,9 @@ public class ServicioSubastaTest {
       "nuevo"
     );
     subasta.setFechaCierre(LocalDateTime.now().minusDays(1));
-
     assertThrows(
       SubastaInvalidaExeption.class,
-      () -> {
-        servicioSubasta.crearSubasta(subasta, null, usuarioCreador);
-      }
+      () -> servicioSubasta.crearSubasta(subasta, null, usuarioCreador)
     );
   }
 

@@ -28,10 +28,7 @@ public class RepositorioOfertaImpl implements RepositorioOferta {
     return sessionFactory
       .getCurrentSession()
       .createQuery(
-        "SELECT o FROM Oferta o " +
-        "WHERE o.subasta.id = :subastaId " +
-        "AND o.monto = (SELECT MAX(o2.monto) FROM Oferta o2 WHERE o2.usuario = o.usuario AND o2.subasta.id = :subastaId) " +
-        "ORDER BY o.monto DESC",
+        "SELECT o FROM Oferta o " + "WHERE o.subasta.id = :subastaId " + "ORDER BY o.monto DESC",
         Oferta.class
       )
       .setParameter("subastaId", subastaId)

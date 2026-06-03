@@ -7,7 +7,9 @@ import com.tallerwebi.dominio.usuario.Usuario;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -68,18 +70,33 @@ public class ServicioSubastaImpl implements ServicioSubasta {
     List<Subasta> subastas = repositorioSubasta.obtenerSubastasPorVencer();
     for (Subasta subasta : subastas) {
       if (subasta.getFechaCierre().isBefore(LocalDateTime.now())) {
-        List<Oferta> mejoresOfertas = repositorioOferta.obtenerMejoresOfertasPorSubasta(
+        List<Oferta> todasLasOfertas = repositorioOferta.obtenerMejoresOfertasPorSubasta(
           subasta.getId()
         );
-        List<Usuario> podio = new ArrayList<>();
-        for (int i = 0; i < Math.min(3, mejoresOfertas.size()); i++) {
-          podio.add(mejoresOfertas.get(i).getUsuario());
-        }
+        List<Usuario> podio = determinarPodio(todasLasOfertas);
         subasta.setPodio(podio);
         subasta.setEstadoSubasta(EstadoSubasta.CERRADA);
         repositorioSubasta.guardarSubasta(subasta);
       }
     }
+  }
+
+  // El servicio es el responsable de determinar quiénes ganaron, no el repositorio.
+  // Recibe todas las ofertas ordenadas por monto DESC y devuelve los 3 usuarios
+  // con la mayor oferta, sin repetir usuario.
+  private List<Usuario> determinarPodio(List<Oferta> ofertas) {
+    Map<Long, Usuario> mejorOfertaPorUsuario = new LinkedHashMap<>();
+    for (Oferta oferta : ofertas) {
+      if (oferta.getUsuario() == null) {
+        continue;
+      }
+      Long idUsuario = oferta.getUsuario().getId();
+      if (!mejorOfertaPorUsuario.containsKey(idUsuario)) {
+        mejorOfertaPorUsuario.put(idUsuario, oferta.getUsuario());
+      }
+    }
+    List<Usuario> podio = new ArrayList<>(mejorOfertaPorUsuario.values());
+    return podio.subList(0, Math.min(3, podio.size()));
   }
 
   private void validarSubasta(Subasta subasta) throws SubastaInvalidaExeption {
