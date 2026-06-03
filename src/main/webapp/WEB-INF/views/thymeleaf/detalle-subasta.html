@@ -29,7 +29,7 @@
                     <label class="w3-text-grey w3-small">
                         <b>NOMBRE DEL PRODUCTO</b>
                     </label>
-                    <p class="w3-xlarge w3-border-bottom w3-padding-small" th:text="${subasta.detalle.nombre}">Nombre de
+                    <p id="nombre-subasta" class="w3-xlarge w3-border-bottom w3-padding-small" th:text="${subasta.detalle.nombre}">Nombre de
                         la
                         subasta</p>
                 </div>
@@ -38,7 +38,7 @@
                     <label class="w3-text-grey w3-small"><b>DESCRIPCIÓN</b></label>
 
                     <div class="w3-panel w3-pale-yellow w3-leftbar w3-border-amber w3-round">
-                        <p th:text="${subasta.detalle.descripcion}">Descripción detallada aquí...</p>
+                        <p id="descripcion-subasta" th:text="${subasta.detalle.descripcion}">Descripción detallada aquí...</p>
                     </div>
                 </div>
 
@@ -50,7 +50,7 @@
                             <label class="w3-text-grey w3-small"><b>PRECIO INICIAL</b></label>
 
                             <p class="w3-xlarge w3-text-green">
-                                <b th:text="'$' + ${#numbers.formatDecimal(subasta.precioInicial, 1, 2)}">$0.00</b>
+                                <b id="precio-inicial-subasta" th:text="'$' + ${#numbers.formatDecimal(subasta.precioInicial, 1, 2)}">$0.00</b>
                             </p>
                         </div>
                     </div>
@@ -61,7 +61,7 @@
                             <label class="w3-text-grey w3-small"><b>PRECIO MÁXIMO</b></label>
 
                             <p class="w3-xlarge w3-text-red">
-                                <b th:text="'$' + ${#numbers.formatDecimal(subasta.precioMaximo, 1, 2)}">$0.00</b>
+                                <b id="precio-maximo-subasta" th:text="'$' + ${#numbers.formatDecimal(subasta.precioMaximo, 1, 2)}">$0.00</b>
                             </p>
                         </div>
                     </div>
@@ -71,12 +71,12 @@
                             <label class="w3-text-grey w3-small"><b>PRECIO ACTUAL</b></label>
 
                             <p class="w3-xlarge w3-text-blue">
-                                <b th:text="'$' + ${#numbers.formatDecimal(subasta.precioActual, 1, 2)}">$0.00</b>
+                                <b id="precio-actual-subasta" th:text="'$' + ${#numbers.formatDecimal(subasta.precioActual, 1, 2)}">$0.00</b>
                             </p>
                         </div>
 
                         <div th:if="${session.USUARIO_ID != null}">
-                            <span th:if="${voyGanando}" class="w3-tag w3-green w3-round">¡Vas ganando!</span>
+                            <span id="mensaje-voy-ganando" th:if="${voyGanando}" class="w3-tag w3-green w3-round">¡Vas ganando!</span>
                             <span th:if="${participe and !voyGanando}" class="w3-tag w3-red w3-round">Tu oferta fue superada</span>
                         </div>
                     </div>
@@ -103,7 +103,7 @@
                     <div class="w3-col l6 m6 s12 w3-margin-bottom">
                         <label class="w3-text-grey w3-small"><b>CATEGORÍA</b></label>
                         <p>
-                            <span class="w3-tag w3-amber w3-round-large w3-padding"
+                            <span id="categoria-subasta" class="w3-tag w3-amber w3-round-large w3-padding"
                                 th:text="${subasta.detalle.categoria}">Categoría</span>
                         </p>
                     </div>
@@ -151,13 +151,13 @@
 
 
                     <div th:if="${!esCreador and session.USUARIO_ID != null}" class="w3-container w3-padding">
-                        <a th:if="${subasta.estadoSubasta.name() != 'CERRADA'}"
+                        <a id="btn-ofertar-manualmente" th:if="${subasta.estadoSubasta.name() != 'CERRADA'}"
                             th:href="@{/ofertar/{id}(id=${subasta.id})}"
                             class="w3-button w3-amber w3-hover-dark-grey w3-block w3-round-large w3-large w3-margin-bottom">
                             Ofertar Manualmente
                         </a>
 
-                        <a th:if="${subasta.estadoSubasta.name() != 'CERRADA'}"
+                        <a id="btn-auto-puja" th:if="${subasta.estadoSubasta.name() != 'CERRADA'}"
                             th:href="@{/auto-pujar/{id}(id=${subasta.id})}"
                             class="w3-button w3-blue w3-hover-dark-grey w3-block w3-round-large w3-large">
                             Ofertar con Auto-Puja (Bot)
@@ -189,7 +189,7 @@
                     </p>
                 </div>
                 <div th:if="${session.USUARIO_ID != null}" class="w3-container w3-padding">
-                    <a th:href="@{/logout}"
+                    <a id="btn-cerrar-sesion-detalle" th:href="@{/logout}"
                         class="w3-button w3-grey w3-hover-dark-grey w3-block w3-round-large w3-large w3-margin-bottom">
                         Cerrar sesión
                     </a>

@@ -24,38 +24,35 @@ import org.springframework.web.servlet.ModelAndView;
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = { SpringWebTestConfig.class, HibernateTestConfig.class })
-public class ControladorSubastaTest {
+public class ControladorPerfilTest {
 
   @Autowired
-  private WebApplicationContext wac; //contexto web
+  private WebApplicationContext wac;
 
   private MockMvc mockMvc;
 
   @BeforeEach
   public void init() {
-    this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build(); //springMVC
+    this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
   }
 
   @Test
-  public void siElUsuarioNoTieneSesionYEntraACrearSubastaDeberiaRedirigirALogin() throws Exception {
+  public void siElUsuarioNoTieneSesionYEntraAVerPerfilDeberiaRedirigirALogin() throws Exception {
     MvcResult result =
-      this.mockMvc.perform(get("/crear-subasta"))
-        .andExpect(status().is3xxRedirection())
-        .andReturn(); //simula get crear subasta, espera redirect
+      this.mockMvc.perform(get("/perfil")).andExpect(status().is3xxRedirection()).andReturn();
     ModelAndView modelAndView = result.getModelAndView();
     assert modelAndView != null;
     assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/login"));
   }
 
   @Test
-  public void siElUsuarioTieneSesionYEntraACrearSubastaDeberiaRedirigirACrearSubasta()
-    throws Exception {
+  public void siElUsuarioTieneSesionYEntraAVerPerfilDeberiaRedirigirAVerPerfil() throws Exception {
     MvcResult result =
-      this.mockMvc.perform(get("/crear-subasta").sessionAttr("USUARIO_ID", 1L))
+      this.mockMvc.perform(get("/perfil").sessionAttr("USUARIO_ID", 1L))
         .andExpect(status().isOk())
-        .andReturn(); //simula get crear subasta con usuario logueado, espera http 200
+        .andReturn();
     ModelAndView modelAndView = result.getModelAndView();
     assert modelAndView != null;
-    assertThat(modelAndView.getViewName(), equalToIgnoringCase("crear-subasta"));
+    assertThat(modelAndView.getViewName(), equalToIgnoringCase("perfil"));
   }
 }

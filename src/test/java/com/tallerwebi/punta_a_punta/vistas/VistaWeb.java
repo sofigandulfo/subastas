@@ -30,6 +30,13 @@ public class VistaWeb {
     this.obtenerElemento(selectorCSS).type(texto);
   }
 
+  //agregamos este metodo para rellenar el contenido reemplazandolo
+  // en escribir elemento playwright escribe encima del valor que ya tenia el input
+  // (como en los campos de los precios de crear subasta empiezan en 0.0, si el numero es 1000.0 escribe 10000.0)
+  protected void completarEnElElemento(String selectorCSS, String texto) {
+    this.obtenerElemento(selectorCSS).fill(texto);
+  }
+
   private Locator obtenerElemento(String selectorCSS) {
     return page.locator(selectorCSS);
   }

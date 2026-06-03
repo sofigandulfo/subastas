@@ -20,8 +20,8 @@
                     <hr class="colorgraph"><br>
                     <p>Precio actual: <strong th:text="${subasta.precioActual}"></strong></p>
                     <input th:field="*{monto}" id="monto" type="number" class="form-control" placeholder="Ingrese su oferta" required />
-                    <button class="btn btn-lg btn-primary btn-block" type="submit">Ofertar</button>
-                    <p th:if="${error != null}" class="alert alert-danger" th:text="'Error ' + ${error}"></p>
+                    <button id="btn-ofertar" class="btn btn-lg btn-primary btn-block" type="submit">Ofertar</button>
+                    <p id="mensaje-error-oferta" th:if="${error != null}" class="alert alert-danger" th:text="'Error ' + ${error}"></p>
                 </form>
                 <a th:href="@{/detalle-subasta(id=${subasta.id})}" class="btn btn-secondary mt-2">Volver</a>
             </div>
