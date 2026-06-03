@@ -8,6 +8,9 @@ import com.tallerwebi.dominio.subasta.ServicioSubasta;
 import com.tallerwebi.dominio.subasta.Subasta;
 import com.tallerwebi.dominio.usuario.Usuario;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -42,13 +45,29 @@ public class ControladorSubasta {
     if (busqueda != null && busqueda.trim().isEmpty()) {
       return new ModelAndView("redirect:/subastas");
     }
-    
-    Long usuarioId = (Long) request.getSession().getAttribute(USUARIO_ID);
 
     ModelMap modelo = new ModelMap();
-    modelo.put("subastas", servicioSubasta.obtenerSubastas(busqueda));
+    
+    // Verificamos si hay sesión
+    boolean estaLogueado = request.getSession().getAttribute(USUARIO_ID) != null;
+    modelo.put("estaLogueado", estaLogueado);
+
+    // Buscamos las subastas (usando el método nuevo con buscador de tu compañero)
+    List<Subasta> subastas = servicioSubasta.obtenerSubastas(busqueda);
+    
+    // Armamos tu mapa de imágenes Base64
+    Map<Long, String> imagenesBase64 = new HashMap<>();
+    
+    for (Subasta subasta : subastas) {
+      if (subasta.getDetalle().getImagen() != null) {
+        String base64 = Base64.getEncoder().encodeToString(subasta.getDetalle().getImagen());
+        imagenesBase64.put(subasta.getId(), base64);
+      }
+    }
+
+    modelo.put("subastas", subastas);
     modelo.put("busqueda", busqueda);
-    modelo.put("estaLogueado", usuarioId != null);
+    modelo.put("imagenesBase64", imagenesBase64);
 
     return new ModelAndView("subastas", modelo);
   }

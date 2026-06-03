@@ -17,6 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Transactional
 public class ServicioSubastaImpl implements ServicioSubasta {
 
+  private static final long TAMANIO_MAXIMO_IMAGEN = 5 * 1024 * 1024; // 5MB
+
   private RepositorioSubasta repositorioSubasta;
   private RepositorioOferta repositorioOferta;
 
@@ -33,7 +35,12 @@ public class ServicioSubastaImpl implements ServicioSubasta {
   public Subasta crearSubasta(Subasta subasta, MultipartFile imagen, Usuario creador)
     throws SubastaInvalidaExeption {
     validarSubasta(subasta);
+
     if (imagen != null && !imagen.isEmpty()) {
+      if (imagen.getSize() > TAMANIO_MAXIMO_IMAGEN) {
+        throw new SubastaInvalidaExeption();
+      }
+
       try {
         subasta.getDetalle().setImagen(imagen.getBytes());
       } catch (IOException e) {
