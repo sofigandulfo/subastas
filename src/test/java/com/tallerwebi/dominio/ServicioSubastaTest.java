@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.web.multipart.MultipartFile;
 
 public class ServicioSubastaTest {
 
@@ -533,5 +534,32 @@ public class ServicioSubastaTest {
         servicioSubasta.crearSubasta(subasta, null, usuarioCreador);
       }
     );
+  }
+
+  @Test
+  public void queNoSePuedaCrearUnaSubastaSiLaImagenSuperaElTamanioMaximo() {
+    Subasta subasta = new Subasta(
+      "Notebook",
+      "Notebook 16gb",
+      1000.0,
+      3000.0,
+      "Tecnologia",
+      "nuevo"
+    );
+    subasta.setFechaCierre(LocalDateTime.now().plusDays(1));
+
+    MultipartFile imagenGrandeMock = mock(MultipartFile.class);
+    when(imagenGrandeMock.isEmpty()).thenReturn(false);
+
+    // si el archivo supera el limite (6mb por ejemplo)
+    when(imagenGrandeMock.getSize()).thenReturn(6 * 1024 * 1024L);
+    assertThrows(
+      SubastaInvalidaExeption.class,
+      () -> {
+        servicioSubasta.crearSubasta(subasta, imagenGrandeMock, usuarioCreador);
+      }
+    );
+
+    verify(this.repositorioSubasta, never()).guardarSubasta(any(Subasta.class));
   }
 }
