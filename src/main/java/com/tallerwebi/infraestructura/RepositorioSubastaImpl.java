@@ -1,8 +1,8 @@
 package com.tallerwebi.infraestructura;
 
-import com.tallerwebi.dominio.EstadoSubasta;
-import com.tallerwebi.dominio.RepositorioSubasta;
-import com.tallerwebi.dominio.Subasta;
+import com.tallerwebi.dominio.subasta.EstadoSubasta;
+import com.tallerwebi.dominio.subasta.RepositorioSubasta;
+import com.tallerwebi.dominio.subasta.Subasta;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.hibernate.SessionFactory;

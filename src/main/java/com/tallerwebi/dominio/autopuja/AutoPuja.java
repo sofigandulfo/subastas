@@ -1,5 +1,7 @@
-package com.tallerwebi.dominio;
+package com.tallerwebi.dominio.autopuja;
 
+import com.tallerwebi.dominio.subasta.Subasta;
+import com.tallerwebi.dominio.usuario.Usuario;
 import java.time.LocalDateTime;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

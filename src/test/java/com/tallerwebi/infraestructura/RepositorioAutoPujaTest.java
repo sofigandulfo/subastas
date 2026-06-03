@@ -5,8 +5,8 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-import com.tallerwebi.dominio.AutoPuja;
-import com.tallerwebi.dominio.RepositorioAutoPuja;
+import com.tallerwebi.dominio.autopuja.AutoPuja;
+import com.tallerwebi.dominio.autopuja.RepositorioAutoPuja;
 import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

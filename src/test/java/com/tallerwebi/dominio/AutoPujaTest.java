@@ -4,6 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.tallerwebi.dominio.autopuja.AutoPuja;
+import com.tallerwebi.dominio.subasta.Subasta;
+import com.tallerwebi.dominio.usuario.Usuario;
 import org.junit.jupiter.api.Test;
 
 public class AutoPujaTest {

@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
 
+import com.tallerwebi.dominio.subasta.DetalleSubasta;
 import org.junit.jupiter.api.Test;
 
 public class DetalleSubastaTest {

@@ -1,11 +1,11 @@
 package com.tallerwebi.presentacion;
 
-import com.tallerwebi.dominio.ServicioAutoPuja;
-import com.tallerwebi.dominio.ServicioSubasta;
-import com.tallerwebi.dominio.Subasta;
-import com.tallerwebi.dominio.Usuario;
+import com.tallerwebi.dominio.autopuja.ServicioAutoPuja;
 import com.tallerwebi.dominio.excepcion.AutoPujaInvalidaException;
 import com.tallerwebi.dominio.excepcion.SubastaNoEncontradaException;
+import com.tallerwebi.dominio.subasta.ServicioSubasta;
+import com.tallerwebi.dominio.subasta.Subasta;
+import com.tallerwebi.dominio.usuario.Usuario;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

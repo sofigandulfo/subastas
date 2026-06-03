@@ -7,6 +7,14 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import com.tallerwebi.dominio.excepcion.SubastaInvalidaExeption;
+import com.tallerwebi.dominio.oferta.Oferta;
+import com.tallerwebi.dominio.oferta.RepositorioOferta;
+import com.tallerwebi.dominio.subasta.EstadoSubasta;
+import com.tallerwebi.dominio.subasta.RepositorioSubasta;
+import com.tallerwebi.dominio.subasta.ServicioSubasta;
+import com.tallerwebi.dominio.subasta.ServicioSubastaImpl;
+import com.tallerwebi.dominio.subasta.Subasta;
+import com.tallerwebi.dominio.usuario.Usuario;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;

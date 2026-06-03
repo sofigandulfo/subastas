@@ -1,7 +1,12 @@
-package com.tallerwebi.dominio;
+package com.tallerwebi.dominio.autopuja;
 
 import com.tallerwebi.dominio.excepcion.AutoPujaInvalidaException;
 import com.tallerwebi.dominio.excepcion.SubastaNoEncontradaException;
+import com.tallerwebi.dominio.oferta.Oferta;
+import com.tallerwebi.dominio.oferta.RepositorioOferta;
+import com.tallerwebi.dominio.subasta.RepositorioSubasta;
+import com.tallerwebi.dominio.subasta.Subasta;
+import com.tallerwebi.dominio.usuario.Usuario;
 import java.util.ArrayList;
 import java.util.List;
 import javax.transaction.Transactional;

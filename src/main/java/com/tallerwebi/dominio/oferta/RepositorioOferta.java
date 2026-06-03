@@ -1,5 +1,6 @@
-package com.tallerwebi.dominio;
+package com.tallerwebi.dominio.oferta;
 
+import com.tallerwebi.dominio.subasta.Subasta;
 import java.util.List;
 
 public interface RepositorioOferta {

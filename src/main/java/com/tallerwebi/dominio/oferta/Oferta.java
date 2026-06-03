@@ -1,5 +1,7 @@
-package com.tallerwebi.dominio;
+package com.tallerwebi.dominio.oferta;
 
+import com.tallerwebi.dominio.subasta.Subasta;
+import com.tallerwebi.dominio.usuario.Usuario;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;

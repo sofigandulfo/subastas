@@ -1,6 +1,6 @@
 package com.tallerwebi.presentacion;
 
-import com.tallerwebi.dominio.Subasta;
+import com.tallerwebi.dominio.subasta.Subasta;
 import java.time.LocalDateTime;
 import org.springframework.format.annotation.DateTimeFormat;
 

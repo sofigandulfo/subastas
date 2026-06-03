@@ -5,8 +5,8 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-import com.tallerwebi.dominio.RepositorioSubasta;
-import com.tallerwebi.dominio.Subasta;
+import com.tallerwebi.dominio.subasta.RepositorioSubasta;
+import com.tallerwebi.dominio.subasta.Subasta;
 import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;

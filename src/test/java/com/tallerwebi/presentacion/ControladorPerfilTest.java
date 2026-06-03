@@ -5,9 +5,9 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
 import static org.mockito.Mockito.*;
 
-import com.tallerwebi.dominio.ServicioOferta;
-import com.tallerwebi.dominio.ServicioSubasta;
-import com.tallerwebi.dominio.Subasta;
+import com.tallerwebi.dominio.oferta.ServicioOferta;
+import com.tallerwebi.dominio.subasta.ServicioSubasta;
+import com.tallerwebi.dominio.subasta.Subasta;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;

@@ -6,6 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 import com.tallerwebi.dominio.excepcion.UsuarioExistente;
+import com.tallerwebi.dominio.usuario.RepositorioUsuario;
+import com.tallerwebi.dominio.usuario.ServicioLogin;
+import com.tallerwebi.dominio.usuario.ServicioLoginImpl;
+import com.tallerwebi.dominio.usuario.Usuario;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

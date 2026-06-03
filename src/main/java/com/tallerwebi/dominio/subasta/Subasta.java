@@ -1,5 +1,6 @@
-package com.tallerwebi.dominio;
+package com.tallerwebi.dominio.subasta;
 
+import com.tallerwebi.dominio.usuario.Usuario;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

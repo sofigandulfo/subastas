@@ -10,8 +10,17 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.tallerwebi.dominio.autopuja.AutoPuja;
+import com.tallerwebi.dominio.autopuja.RepositorioAutoPuja;
+import com.tallerwebi.dominio.autopuja.ServicioAutoPuja;
+import com.tallerwebi.dominio.autopuja.ServicioAutoPujaImpl;
 import com.tallerwebi.dominio.excepcion.AutoPujaInvalidaException;
 import com.tallerwebi.dominio.excepcion.SubastaNoEncontradaException;
+import com.tallerwebi.dominio.oferta.Oferta;
+import com.tallerwebi.dominio.oferta.RepositorioOferta;
+import com.tallerwebi.dominio.subasta.RepositorioSubasta;
+import com.tallerwebi.dominio.subasta.Subasta;
+import com.tallerwebi.dominio.usuario.Usuario;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,6 +1,9 @@
-package com.tallerwebi.dominio;
+package com.tallerwebi.dominio.subasta;
 
 import com.tallerwebi.dominio.excepcion.SubastaInvalidaExeption;
+import com.tallerwebi.dominio.oferta.Oferta;
+import com.tallerwebi.dominio.oferta.RepositorioOferta;
+import com.tallerwebi.dominio.usuario.Usuario;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;

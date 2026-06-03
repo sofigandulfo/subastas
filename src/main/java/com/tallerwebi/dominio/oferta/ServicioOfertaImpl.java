@@ -1,7 +1,14 @@
-package com.tallerwebi.dominio;
+package com.tallerwebi.dominio.oferta;
 
+import com.tallerwebi.dominio.autopuja.ServicioAutoPuja;
 import com.tallerwebi.dominio.excepcion.OfertaInvalidaException;
 import com.tallerwebi.dominio.excepcion.SubastaNoEncontradaException;
+import com.tallerwebi.dominio.subasta.EstadoSubasta;
+import com.tallerwebi.dominio.subasta.RepositorioSubasta;
+import com.tallerwebi.dominio.subasta.ServicioSubasta;
+import com.tallerwebi.dominio.subasta.Subasta;
+import com.tallerwebi.dominio.usuario.RepositorioUsuario;
+import com.tallerwebi.dominio.usuario.Usuario;
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.transaction.Transactional;

@@ -4,7 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 
-import com.tallerwebi.dominio.Oferta;
+import com.tallerwebi.dominio.oferta.Oferta;
 import org.junit.jupiter.api.Test;
 
 public class OfertaDTOTest {

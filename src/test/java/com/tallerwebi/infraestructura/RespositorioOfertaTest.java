@@ -4,8 +4,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.*;
 
-import com.tallerwebi.dominio.Oferta;
-import com.tallerwebi.dominio.RepositorioOferta;
+import com.tallerwebi.dominio.oferta.Oferta;
+import com.tallerwebi.dominio.oferta.RepositorioOferta;
 import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

@@ -1,8 +1,8 @@
 package com.tallerwebi.infraestructura;
 
-import com.tallerwebi.dominio.Oferta;
-import com.tallerwebi.dominio.RepositorioOferta;
-import com.tallerwebi.dominio.Subasta;
+import com.tallerwebi.dominio.oferta.Oferta;
+import com.tallerwebi.dominio.oferta.RepositorioOferta;
+import com.tallerwebi.dominio.subasta.Subasta;
 import java.util.List;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;

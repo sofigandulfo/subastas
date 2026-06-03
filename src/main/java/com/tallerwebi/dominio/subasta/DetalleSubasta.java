@@ -1,4 +1,4 @@
-package com.tallerwebi.dominio;
+package com.tallerwebi.dominio.subasta;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Lob;

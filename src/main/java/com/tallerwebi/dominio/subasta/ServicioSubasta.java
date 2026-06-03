@@ -1,6 +1,7 @@
-package com.tallerwebi.dominio;
+package com.tallerwebi.dominio.subasta;
 
 import com.tallerwebi.dominio.excepcion.SubastaInvalidaExeption;
+import com.tallerwebi.dominio.usuario.Usuario;
 import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 

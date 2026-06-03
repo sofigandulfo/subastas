@@ -1,9 +1,9 @@
 package com.tallerwebi.presentacion;
 
-import com.tallerwebi.dominio.Oferta;
-import com.tallerwebi.dominio.ServicioOferta;
-import com.tallerwebi.dominio.ServicioSubasta;
-import com.tallerwebi.dominio.Subasta;
+import com.tallerwebi.dominio.oferta.Oferta;
+import com.tallerwebi.dominio.oferta.ServicioOferta;
+import com.tallerwebi.dominio.subasta.ServicioSubasta;
+import com.tallerwebi.dominio.subasta.Subasta;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

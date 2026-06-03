@@ -1,11 +1,11 @@
 package com.tallerwebi.presentacion;
 
-import com.tallerwebi.dominio.ServicioOferta;
-import com.tallerwebi.dominio.ServicioSubasta;
-import com.tallerwebi.dominio.Subasta;
-import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.excepcion.OfertaInvalidaException;
 import com.tallerwebi.dominio.excepcion.SubastaNoEncontradaException;
+import com.tallerwebi.dominio.oferta.ServicioOferta;
+import com.tallerwebi.dominio.subasta.ServicioSubasta;
+import com.tallerwebi.dominio.subasta.Subasta;
+import com.tallerwebi.dominio.usuario.Usuario;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;

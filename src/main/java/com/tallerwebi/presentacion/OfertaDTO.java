@@ -1,6 +1,6 @@
 package com.tallerwebi.presentacion;
 
-import com.tallerwebi.dominio.Oferta;
+import com.tallerwebi.dominio.oferta.Oferta;
 
 public class OfertaDTO {
 

@@ -5,7 +5,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.notNullValue;
 
-import com.tallerwebi.dominio.Subasta;
+import com.tallerwebi.dominio.subasta.Subasta;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
 

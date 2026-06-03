@@ -1,7 +1,7 @@
 package com.tallerwebi.infraestructura;
 
-import com.tallerwebi.dominio.AutoPuja;
-import com.tallerwebi.dominio.RepositorioAutoPuja;
+import com.tallerwebi.dominio.autopuja.AutoPuja;
+import com.tallerwebi.dominio.autopuja.RepositorioAutoPuja;
 import java.util.List;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;

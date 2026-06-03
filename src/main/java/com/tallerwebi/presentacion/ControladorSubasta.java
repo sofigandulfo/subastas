@@ -1,12 +1,12 @@
 package com.tallerwebi.presentacion;
 
-import com.tallerwebi.dominio.EstadoSubasta;
-import com.tallerwebi.dominio.Oferta;
-import com.tallerwebi.dominio.ServicioOferta;
-import com.tallerwebi.dominio.ServicioSubasta;
-import com.tallerwebi.dominio.Subasta;
-import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.excepcion.SubastaInvalidaExeption;
+import com.tallerwebi.dominio.oferta.Oferta;
+import com.tallerwebi.dominio.oferta.ServicioOferta;
+import com.tallerwebi.dominio.subasta.EstadoSubasta;
+import com.tallerwebi.dominio.subasta.ServicioSubasta;
+import com.tallerwebi.dominio.subasta.Subasta;
+import com.tallerwebi.dominio.usuario.Usuario;
 import java.util.Base64;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
