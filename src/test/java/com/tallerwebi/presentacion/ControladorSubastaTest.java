@@ -8,6 +8,7 @@ import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -268,7 +269,7 @@ public class ControladorSubastaTest {
   public void listarSubastaConSesionDeberiaRetornarVistaSubastasConSesionActiva() {
     when(sessionMock.getAttribute("USUARIO_ID")).thenReturn(1L);
     when(servicioSubastaMock.obtenerTodasLasSubastas()).thenReturn(List.of());
-    ModelAndView modelAndView = controladorSubasta.listarSubastas(requestMock);
+    ModelAndView modelAndView = controladorSubasta.listarSubastas(requestMock, null);
     assertThat(modelAndView.getViewName(), equalToIgnoringCase("subastas"));
     assertThat(modelAndView.getModel().get("estaLogueado"), equalTo(true));
   }
@@ -277,8 +278,41 @@ public class ControladorSubastaTest {
   public void listarSubastaSinSesionDeberiaRetornarVistaSubastasSinSesionActiva() {
     when(sessionMock.getAttribute("USUARIO_ID")).thenReturn(null);
     when(servicioSubastaMock.obtenerTodasLasSubastas()).thenReturn(List.of());
-    ModelAndView modelAndView = controladorSubasta.listarSubastas(requestMock);
+    ModelAndView modelAndView = controladorSubasta.listarSubastas(requestMock, null);
     assertThat(modelAndView.getViewName(), equalToIgnoringCase("subastas"));
     assertThat(modelAndView.getModel().get("estaLogueado"), equalTo(false));
+  }
+
+  @Test
+  public void listarSubastasSinBusquedaDeberiaMostrarTodasLasSubastas(){
+    when(sessionMock.getAttribute("USUARIO_ID")).thenReturn(1L);
+    when(servicioSubastaMock.obtenerSubastas(null)).thenReturn(List.of());
+
+    ModelAndView modelAndView = controladorSubasta.listarSubastas(requestMock, null);
+
+    assertThat(modelAndView.getViewName(), equalToIgnoringCase("subastas"));
+    assertThat(modelAndView.getModel().get("subastas"), equalTo(List.of()));
+    verify(servicioSubastaMock).obtenerSubastas(null);
+  }
+
+  @Test
+  public void listarSubastasConBusquedaDeberiaBuscarSubasta(){
+    when(sessionMock.getAttribute("USUARIO_ID")).thenReturn(1L);
+    when(servicioSubastaMock.obtenerSubastas("silla")).thenReturn(List.of());
+
+
+    ModelAndView modelAndView = controladorSubasta.listarSubastas(requestMock, "silla");
+
+    assertThat(modelAndView.getViewName(), equalToIgnoringCase("subastas"));
+    assertThat(modelAndView.getModel().get("busqueda"), equalTo("silla"));
+    verify(servicioSubastaMock).obtenerSubastas("silla");
+  }
+
+  @Test
+  public void listarSubastaConBusquedaVaciaDeberiaRedirigirASubastas(){
+    ModelAndView modelAndView = controladorSubasta.listarSubastas(requestMock, "");
+
+    assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/subastas"));
+    verify(servicioSubastaMock, never()).obtenerSubastas(any());
   }
 }

@@ -13,4 +13,5 @@ public interface ServicioSubasta {
   void cerrarSubastasPorTiempo();
   List<Subasta> obtenerTodasLasSubastas();
   List<Subasta> obtenerSubastasDelCreador(Long idCreador);
+  List<Subasta> obtenerSubastas(String busqueda);
 }
