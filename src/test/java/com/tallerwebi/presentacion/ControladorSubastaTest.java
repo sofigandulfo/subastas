@@ -284,7 +284,7 @@ public class ControladorSubastaTest {
   }
 
   @Test
-  public void listarSubastasSinBusquedaDeberiaMostrarTodasLasSubastas(){
+  public void listarSubastasSinBusquedaDeberiaMostrarTodasLasSubastas() {
     when(sessionMock.getAttribute("USUARIO_ID")).thenReturn(1L);
     when(servicioSubastaMock.obtenerSubastas(null)).thenReturn(List.of());
 
@@ -296,10 +296,9 @@ public class ControladorSubastaTest {
   }
 
   @Test
-  public void listarSubastasConBusquedaDeberiaBuscarSubasta(){
+  public void listarSubastasConBusquedaDeberiaBuscarSubasta() {
     when(sessionMock.getAttribute("USUARIO_ID")).thenReturn(1L);
     when(servicioSubastaMock.obtenerSubastas("silla")).thenReturn(List.of());
-
 
     ModelAndView modelAndView = controladorSubasta.listarSubastas(requestMock, "silla");
 
@@ -309,7 +308,7 @@ public class ControladorSubastaTest {
   }
 
   @Test
-  public void listarSubastaConBusquedaVaciaDeberiaRedirigirASubastas(){
+  public void listarSubastaConBusquedaVaciaDeberiaRedirigirASubastas() {
     ModelAndView modelAndView = controladorSubasta.listarSubastas(requestMock, "");
 
     assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/subastas"));

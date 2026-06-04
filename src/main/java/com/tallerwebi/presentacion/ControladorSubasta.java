@@ -47,17 +47,17 @@ public class ControladorSubasta {
     }
 
     ModelMap modelo = new ModelMap();
-    
+
     // Verificamos si hay sesión
     boolean estaLogueado = request.getSession().getAttribute(USUARIO_ID) != null;
     modelo.put("estaLogueado", estaLogueado);
 
     // Buscamos las subastas (usando el método nuevo con buscador de tu compañero)
     List<Subasta> subastas = servicioSubasta.obtenerSubastas(busqueda);
-    
+
     // Armamos tu mapa de imágenes Base64
     Map<Long, String> imagenesBase64 = new HashMap<>();
-    
+
     for (Subasta subasta : subastas) {
       if (subasta.getDetalle().getImagen() != null) {
         String base64 = Base64.getEncoder().encodeToString(subasta.getDetalle().getImagen());
