@@ -133,9 +133,8 @@
                 <div th:if="${esCreador}" class="w3-row-padding w3-margin-top">
                     <div class="w3-row-padding w3-margin-top">
                         <div class="w3-col l6 m6 s12 w3-margin-bottom">
-                            <a th:href="@{/editar-subasta/{id}(id=${subasta.id})}"
-                                class="w3-button w3-amber w3-hover-dark-grey w3-block w3-round-large w3-large">
-                                Editar</a>
+                            <a th:href="@{/editar-subasta(id=${subasta.id})}"
+                               class="w3-button w3-amber w3-hover-dark-grey w3-block w3-round-large w3-large">Editar</a>
                         </div>
 
                         <div class="w3-col l6 m6 s12 w3-margin-bottom">
