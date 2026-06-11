@@ -251,4 +251,20 @@ public class ServicioOfertaTest {
     // verificamos que no se haya guardado nada
     verify(repositorioOfertaMock, never()).guardarOferta(any(Oferta.class));
   }
+
+  @Test
+  void alIntentarOfertarEnUnaSubastaQueNoExisteDeberiaTirarSubastaNoEncontradaException() {
+    when(repositorioSubastaMock.obtenerSubasta(99L)).thenReturn(null);
+
+    Oferta nuevaOferta = new Oferta(1100.0, null);
+
+    assertThrows(
+      SubastaNoEncontradaException.class,
+      () -> {
+        servicioOferta.procesarOferta(99L, nuevaOferta, ofertantePrueba);
+      }
+    );
+
+    verify(repositorioOfertaMock, never()).guardarOferta(any());
+  }
 }

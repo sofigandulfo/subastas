@@ -9,14 +9,11 @@ import static org.mockito.Mockito.*;
 import com.tallerwebi.dominio.excepcion.SubastaInvalidaExeption;
 import com.tallerwebi.dominio.oferta.Oferta;
 import com.tallerwebi.dominio.oferta.RepositorioOferta;
-import com.tallerwebi.dominio.subasta.EstadoSubasta;
-import com.tallerwebi.dominio.subasta.RepositorioSubasta;
-import com.tallerwebi.dominio.subasta.ServicioSubasta;
-import com.tallerwebi.dominio.subasta.ServicioSubastaImpl;
-import com.tallerwebi.dominio.subasta.Subasta;
+import com.tallerwebi.dominio.subasta.*;
 import com.tallerwebi.dominio.usuario.Usuario;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.multipart.MultipartFile;
@@ -142,7 +139,7 @@ public class ServicioSubastaTest {
     );
     subasta.setFechaCierre(LocalDateTime.now().plusDays(1));
     servicioSubasta.crearSubasta(subasta, null, usuarioCreador);
-    assertEquals(EstadoSubasta.ACTIVA, subasta.getEstadoSubasta());
+    Assertions.assertEquals(EstadoSubasta.ACTIVA, subasta.getEstadoSubasta());
   }
 
   @Test
@@ -492,5 +489,41 @@ public class ServicioSubastaTest {
     );
 
     verify(this.repositorioSubasta, never()).guardarSubasta(any(Subasta.class));
+  }
+
+  @Test
+  public void queVerificarPrecioMaximoNoHagaNadaSiLaSubastaYaEstaCerrada() {
+    // preparacion
+    Subasta subasta = new Subasta(
+      "Notebook",
+      "Notebook 16gb",
+      1000.0,
+      3000.0,
+      "Tecnologia",
+      "nuevo"
+    );
+    subasta.setPrecioActual(3000.0);
+    subasta.setEstadoSubasta(EstadoSubasta.CERRADA);
+    when(repositorioSubasta.obtenerSubasta(1L)).thenReturn(subasta);
+
+    // ejecucion
+    servicioSubasta.verificarPrecioMaximo(1L);
+
+    // validacion
+    assertEquals(EstadoSubasta.CERRADA, subasta.getEstadoSubasta());
+    verify(repositorioSubasta, never()).guardarSubasta(subasta);
+  }
+
+  @Test
+  public void queCerrarSubastasPorTiempoNoHagaNadaSiNoHaySubastasPorVencer() {
+    // preparacion
+    when(repositorioSubasta.obtenerSubastasPorVencer()).thenReturn(List.of());
+
+    // ejecucion
+    servicioSubasta.cerrarSubastasPorTiempo();
+
+    // validacion
+    verify(repositorioSubasta, never()).guardarSubasta(any());
+    verify(repositorioOferta, never()).obtenerMejoresOfertasPorSubasta(any());
   }
 }
