@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import com.tallerwebi.dominio.excepcion.SubastaConOfertasException;
 import com.tallerwebi.dominio.excepcion.SubastaInvalidaExeption;
 import com.tallerwebi.dominio.oferta.Oferta;
 import com.tallerwebi.dominio.oferta.RepositorioOferta;
@@ -492,5 +493,77 @@ public class ServicioSubastaTest {
     );
 
     verify(this.repositorioSubasta, never()).guardarSubasta(any(Subasta.class));
+  }
+
+  @Test
+  public void queElCreadorPuedeEliminarSuSubasta() throws Exception {
+    Subasta subasta = new Subasta(
+      "Notebook",
+      "Notebook 16gb",
+      1000.0,
+      3000.0,
+      "Tecnologia",
+      "nuevo"
+    );
+    subasta.setCreador(usuarioCreador);
+    when(repositorioSubasta.obtenerSubasta(1L)).thenReturn(subasta);
+
+    servicioSubasta.eliminarSubasta(1L, usuarioCreador);
+
+    verify(repositorioSubasta, times(1)).eliminarSubasta(subasta);
+  }
+
+  @Test
+  public void queUnUsuarioQueNoEsElCreadorNoPuedeEliminarLaSubasta() {
+    Subasta subasta = new Subasta(
+      "Notebook",
+      "Notebook 16gb",
+      1000.0,
+      3000.0,
+      "Tecnologia",
+      "nuevo"
+    );
+    subasta.setCreador(usuarioCreador);
+
+    Usuario otroUsuario = new Usuario();
+    otroUsuario.setId(2L);
+
+    when(repositorioSubasta.obtenerSubasta(1L)).thenReturn(subasta);
+
+    assertThrows(Exception.class, () -> servicioSubasta.eliminarSubasta(1L, otroUsuario));
+
+    verify(repositorioSubasta, never()).eliminarSubasta(subasta);
+  }
+
+  @Test
+  public void queNoSePuedaEliminarUnaSubastaQueNoExiste() {
+    when(repositorioSubasta.obtenerSubasta(99L)).thenReturn(null);
+
+    assertThrows(Exception.class, () -> servicioSubasta.eliminarSubasta(99L, usuarioCreador));
+
+    verify(repositorioSubasta, never()).eliminarSubasta(any());
+  }
+
+  @Test
+  public void queNoSePuedaEliminarUnaSubastaQueYaTieneOfertas() {
+    Subasta subasta = new Subasta(
+      "Notebook",
+      "Notebook 16gb",
+      1000.0,
+      3000.0,
+      "Tecnologia",
+      "nuevo"
+    );
+    subasta.setCreador(usuarioCreador);
+
+    when(repositorioSubasta.obtenerSubasta(1L)).thenReturn(subasta);
+    when(repositorioOferta.obtenerMejorOfertaPorSubasta(1L)).thenReturn(new Oferta());
+
+    assertThrows(
+      SubastaConOfertasException.class,
+      () -> servicioSubasta.eliminarSubasta(1L, usuarioCreador)
+    );
+
+    verify(repositorioSubasta, never()).eliminarSubasta(subasta);
   }
 }

@@ -131,18 +131,23 @@
                 <hr>
 
                 <div th:if="${esCreador}" class="w3-row-padding w3-margin-top">
+
+                    <div th:if="${errorEliminar}" class="w3-panel w3-pale-red w3-border w3-border-red w3-round w3-margin-bottom">
+                        <p class="w3-text-red"><b th:text="${errorEliminar}"></b></p>
+                    </div>
+
                     <div class="w3-row-padding w3-margin-top">
                         <div class="w3-col l6 m6 s12 w3-margin-bottom">
                             <a th:href="@{/editar-subasta/{id}(id=${subasta.id})}"
-                                class="w3-button w3-amber w3-hover-dark-grey w3-block w3-round-large w3-large">
+                               class="w3-button w3-amber w3-hover-dark-grey w3-block w3-round-large w3-large">
                                 Editar</a>
                         </div>
 
                         <div class="w3-col l6 m6 s12 w3-margin-bottom">
                             <form th:action="@{/eliminar-subasta/{id}(id=${subasta.id})}" method="POST">
                                 <button type="submit"
-                                    class="w3-button w3-red w3-hover-dark-grey w3-block w3-round-large w3-large"
-                                    onclick="return confirm('¿Estás seguro de que deseas eliminar esta subasta?')">Borrar</button>
+                                        class="w3-button w3-red w3-hover-dark-grey w3-block w3-round-large w3-large"
+                                        onclick="return confirm('¿Estás seguro de que deseas eliminar esta subasta?')">Borrar</button>
                             </form>
                         </div>
                     </div>
