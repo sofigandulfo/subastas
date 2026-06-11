@@ -154,4 +154,13 @@ public class ServicioSubastaImpl implements ServicioSubasta {
 
     return repositorioSubasta.obtenerTodasLasSubastas();
   }
+
+  @Override
+  public void eliminarSubasta(Long subastaId, Usuario usuario) throws Exception {
+    Subasta subasta = repositorioSubasta.obtenerSubasta(subastaId);
+    if (!subasta.esCreador(usuario)) {
+      throw new Exception("No tenés permiso para eliminar esta subasta");
+    }
+    repositorioSubasta.eliminarSubasta(subasta);
+  }
 }

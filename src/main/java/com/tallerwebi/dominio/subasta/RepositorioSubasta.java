@@ -9,4 +9,5 @@ public interface RepositorioSubasta {
   List<Subasta> obtenerTodasLasSubastas();
   List<Subasta> buscarSubastasDelCreador(Long idCreador);
   List<Subasta> buscarSubastas(String busqueda);
+  void eliminarSubasta(Subasta subasta);
 }
