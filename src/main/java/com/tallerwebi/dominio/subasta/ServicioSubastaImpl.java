@@ -1,5 +1,6 @@
 package com.tallerwebi.dominio.subasta;
 
+import com.tallerwebi.dominio.excepcion.SubastaConOfertasException;
 import com.tallerwebi.dominio.excepcion.SubastaInvalidaExeption;
 import com.tallerwebi.dominio.oferta.Oferta;
 import com.tallerwebi.dominio.oferta.RepositorioOferta;
@@ -148,18 +149,30 @@ public class ServicioSubastaImpl implements ServicioSubasta {
 
   @Override
   public List<Subasta> obtenerSubastas(String busqueda) {
+    List<Subasta> todasLasSubastas;
     if (busqueda != null && !busqueda.trim().isEmpty()) {
-      return repositorioSubasta.buscarSubastas(busqueda);
+      todasLasSubastas = repositorioSubasta.buscarSubastas(busqueda);
+    } else {
+      todasLasSubastas = repositorioSubasta.obtenerTodasLasSubastas();
     }
-
-    return repositorioSubasta.obtenerTodasLasSubastas();
+    return todasLasSubastas
+      .stream()
+      .filter(s -> s.getEstadoSubasta() != EstadoSubasta.CERRADA)
+      .collect(java.util.stream.Collectors.toList());
   }
 
   @Override
   public void eliminarSubasta(Long subastaId, Usuario usuario) throws Exception {
     Subasta subasta = repositorioSubasta.obtenerSubasta(subastaId);
+    if (subasta == null) {
+      throw new Exception("Subasta no encontrada");
+    }
     if (!subasta.esCreador(usuario)) {
       throw new Exception("No tenés permiso para eliminar esta subasta");
+    }
+    Oferta oferta = repositorioOferta.obtenerMejorOfertaPorSubasta(subastaId);
+    if (oferta != null) {
+      throw new SubastaConOfertasException();
     }
     repositorioSubasta.eliminarSubasta(subasta);
   }

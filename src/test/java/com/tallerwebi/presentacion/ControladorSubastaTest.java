@@ -6,12 +6,7 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import com.tallerwebi.dominio.excepcion.SubastaInvalidaExeption;
 import com.tallerwebi.dominio.oferta.Oferta;
@@ -313,5 +308,26 @@ public class ControladorSubastaTest {
 
     assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/subastas"));
     verify(servicioSubastaMock, never()).obtenerSubastas(any());
+  }
+
+  @Test
+  public void eliminarSubastaComoCreadorDeberiaRedirigirASubastas() throws Exception {
+    when(requestMock.getSession()).thenReturn(sessionMock);
+    when(sessionMock.getAttribute("USUARIO_ID")).thenReturn(1L);
+    doNothing().when(servicioSubastaMock).eliminarSubasta(eq(1L), any(Usuario.class));
+
+    ModelAndView mav = controladorSubasta.eliminarSubasta(1L, requestMock);
+
+    assertThat(mav.getViewName(), equalToIgnoringCase("redirect:/subastas"));
+  }
+
+  @Test
+  public void eliminarSubastaSinSesionDeberiaRedirigirALogin() throws Exception {
+    when(requestMock.getSession()).thenReturn(sessionMock);
+    when(sessionMock.getAttribute("USUARIO_ID")).thenReturn(null);
+
+    ModelAndView mav = controladorSubasta.eliminarSubasta(1L, requestMock);
+
+    assertThat(mav.getViewName(), equalToIgnoringCase("redirect:/login"));
   }
 }

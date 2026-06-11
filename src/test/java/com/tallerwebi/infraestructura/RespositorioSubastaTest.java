@@ -89,4 +89,13 @@ public class RespositorioSubastaTest {
     assertThat(resultado.size(), equalTo(1));
     assertThat(resultado.get(0), equalTo(subasta));
   }
+
+  @Test
+  public void eliminarSubastaDeberiaLlamarAlMetodoDeleteDeLaSesion() {
+    Subasta subasta = new Subasta();
+
+    repositorioSubasta.eliminarSubasta(subasta);
+
+    verify(sessionMock, times(1)).delete(subasta);
+  }
 }

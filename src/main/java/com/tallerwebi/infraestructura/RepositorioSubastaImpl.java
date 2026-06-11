@@ -86,5 +86,7 @@ public class RepositorioSubastaImpl implements RepositorioSubasta {
   }
 
   @Override
-  public void eliminarSubasta(Subasta subasta) {}
+  public void eliminarSubasta(Subasta subasta) {
+    sessionFactory.getCurrentSession().delete(subasta);
+  }
 }
