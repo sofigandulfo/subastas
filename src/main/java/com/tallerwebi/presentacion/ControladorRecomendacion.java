@@ -30,7 +30,20 @@ public class ControladorRecomendacion {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
-    List<Subasta> recomendaciones = servicioRecomendacion.obtenerRecomendaciones(usuarioId);
-    return ResponseEntity.ok(recomendaciones);
+    List<Subasta> recomendaciones = (List<Subasta>) request
+      .getSession()
+      .getAttribute("RECOMENDACIONES");
+
+    if (recomendaciones == null) {
+      recomendaciones = servicioRecomendacion.obtenerRecomendaciones(usuarioId);
+      request.getSession().setAttribute("RECOMENDACIONES", recomendaciones);
+    }
+
+    List<RecomendacionDTO> dto = recomendaciones
+      .stream()
+      .map(RecomendacionDTO::new)
+      .collect(java.util.stream.Collectors.toList());
+
+    return ResponseEntity.ok(dto);
   }
 }

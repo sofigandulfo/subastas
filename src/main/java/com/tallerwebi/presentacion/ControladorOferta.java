@@ -52,7 +52,6 @@ public class ControladorOferta {
     HttpServletRequest request
   ) {
     try {
-      // 1. Sacamos el usuario de la sesión
       Long usuarioId = (Long) request.getSession().getAttribute("USUARIO_ID");
       if (usuarioId == null) {
         return new ModelAndView("redirect:/login");
@@ -60,27 +59,19 @@ public class ControladorOferta {
       Usuario ofertante = new Usuario();
       ofertante.setId(usuarioId);
 
-      // antes de aceptar una oferta, revisa si la subasta ya vencio
       servicioSubasta.cerrarSubastasPorTiempo();
-
-      // 2. Le pasamos el ofertante al servicio
       servicioOferta.procesarOferta(idSubasta, ofertaDTO.entidad(), ofertante);
 
-      // 3. Si tod0 sale bien, redirigimos al detalle de la subasta para ver el nuevo precio
+      request.getSession().removeAttribute("RECOMENDACIONES");
       return new ModelAndView("redirect:/detalle-subasta?id=" + idSubasta);
     } catch (OfertaInvalidaException e) {
       ModelMap modelo = new ModelMap();
-      // 3. Si la oferta es inválida, atajamos el error
       modelo.put("error", "La oferta ingresada no es válida.");
-      // Le volvemos a pasar la subasta y la oferta para que el HTML pueda
-      // renderizarse de nuevo sin romper
       modelo.put("subasta", servicioSubasta.obtenerSubasta(idSubasta));
       modelo.put(VISTA_OFERTA, ofertaDTO);
-
       return new ModelAndView(VISTA_OFERTA, modelo);
     } catch (SubastaNoEncontradaException e) {
       ModelMap modelo = new ModelMap();
-      // 4. Si la subasta no existe, podemos mostrar otro mensaje de error
       modelo.put("error", "La subasta a la que intenta ofertar no existe.");
       return new ModelAndView(VISTA_OFERTA, modelo);
     }
