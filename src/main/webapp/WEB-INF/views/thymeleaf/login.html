@@ -40,6 +40,14 @@
                     <p th:if="${error != null}" class="alert alert-danger" th:text="'Error ' + ${error}">
                     </p>
                 </form>
+                <hr>
+                <a class="btn btn-lg btn-danger btn-block" th:href="@{/oauth2/authorization/google}">
+                    Iniciar sesión con Google
+                </a>
+                <p th:if="${param.error != null}" class="alert alert-danger">
+                    Error al iniciar sesión con Google.
+                </p>
+
                 <a id="btn-register" href="nuevo-usuario">Registrarme</a>
             </div>
         </div>
