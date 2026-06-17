@@ -1,6 +1,7 @@
 package com.tallerwebi.dominio.subasta;
 
 import com.tallerwebi.dominio.excepcion.SubastaInvalidaExeption;
+import com.tallerwebi.dominio.excepcion.SubastaNoEditableException;
 import com.tallerwebi.dominio.oferta.Oferta;
 import com.tallerwebi.dominio.oferta.RepositorioOferta;
 import com.tallerwebi.dominio.usuario.Usuario;
@@ -156,5 +157,35 @@ public class ServicioSubastaImpl implements ServicioSubasta {
     }
 
     return repositorioSubasta.obtenerTodasLasSubastas();
+  }
+
+  @Override
+  public void editarSubasta(
+    Long id,
+    String nombre,
+    String descripcion,
+    String categoria,
+    MultipartFile imagen,
+    Usuario usuarioSolicitante
+  ) throws SubastaNoEditableException {
+    Subasta subasta = repositorioSubasta.obtenerSubasta(id);
+
+    if (!subasta.esCreador(usuarioSolicitante)) {
+      throw new SubastaNoEditableException();
+    }
+
+    subasta.getDetalle().setNombre(nombre);
+    subasta.getDetalle().setDescripcion(descripcion);
+    subasta.getDetalle().setCategoria(categoria);
+
+    if (imagen != null && !imagen.isEmpty()) {
+      try {
+        subasta.getDetalle().setImagen(imagen.getBytes());
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+    }
+
+    repositorioSubasta.guardarSubasta(subasta);
   }
 }

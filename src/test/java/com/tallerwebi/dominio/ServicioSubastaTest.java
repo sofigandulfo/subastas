@@ -7,13 +7,17 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import com.tallerwebi.dominio.excepcion.SubastaInvalidaExeption;
+import com.tallerwebi.dominio.excepcion.SubastaNoEditableException;
 import com.tallerwebi.dominio.oferta.Oferta;
 import com.tallerwebi.dominio.oferta.RepositorioOferta;
-import com.tallerwebi.dominio.subasta.*;
+import com.tallerwebi.dominio.subasta.EstadoSubasta;
+import com.tallerwebi.dominio.subasta.RepositorioSubasta;
+import com.tallerwebi.dominio.subasta.ServicioSubasta;
+import com.tallerwebi.dominio.subasta.ServicioSubastaImpl;
+import com.tallerwebi.dominio.subasta.Subasta;
 import com.tallerwebi.dominio.usuario.Usuario;
 import java.time.LocalDateTime;
 import java.util.List;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.multipart.MultipartFile;
@@ -139,7 +143,7 @@ public class ServicioSubastaTest {
     );
     subasta.setFechaCierre(LocalDateTime.now().plusDays(1));
     servicioSubasta.crearSubasta(subasta, null, usuarioCreador);
-    Assertions.assertEquals(EstadoSubasta.ACTIVA, subasta.getEstadoSubasta());
+    assertEquals(EstadoSubasta.ACTIVA, subasta.getEstadoSubasta());
   }
 
   @Test
@@ -489,6 +493,79 @@ public class ServicioSubastaTest {
     );
 
     verify(this.repositorioSubasta, never()).guardarSubasta(any(Subasta.class));
+  }
+
+  @Test
+  public void queElCreadorPuedeEditarLosCamposDelDetalle() throws SubastaNoEditableException {
+    Subasta subasta = new Subasta("Notebook", "desc", 1000.0, 5000.0, "Tecnologia", "nuevo");
+    subasta.setId(1L);
+    subasta.setCreador(usuarioCreador);
+
+    when(repositorioSubasta.obtenerSubasta(1L)).thenReturn(subasta);
+
+    servicioSubasta.editarSubasta(
+      1L,
+      "Mouse",
+      "Mouse inalambrico",
+      "Perifericos",
+      null,
+      usuarioCreador
+    );
+
+    assertEquals("Mouse", subasta.getDetalle().getNombre());
+    assertEquals("Mouse inalambrico", subasta.getDetalle().getDescripcion());
+    assertEquals("Perifericos", subasta.getDetalle().getCategoria());
+  }
+
+  @Test
+  public void queAlEditarSeGuardaEnElRepositorio() throws SubastaNoEditableException {
+    Subasta subasta = new Subasta("Notebook", "desc", 1000.0, 5000.0, "Tecnologia", "nuevo");
+    subasta.setId(1L);
+    subasta.setCreador(usuarioCreador);
+
+    when(repositorioSubasta.obtenerSubasta(1L)).thenReturn(subasta);
+
+    servicioSubasta.editarSubasta(
+      1L,
+      "Mouse",
+      "Mouse inalambrico",
+      "Perifericos",
+      null,
+      usuarioCreador
+    );
+
+    verify(repositorioSubasta, times(1)).guardarSubasta(subasta);
+  }
+
+  @Test
+  public void queUnUsuarioQueNoEsCreadorNoPuedeEditar() {
+    Subasta subasta = new Subasta("Notebook", "desc", 1000.0, 5000.0, "Tecnologia", "nuevo");
+    subasta.setId(1L);
+    subasta.setCreador(usuarioCreador);
+
+    Usuario otroUsuario = new Usuario();
+    otroUsuario.setId(2L);
+
+    when(repositorioSubasta.obtenerSubasta(1L)).thenReturn(subasta);
+
+    assertThrows(
+      SubastaNoEditableException.class,
+      () -> servicioSubasta.editarSubasta(1L, "Mouse", "desc", "Perifericos", null, otroUsuario)
+    );
+  }
+
+  @Test
+  public void queAlEditarNoCambianLosPrecios() throws SubastaNoEditableException {
+    Subasta subasta = new Subasta("Notebook", "desc", 1000.0, 5000.0, "Tecnologia", "nuevo");
+    subasta.setId(1L);
+    subasta.setCreador(usuarioCreador);
+
+    when(repositorioSubasta.obtenerSubasta(1L)).thenReturn(subasta);
+
+    servicioSubasta.editarSubasta(1L, "Mouse", "desc", "Perifericos", null, usuarioCreador);
+
+    assertEquals(1000.0, subasta.getPrecioInicial());
+    assertEquals(5000.0, subasta.getPrecioMaximo());
   }
 
   @Test
