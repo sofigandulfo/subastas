@@ -2,6 +2,7 @@ package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.excepcion.SubastaConOfertasException;
 import com.tallerwebi.dominio.excepcion.SubastaInvalidaExeption;
+import com.tallerwebi.dominio.excepcion.SubastaNoEditableException;
 import com.tallerwebi.dominio.oferta.Oferta;
 import com.tallerwebi.dominio.oferta.ServicioOferta;
 import com.tallerwebi.dominio.subasta.EstadoSubasta;
@@ -29,6 +30,10 @@ public class ControladorSubasta {
   private static final String KEY_SUBASTA = "subasta";
   private static final String USUARIO_ID = "USUARIO_ID";
   private static final String ERROR_ELIMINAR = "errorEliminar";
+  private static final String VISTA_EDITAR_SUBASTA = "editar-subasta";
+  private static final String REDIRECT_LOGIN = "redirect:/login";
+  private static final String REDIRECT_DETALLE = "redirect:/detalle-subasta?id=";
+  private static final String KEY_ERROR = "error";
 
   @Autowired
   public ControladorSubasta(ServicioSubasta servicioSubasta, ServicioOferta servicioOferta) {
@@ -72,7 +77,7 @@ public class ControladorSubasta {
   public ModelAndView irAlFormulario(HttpServletRequest request) {
     Long usuarioId = (Long) request.getSession().getAttribute(USUARIO_ID);
     if (usuarioId == null) {
-      return new ModelAndView("redirect:/login");
+      return new ModelAndView(REDIRECT_LOGIN);
     }
     ModelMap modelo = new ModelMap();
     modelo.put(KEY_SUBASTA, new SubastaDTO());
@@ -88,7 +93,7 @@ public class ControladorSubasta {
     try {
       Long usuarioId = (Long) request.getSession().getAttribute(USUARIO_ID);
       if (usuarioId == null) {
-        return new ModelAndView("redirect:/login");
+        return new ModelAndView(REDIRECT_LOGIN);
       }
       Usuario creador = new Usuario();
       creador.setId(usuarioId);
@@ -97,9 +102,9 @@ public class ControladorSubasta {
       Subasta subastaGuardada = servicioSubasta.crearSubasta(subasta, imagen, creador);
       return new ModelAndView("redirect:/detalle-subasta?id=" + subastaGuardada.getId());
     } catch (SubastaInvalidaExeption e) {
-      return new ModelAndView(VISTA_CREAR_SUBASTA, "error", "Los datos ingresados son invalidos");
+      return new ModelAndView(VISTA_CREAR_SUBASTA, KEY_ERROR, "Los datos ingresados son invalidos");
     } catch (Exception e) {
-      return new ModelAndView(VISTA_CREAR_SUBASTA, "error", "Error al registrar nueva subasta");
+      return new ModelAndView(VISTA_CREAR_SUBASTA, KEY_ERROR, "Error al registrar nueva subasta");
     }
   }
 
@@ -112,7 +117,7 @@ public class ControladorSubasta {
 
     if (subasta == null) {
       modelo.put(KEY_SUBASTA, new Subasta());
-      return new ModelAndView(VISTA_CREAR_SUBASTA, "error", "Subasta no encontrada");
+      return new ModelAndView(VISTA_CREAR_SUBASTA, KEY_ERROR, "Subasta no encontrada");
     }
 
     Long usuarioId = (Long) request.getSession().getAttribute(USUARIO_ID);
@@ -182,9 +187,59 @@ public class ControladorSubasta {
       request
         .getSession()
         .setAttribute(ERROR_ELIMINAR, "No se puede eliminar una subasta que ya tiene ofertas");
-      return new ModelAndView("redirect:/detalle-subasta?id=" + id);
+      return new ModelAndView(REDIRECT_DETALLE + id);
     } catch (Exception e) {
-      return new ModelAndView("redirect:/detalle-subasta?id=" + id);
+      return new ModelAndView(REDIRECT_DETALLE + id);
+    }
+  }
+
+  @GetMapping("/editar-subasta")
+  public ModelAndView irAEditarSubasta(@RequestParam Long id, HttpServletRequest request) {
+    Long usuarioId = (Long) request.getSession().getAttribute(USUARIO_ID);
+    if (usuarioId == null) {
+      return new ModelAndView(REDIRECT_LOGIN);
+    }
+
+    Subasta subasta = servicioSubasta.obtenerSubasta(id);
+    Usuario usuarioEnSesion = new Usuario();
+    usuarioEnSesion.setId(usuarioId);
+
+    if (!subasta.esCreador(usuarioEnSesion)) {
+      return new ModelAndView(REDIRECT_DETALLE + id);
+    }
+
+    ModelMap modelo = new ModelMap();
+    modelo.put(KEY_SUBASTA, subasta);
+    return new ModelAndView(VISTA_EDITAR_SUBASTA, modelo);
+  }
+
+  @PostMapping("/editar-subasta")
+  public ModelAndView editarSubasta(
+    @RequestParam Long id,
+    @RequestParam String nombre,
+    @RequestParam String descripcion,
+    @RequestParam String categoria,
+    @RequestParam("imagen") MultipartFile imagen,
+    HttpServletRequest request
+  ) {
+    try {
+      Long usuarioId = (Long) request.getSession().getAttribute(USUARIO_ID);
+      if (usuarioId == null) {
+        return new ModelAndView(REDIRECT_LOGIN);
+      }
+      Usuario usuarioEnSesion = new Usuario();
+      usuarioEnSesion.setId(usuarioId);
+
+      servicioSubasta.editarSubasta(id, nombre, descripcion, categoria, imagen, usuarioEnSesion);
+      return new ModelAndView(REDIRECT_DETALLE + id);
+    } catch (SubastaNoEditableException e) {
+      return new ModelAndView(
+        VISTA_EDITAR_SUBASTA,
+        KEY_ERROR,
+        "No tenés permiso para editar esta subasta"
+      );
+    } catch (Exception e) {
+      return new ModelAndView(VISTA_EDITAR_SUBASTA, KEY_ERROR, "Error al editar la subasta");
     }
   }
 }

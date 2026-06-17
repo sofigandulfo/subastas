@@ -1,6 +1,7 @@
 package com.tallerwebi.dominio.subasta;
 
 import com.tallerwebi.dominio.excepcion.SubastaInvalidaExeption;
+import com.tallerwebi.dominio.excepcion.SubastaNoEditableException;
 import com.tallerwebi.dominio.usuario.Usuario;
 import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,4 +16,12 @@ public interface ServicioSubasta {
   List<Subasta> obtenerSubastasDelCreador(Long idCreador);
   List<Subasta> obtenerSubastas(String busqueda);
   void eliminarSubasta(Long subastaId, Usuario usuarioCreador) throws Exception;
+  void editarSubasta(
+    Long id,
+    String nombre,
+    String descripcion,
+    String categoria,
+    MultipartFile imagen,
+    Usuario usuarioSolicitante
+  ) throws SubastaNoEditableException;
 }

@@ -264,4 +264,52 @@ public class ServicioAutoPujaTest {
       );
     assertEquals(5000.0, subasta.getPrecioActual());
   }
+
+  @Test
+  public void procesarAutoPujasNoDeberiaHacerNadaSiNoHayAutoPujasActivas() {
+    Subasta subasta = subastaConId(1L);
+    subasta.setPrecioActual(2000.0);
+    Oferta ofertaManual = new Oferta(2000.0, subasta, usuarioConId(2L));
+
+    when(repositorioAutoPujaMock.obtenerAutoPujasActivasPorSubasta(1L)).thenReturn(List.of());
+
+    servicioAutoPuja.procesarAutoPujas(subasta, ofertaManual);
+
+    verify(repositorioOfertaMock, never()).guardarOferta(any());
+  }
+
+  @Test
+  public void activarAutoPujaDeberiaLanzarExcepcionSiLaSubastaNoExiste() {
+    when(repositorioSubastaMock.obtenerSubasta(99L)).thenReturn(null);
+
+    assertThrows(
+      SubastaNoEncontradaException.class,
+      () -> {
+        servicioAutoPuja.activarAutoPuja(99L, usuarioConId(1L), 5000.0);
+      }
+    );
+
+    verify(repositorioAutoPujaMock, never()).guardar(any());
+    verify(repositorioOfertaMock, never()).guardarOferta(any());
+  }
+
+  @Test
+  public void elBotNoDebePujarSiSuMontoMaximoYaFueSuperado() {
+    Subasta subasta = subastaConId(1L);
+    subasta.setPrecioActual(6000.0); // precio actual ya supera el monto máximo del bot
+
+    Usuario usuarioQueOferto = usuarioConId(2L);
+    Usuario usuarioConBot = usuarioConId(3L);
+
+    Oferta ofertaManual = new Oferta(6000.0, subasta, usuarioQueOferto);
+    AutoPuja autoPuja = new AutoPuja(subasta, usuarioConBot, 5000.0); // monto max menor al precio actual
+
+    when(repositorioAutoPujaMock.obtenerAutoPujasActivasPorSubasta(1L))
+      .thenReturn(List.of(autoPuja));
+
+    servicioAutoPuja.procesarAutoPujas(subasta, ofertaManual);
+
+    verify(repositorioOfertaMock, never()).guardarOferta(any());
+    assertEquals(6000.0, subasta.getPrecioActual());
+  }
 }

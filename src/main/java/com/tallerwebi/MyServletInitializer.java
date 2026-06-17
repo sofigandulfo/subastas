@@ -3,7 +3,9 @@ package com.tallerwebi;
 import com.tallerwebi.config.DatabaseInitializationConfig;
 import com.tallerwebi.config.HibernateConfig;
 import com.tallerwebi.config.SpringWebConfig;
+import javax.servlet.Filter;
 import javax.servlet.MultipartConfigElement;
+import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 public class MyServletInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
@@ -27,6 +29,11 @@ public class MyServletInitializer extends AbstractAnnotationConfigDispatcherServ
   @Override
   protected String[] getServletMappings() {
     return new String[] { "/" };
+  }
+
+  @Override
+  protected Filter[] getServletFilters() {
+    return new Filter[] { new DelegatingFilterProxy("springSecurityFilterChain") };
   }
 
   @Override

@@ -2,6 +2,7 @@ package com.tallerwebi.dominio.subasta;
 
 import com.tallerwebi.dominio.excepcion.SubastaConOfertasException;
 import com.tallerwebi.dominio.excepcion.SubastaInvalidaExeption;
+import com.tallerwebi.dominio.excepcion.SubastaNoEditableException;
 import com.tallerwebi.dominio.oferta.Oferta;
 import com.tallerwebi.dominio.oferta.RepositorioOferta;
 import com.tallerwebi.dominio.usuario.Usuario;
@@ -58,6 +59,9 @@ public class ServicioSubastaImpl implements ServicioSubasta {
   @Override
   public void verificarPrecioMaximo(Long subastaId) {
     Subasta subasta = repositorioSubasta.obtenerSubasta(subastaId);
+    if (subasta.getEstadoSubasta() == EstadoSubasta.CERRADA) {
+      return; //si la subasta ya esta cerrada, no debería hacer nada
+    }
     if (subasta.getPrecioActual() >= subasta.getPrecioMaximo()) {
       subasta.setEstadoSubasta(EstadoSubasta.CUENTA_ATRAS);
       // para probarlo podemos usar .plusMinutes en vez de .plusHours
@@ -175,5 +179,35 @@ public class ServicioSubastaImpl implements ServicioSubasta {
       throw new SubastaConOfertasException();
     }
     repositorioSubasta.eliminarSubasta(subasta);
+  }
+
+  @Override
+  public void editarSubasta(
+    Long id,
+    String nombre,
+    String descripcion,
+    String categoria,
+    MultipartFile imagen,
+    Usuario usuarioSolicitante
+  ) throws SubastaNoEditableException {
+    Subasta subasta = repositorioSubasta.obtenerSubasta(id);
+
+    if (!subasta.esCreador(usuarioSolicitante)) {
+      throw new SubastaNoEditableException();
+    }
+
+    subasta.getDetalle().setNombre(nombre);
+    subasta.getDetalle().setDescripcion(descripcion);
+    subasta.getDetalle().setCategoria(categoria);
+
+    if (imagen != null && !imagen.isEmpty()) {
+      try {
+        subasta.getDetalle().setImagen(imagen.getBytes());
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+    }
+
+    repositorioSubasta.guardarSubasta(subasta);
   }
 }

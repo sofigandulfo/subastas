@@ -20,13 +20,15 @@
 
         <div class="w3-margin-bottom w3-display-container" style="height: 40px;">
             <div class="w3-display-left">
-                <a id="btn-nueva-subasta" th:href="@{/crear-subasta}" class="w3-button w3-amber w3-round w3-hover-dark-grey" >
+                <a id="btn-nueva-subasta" th:href="@{/crear-subasta}"
+                    class="w3-button w3-amber w3-round w3-hover-dark-grey">
                     + Nueva Subasta
                 </a>
             </div>
 
             <div class="w3-display-right" th:if="${estaLogueado}">
-                <a id="btn-mi-perfil" th:href="@{/perfil}" class="w3-button w3-blue w3-round w3-hover-dark-grey w3-margin-right">
+                <a id="btn-mi-perfil" th:href="@{/perfil}"
+                    class="w3-button w3-blue w3-round w3-hover-dark-grey w3-margin-right">
                     Mi Perfil
                 </a>
                 <a id="btn-cerrar-sesion" th:href="@{/logout}" class="w3-button w3-red w3-round w3-hover-dark-grey">
@@ -41,17 +43,29 @@
         </div>
 
         <form th:action="@{/subastas}" method="get" class="w3-margin-bottom">
-                <div class="w3-row">
-                    <div class="w3-col s9">
-                        <input class="w3-input w3-border w3-round" type="text" name="busqueda" placeholder="Buscar subastas..." th:value="${busqueda}">
-                    </div>
-                    
-                    <div class="w3-col s3">
-                        <button type="submit" class="w3-button w3-amber w3-round w3-block">Buscar</button>
+            <div class="w3-row">
+                <div class="w3-col s9">
+                    <input class="w3-input w3-border w3-round" type="text" name="busqueda"
+                        placeholder="Buscar subastas..." th:value="${busqueda}">
+                </div>
+
+                <div class="w3-col s3">
+                    <button type="submit" class="w3-button w3-amber w3-round w3-block">Buscar</button>
+                </div>
+            </div>
+        </form>
+        <div th:if="${estaLogueado}" id="seccion-recomendadas" class="w3-margin-bottom">
+            <div class="w3-card-4 w3-white w3-round-large">
+                <div class="w3-container w3-blue w3-round-top">
+                    <h4 class="w3-text-white">Sugeridas para vos</h4>
+                </div>
+                <div class="w3-container w3-padding-16">
+                    <div id="contenedor-recomendadas" class="w3-row-padding">
+                        <p class="w3-text-grey">Cargando recomendaciones...</p>
                     </div>
                 </div>
-            </form>
-
+            </div>
+        </div>
         <div th:if="${#lists.isEmpty(subastas)}" class="w3-card-4 w3-white w3-round-large w3-padding-24 w3-center">
             <p class="w3-large w3-text-grey">No hay subastas disponibles por el momento.</p>
         </div>
@@ -64,12 +78,12 @@
                         <h4 class="w3-text-white" th:text="${subasta.detalle.nombre}">Nombre</h4>
                     </div>
 
-                    <div class="w3-center w3-border-bottom" style="height: 200px; overflow: hidden; display: flex; justify-content: center; align-items: center; background-color: #f1f1f1;">
+                    <div class="w3-center w3-border-bottom"
+                        style="height: 200px; overflow: hidden; display: flex; justify-content: center; align-items: center; background-color: #f1f1f1;">
 
                         <img th:if="${imagenesBase64.containsKey(subasta.id)}"
-                             th:src="@{'data:image/jpeg;base64,' + ${imagenesBase64.get(subasta.id)}}"
-                             alt="Imagen del producto"
-                             style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                            th:src="@{'data:image/jpeg;base64,' + ${imagenesBase64.get(subasta.id)}}"
+                            alt="Imagen del producto" style="max-width: 100%; max-height: 100%; object-fit: contain;">
 
                         <div th:unless="${imagenesBase64.containsKey(subasta.id)}" class="w3-text-grey">
                             <p><i class="w3-large">Sin imagen</i></p>
@@ -109,7 +123,7 @@
         </div>
 
     </div>
-
+    <script th:if="${estaLogueado}" th:src="@{/js/recomendaciones.js}"></script>
 </body>
 
 </html>
