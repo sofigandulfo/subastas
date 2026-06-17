@@ -33,7 +33,6 @@ public class ControladorOfertaTest {
 
   @BeforeEach
   public void init() {
-    // Mockeamos ambos servicios porque el controlador los va a necesitar
     servicioOfertaMock = mock(ServicioOferta.class);
     servicioSubastaMock = mock(ServicioSubasta.class);
     controladorOferta = new ControladorOferta(servicioOfertaMock, servicioSubastaMock);

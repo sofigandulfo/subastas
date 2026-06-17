@@ -567,4 +567,40 @@ public class ServicioSubastaTest {
     assertEquals(1000.0, subasta.getPrecioInicial());
     assertEquals(5000.0, subasta.getPrecioMaximo());
   }
+
+  @Test
+  public void queVerificarPrecioMaximoNoHagaNadaSiLaSubastaYaEstaCerrada() {
+    // preparacion
+    Subasta subasta = new Subasta(
+      "Notebook",
+      "Notebook 16gb",
+      1000.0,
+      3000.0,
+      "Tecnologia",
+      "nuevo"
+    );
+    subasta.setPrecioActual(3000.0);
+    subasta.setEstadoSubasta(EstadoSubasta.CERRADA);
+    when(repositorioSubasta.obtenerSubasta(1L)).thenReturn(subasta);
+
+    // ejecucion
+    servicioSubasta.verificarPrecioMaximo(1L);
+
+    // validacion
+    assertEquals(EstadoSubasta.CERRADA, subasta.getEstadoSubasta());
+    verify(repositorioSubasta, never()).guardarSubasta(subasta);
+  }
+
+  @Test
+  public void queCerrarSubastasPorTiempoNoHagaNadaSiNoHaySubastasPorVencer() {
+    // preparacion
+    when(repositorioSubasta.obtenerSubastasPorVencer()).thenReturn(List.of());
+
+    // ejecucion
+    servicioSubasta.cerrarSubastasPorTiempo();
+
+    // validacion
+    verify(repositorioSubasta, never()).guardarSubasta(any());
+    verify(repositorioOferta, never()).obtenerMejoresOfertasPorSubasta(any());
+  }
 }

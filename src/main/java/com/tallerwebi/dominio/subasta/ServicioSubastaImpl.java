@@ -58,6 +58,9 @@ public class ServicioSubastaImpl implements ServicioSubasta {
   @Override
   public void verificarPrecioMaximo(Long subastaId) {
     Subasta subasta = repositorioSubasta.obtenerSubasta(subastaId);
+    if (subasta.getEstadoSubasta() == EstadoSubasta.CERRADA) {
+      return; //si la subasta ya esta cerrada, no debería hacer nada
+    }
     if (subasta.getPrecioActual() >= subasta.getPrecioMaximo()) {
       subasta.setEstadoSubasta(EstadoSubasta.CUENTA_ATRAS);
       // para probarlo podemos usar .plusMinutes en vez de .plusHours
