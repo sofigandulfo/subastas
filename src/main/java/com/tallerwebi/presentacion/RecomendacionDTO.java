@@ -1,6 +1,5 @@
 package com.tallerwebi.presentacion;
 
-import com.tallerwebi.dominio.oferta.Oferta;
 import com.tallerwebi.dominio.subasta.Subasta;
 
 public class RecomendacionDTO {
