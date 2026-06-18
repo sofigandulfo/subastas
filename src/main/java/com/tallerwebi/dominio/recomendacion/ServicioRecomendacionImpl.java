@@ -57,6 +57,15 @@ public class ServicioRecomendacionImpl implements ServicioRecomendacion {
     }
   }
 
+  @Override
+  public List<Subasta> obtenerRecomendacionesPorIds(List<Long> ids) {
+    return ids
+      .stream()
+      .map(id -> servicioSubasta.obtenerSubasta(id))
+      .filter(s -> s != null && s.getEstadoSubasta() == EstadoSubasta.ACTIVA)
+      .collect(Collectors.toList());
+  }
+
   private String construirPrompt(List<Subasta> historial, List<Subasta> activas) {
     StringBuilder sb = new StringBuilder();
     sb.append("Sos un asistente de recomendaciones de subastas. ");

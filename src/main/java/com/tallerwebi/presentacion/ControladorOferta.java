@@ -62,7 +62,7 @@ public class ControladorOferta {
       servicioSubasta.cerrarSubastasPorTiempo();
       servicioOferta.procesarOferta(idSubasta, ofertaDTO.entidad(), ofertante);
 
-      request.getSession().removeAttribute("RECOMENDACIONES");
+      request.getSession().removeAttribute("RECOMENDACIONES_IDS");
       return new ModelAndView("redirect:/detalle-subasta?id=" + idSubasta);
     } catch (OfertaInvalidaException e) {
       ModelMap modelo = new ModelMap();
