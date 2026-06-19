@@ -1,7 +1,6 @@
 package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.recomendacion.ServicioRecomendacion;
-import com.tallerwebi.dominio.subasta.ServicioSubasta;
 import com.tallerwebi.dominio.subasta.Subasta;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,15 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class ControladorRecomendacion {
 
   private final ServicioRecomendacion servicioRecomendacion;
-  private final ServicioSubasta servicioSubasta;
 
   @Autowired
-  public ControladorRecomendacion(
-    ServicioRecomendacion servicioRecomendacion,
-    ServicioSubasta servicioSubasta
-  ) {
+  public ControladorRecomendacion(ServicioRecomendacion servicioRecomendacion) {
     this.servicioRecomendacion = servicioRecomendacion;
-    this.servicioSubasta = servicioSubasta;
   }
 
   @GetMapping("/recomendaciones")
@@ -41,6 +35,11 @@ public class ControladorRecomendacion {
 
     if (idsEnCache != null) {
       recomendaciones = servicioRecomendacion.obtenerRecomendacionesPorIds(idsEnCache);
+      List<Long> idsActivos = recomendaciones
+        .stream()
+        .map(Subasta::getId)
+        .collect(Collectors.toList());
+      request.getSession().setAttribute("RECOMENDACIONES_IDS", idsActivos);
     } else {
       recomendaciones = servicioRecomendacion.obtenerRecomendaciones(usuarioId);
       if (!recomendaciones.isEmpty()) {

@@ -24,6 +24,8 @@ import com.tallerwebi.dominio.usuario.Usuario;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
 
 public class ServicioRecomendacionTest {
 
@@ -111,6 +113,39 @@ public class ServicioRecomendacionTest {
 
     assertThat(resultado, hasSize(1));
     assertThat(resultado.get(0), equalTo(subastaAjena));
+  }
+
+  @Test
+  public void cuandoLlamoAObtenerRecomendacionPorIdsObtengoLasActivas() {
+    Subasta activa = crearSubastaActiva(1L, "Pantuflas", "Ropa", 1L);
+    when(servicioSubastaMock.obtenerSubasta(1L)).thenReturn(activa);
+
+    List<Subasta> resultado = servicioRecomendacion.obtenerRecomendacionesPorIds(List.of(1L));
+
+    assertThat(resultado, hasSize(1));
+    assertThat(resultado.get(0), equalTo(activa));
+  }
+
+  @Test
+  public void cuandoLlamoAObtenerRecomendacionPorIdsDescartaLasInactivas() {
+    Subasta cerrada = crearSubastaActiva(1L, "Lego", "Entretenimiento", 1L);
+    cerrada.setEstadoSubasta(EstadoSubasta.CERRADA);
+    when(servicioSubastaMock.obtenerSubasta(2L)).thenReturn(cerrada);
+    List<Subasta> resultado = servicioRecomendacion.obtenerRecomendacionesPorIds(List.of(2L));
+    assertThat(resultado, empty());
+  }
+
+  @Test
+  public void siGeminiLanzaUnHttpClientErrorExceptionDeberiaRetornarListaVacia() throws Exception {
+    Subasta subasta = crearSubastaActiva(1L, "Notebook", "Tecnologia", 2L);
+    when(servicioSubastaMock.obtenerTodasLasSubastas()).thenReturn(List.of(subasta));
+    when(servicioOfertaMock.obtenerSubastasDondeParticipe(1L)).thenReturn(List.of());
+    when(servicioGeminiMock.preguntar(any(), any(), eq(false)))
+      .thenThrow(new HttpClientErrorException(HttpStatus.TOO_MANY_REQUESTS));
+
+    List<Subasta> resultado = servicioRecomendacion.obtenerRecomendaciones(1L);
+
+    assertThat(resultado, empty());
   }
 
   private Subasta crearSubastaActiva(Long id, String nombre, String categoria, Long idCreador) {
