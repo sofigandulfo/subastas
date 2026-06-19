@@ -36,14 +36,13 @@ public class ServicioRecomendacionImpl implements ServicioRecomendacion {
     // Entonces primero obtenemos el historial
 
     List<Subasta> historial = servicioOferta.obtenerSubastasDondeParticipe(usuarioId);
-    List<Long> idsPujadas = historial.stream().map(Subasta::getId).collect(Collectors.toList());
 
     List<Subasta> activas = servicioSubasta
       .obtenerTodasLasSubastas()
       .stream()
       .filter(s -> s.getEstadoSubasta() == EstadoSubasta.ACTIVA)
       .filter(s -> s.getCreador() == null || !s.getCreador().getId().equals(usuarioId))
-      .filter(s -> !idsPujadas.contains(s.getId()))
+      .filter(s -> historial.stream().noneMatch(h -> h.getId().equals(s.getId())))
       .collect(Collectors.toList());
 
     if (activas.isEmpty()) {
