@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 @Service
 public class ServicioRecomendacionImpl implements ServicioRecomendacion {
@@ -53,6 +54,8 @@ public class ServicioRecomendacionImpl implements ServicioRecomendacion {
     try {
       return servicioGemini.preguntar(prompt, null, false);
     } catch (JsonProcessingException e) {
+      return "";
+    } catch (HttpClientErrorException e) {
       return "";
     }
   }
