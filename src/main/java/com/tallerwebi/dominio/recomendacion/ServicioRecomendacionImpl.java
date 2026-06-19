@@ -32,18 +32,24 @@ public class ServicioRecomendacionImpl implements ServicioRecomendacion {
 
   @Override
   public List<Subasta> obtenerRecomendaciones(Long usuarioId) {
+    // Cambio el orden porque quiero que no figuren las subastas en las que el usuario ya pujó
+    // Entonces primero obtenemos el historial
+
+    List<Subasta> historial = servicioOferta.obtenerSubastasDondeParticipe(usuarioId);
+    List<Long> idsPujadas = historial.stream().map(Subasta::getId).collect(Collectors.toList());
+
     List<Subasta> activas = servicioSubasta
       .obtenerTodasLasSubastas()
       .stream()
       .filter(s -> s.getEstadoSubasta() == EstadoSubasta.ACTIVA)
       .filter(s -> s.getCreador() == null || !s.getCreador().getId().equals(usuarioId))
+      .filter(s -> !idsPujadas.contains(s.getId()))
       .collect(Collectors.toList());
 
     if (activas.isEmpty()) {
       return new ArrayList<>();
     }
 
-    List<Subasta> historial = servicioOferta.obtenerSubastasDondeParticipe(usuarioId);
     String prompt = construirPrompt(historial, activas);
     String respuesta = obtenerRespuestaGemini(prompt);
 
