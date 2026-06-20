@@ -15,45 +15,40 @@ document.addEventListener("DOMContentLoaded", function () {
       var contenedor = document.getElementById("contenedor-recomendadas");
       contenedor.innerHTML = "";
       subastas.forEach(function (subasta) {
-        var col = document.createElement("div");
-        col.className = "w3-third w3-margin-bottom";
-
-        var card = document.createElement("div");
-        card.className = "w3-card-4 w3-white w3-round-large";
-
-        var header = document.createElement("div");
-        header.className = "w3-container w3-blue w3-round-top";
-        var titulo = document.createElement("h4");
-        titulo.className = "w3-text-white";
-        titulo.textContent = subasta.nombre;
-        header.appendChild(titulo);
+        var card = document.createElement("article");
+        card.className = "app-card subasta-card";
 
         var body = document.createElement("div");
-        body.className = "w3-container w3-padding-16";
+        body.className = "app-card-body";
+
+        var titulo = document.createElement("h3");
+        titulo.className = "subasta-title";
+        titulo.textContent = subasta.nombre;
 
         var desc = document.createElement("p");
-        desc.className = "w3-text-grey";
+        desc.className = "subasta-description";
         desc.textContent = subasta.descripcion;
 
         var precio = document.createElement("p");
-        precio.innerHTML = "<b>Precio actual:</b> $" + subasta.precioActual;
+        precio.className = "price";
+        precio.textContent = "$" + subasta.precioActual;
 
         var categoria = document.createElement("p");
-        categoria.innerHTML = "<b>Categoría:</b> " + subasta.categoria;
+        categoria.className = "text-muted";
+        categoria.textContent = subasta.categoria;
 
         var link = document.createElement("a");
         link.href = "/spring/detalle-subasta?id=" + subasta.id;
-        link.className = "w3-button w3-blue w3-round w3-block w3-hover-dark-grey w3-margin-top";
+        link.className = "btn btn-app-primary w-100";
         link.textContent = "Ver detalle";
 
+        body.appendChild(titulo);
         body.appendChild(desc);
         body.appendChild(precio);
         body.appendChild(categoria);
         body.appendChild(link);
-        card.appendChild(header);
         card.appendChild(body);
-        col.appendChild(card);
-        contenedor.appendChild(col);
+        contenedor.appendChild(card);
       });
     })
     .catch(function () {
