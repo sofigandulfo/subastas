@@ -27,10 +27,16 @@
                         <span th:text="${venta.detalle.nombre}" class="w3-large">Nombre Artículo</span><br>
                         <span th:text="'Estado: ' + ${venta.estadoSubasta}">Estado</span>
 
-                        <div class="w3-margin-top">
-                            <span th:if="${venta.estadoSubasta.name() == 'ACTIVA' or venta.estadoSubasta.name() == 'CUENTA_ATRAS'}" class="w3-tag w3-blue">En curso</span>
-                            <span th:if="${venta.estadoSubasta.name() == 'CERRADA' and !venta.podio.isEmpty()}" class="w3-tag w3-green">¡Vendido!</span>
-                            <span th:if="${venta.estadoSubasta.name() == 'CERRADA' and venta.podio.isEmpty()}" class="w3-tag w3-red">Sin ofertas</span>
+                        <div class="w3-margin-top w3-cell-row">
+                            <div class="w3-cell w3-cell-middle">
+                                <span th:if="${venta.estadoSubasta.name() == 'ACTIVA' or venta.estadoSubasta.name() == 'CUENTA_ATRAS'}" class="w3-tag w3-blue">En curso</span>
+                                <span th:if="${venta.estadoSubasta.name() == 'CERRADA' and !venta.podio.isEmpty()}" class="w3-tag w3-green">¡Vendido!</span>
+                                <span th:if="${venta.estadoSubasta.name() == 'CERRADA' and venta.podio.isEmpty()}" class="w3-tag w3-red">Sin ofertas</span>
+                            </div>
+
+                            <div class="w3-cell w3-cell-middle w3-right-align">
+                                <a th:href="@{/detalle-subasta(id=${venta.id})}" class="w3-button w3-small w3-round w3-amber w3-hover-dark-grey">Ver detalle</a>
+                            </div>
                         </div>
                     </li>
                 </ul>
@@ -44,18 +50,25 @@
                         <span th:text="${puja.detalle.nombre}" class="w3-large">Nombre Artículo</span><br>
                         <span th:text="'Estado: ' + ${puja.estadoSubasta}">Estado</span>
 
-                        <div class="w3-margin-top">
-                            <span th:if="${puja.estadoSubasta.name() == 'ACTIVA' or puja.estadoSubasta.name() == 'CUENTA_ATRAS'}" class="w3-tag w3-blue">En juego</span>
+                        <div class="w3-margin-top w3-cell-row">
+                            <div class="w3-cell w3-cell-middle">
+                                <span th:if="${puja.estadoSubasta.name() == 'ACTIVA' or puja.estadoSubasta.name() == 'CUENTA_ATRAS'}">
+                                    <span th:if="${estadoPujas.get(puja.id)}" class="w3-tag w3-green w3-round">Vas ganando</span>
+                                    <span th:unless="${estadoPujas.get(puja.id)}" class="w3-tag w3-red w3-round">Superado</span>
+                                </span>
 
-                            <span th:if="${puja.estadoSubasta.name() == 'ACTIVA' or puja.estadoSubasta.name() == 'CUENTA_ATRAS'}">
-                                <span th:if="${estadoPujas.get(puja.id)}" class="w3-tag w3-green w3-round">Vas ganando</span>
-                                <span th:unless="${estadoPujas.get(puja.id)}" class="w3-tag w3-red w3-round">Superado</span>
-                            </span>
+                                <span th:if="${puja.estadoSubasta.name() == 'CERRADA' and not #lists.isEmpty(puja.podio)}">
+                                    <span th:if="${puja.podio[0].id == usuarioId}" class="w3-tag w3-green">¡Ganaste!</span>
+                                    <span th:unless="${puja.podio[0].id == usuarioId}" class="w3-tag w3-red">Perdiste</span>
+                                </span>
+                            </div>
 
-                            <span th:if="${puja.estadoSubasta.name() == 'CERRADA' and not #lists.isEmpty(puja.podio)}">
-                                <span th:if="${puja.podio[0].id == usuarioId}" class="w3-tag w3-green">¡Ganaste!</span>
-                                <span th:unless="${puja.podio[0].id == usuarioId}" class="w3-tag w3-red">Perdiste</span>
-                            </span>
+                            <div class="w3-cell w3-cell-middle w3-right-align">
+                                <a th:href="@{/detalle-subasta(id=${puja.id})}" class="w3-button w3-small w3-round w3-blue w3-hover-dark-grey">
+                                    <span th:if="${puja.estadoSubasta.name() == 'ACTIVA' or puja.estadoSubasta.name() == 'CUENTA_ATRAS'}">Ir a pujar</span>
+                                    <span th:unless="${puja.estadoSubasta.name() == 'ACTIVA' or puja.estadoSubasta.name() == 'CUENTA_ATRAS'}">Ver detalle</span>
+                                </a>
+                            </div>
                         </div>
                     </li>
                 </ul>
