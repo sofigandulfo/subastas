@@ -52,20 +52,24 @@ public class ControladorOfertaTest {
     Subasta subastaMock = new Subasta();
     subastaMock.setId(idSubasta);
 
-    // Cuando el controlador pida la subasta para mandarla a la vista, le damos nuestra subasta mockeada
+    // Cuando el controlador pida la subasta para mandarla a la vista, le damos
+    // nuestra subasta mockeada
     when(servicioSubastaMock.obtenerSubasta(idSubasta)).thenReturn(subastaMock);
 
     // Ejecución (simulamos que el usuario entra a la URL por GET)
     ModelAndView mav = controladorOferta.irAFormularioOferta(idSubasta, requestMock);
 
     // Validación
-    // 1. Verificamos que el controlador nos devuelva el nombre de la vista correcta ("oferta")
+    // 1. Verificamos que el controlador nos devuelva el nombre de la vista correcta
+    // ("oferta")
     assertThat(mav.getViewName(), equalToIgnoringCase("oferta"));
 
-    // 2. Verificamos que la vista haya recibido el objeto subasta (para mostrar el precio actual)
+    // 2. Verificamos que la vista haya recibido el objeto subasta (para mostrar el
+    // precio actual)
     assertThat(mav.getModel().get("subasta"), instanceOf(Subasta.class));
 
-    // 3. Verificamos que la vista haya recibido un objeto Oferta vacío (para atajar el th:object)
+    // 3. Verificamos que la vista haya recibido un objeto Oferta vacío (para atajar
+    // el th:object)
     assertThat(mav.getModel().get("oferta"), instanceOf(OfertaDTO.class));
   }
 
@@ -82,7 +86,8 @@ public class ControladorOfertaTest {
     // 1. Verificamos que redirija al detalle
     assertThat(mav.getViewName(), equalToIgnoringCase("redirect:/detalle-subasta?id=" + idSubasta));
 
-    // 2. Verificamos que el controlador realmente le pidió al servicio que procese la oferta
+    // 2. Verificamos que el controlador realmente le pidió al servicio que procese
+    // la oferta
     verify(servicioOfertaMock, times(1))
       .procesarOferta(eq(idSubasta), eq(ofertaMock), any(Usuario.class));
   }
@@ -99,7 +104,8 @@ public class ControladorOfertaTest {
       .when(servicioOfertaMock)
       .procesarOferta(eq(idSubasta), eq(ofertaMock), any(Usuario.class));
 
-    // Necesitamos devolver la subasta mockeada para recargar la página sin que pinche el HTML
+    // Necesitamos devolver la subasta mockeada para recargar la página sin que
+    // pinche el HTML
     when(servicioSubastaMock.obtenerSubasta(idSubasta)).thenReturn(subastaMock);
 
     // Ejecución
@@ -120,5 +126,13 @@ public class ControladorOfertaTest {
     when(sessionMock.getAttribute("USUARIO_ID")).thenReturn(null);
     ModelAndView modelAndView = controladorOferta.irAFormularioOferta(1L, requestMock);
     assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/login"));
+  }
+
+  @Test
+  public void alRealizarUnaOfertaExitosaDeberiaEliminarElCacheDeRecomendaciones()
+    throws OfertaInvalidaException, SubastaNoEncontradaException {
+    Long idSubasta = 1L;
+    controladorOferta.realizarOferta(idSubasta, ofertaDTO, requestMock);
+    verify(sessionMock).removeAttribute("RECOMENDACIONES_IDS");
   }
 }

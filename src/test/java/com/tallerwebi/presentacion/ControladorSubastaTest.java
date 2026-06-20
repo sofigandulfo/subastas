@@ -6,15 +6,9 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import com.tallerwebi.dominio.excepcion.SubastaInvalidaExeption;
-import com.tallerwebi.dominio.excepcion.SubastaNoEditableException;
 import com.tallerwebi.dominio.oferta.Oferta;
 import com.tallerwebi.dominio.oferta.ServicioOferta;
 import com.tallerwebi.dominio.subasta.DetalleSubasta;
@@ -317,66 +311,23 @@ public class ControladorSubastaTest {
   }
 
   @Test
-  public void irAEditarSubastaComoCreadorDeberiaRetornarVistaEditar() {
+  public void eliminarSubastaComoCreadorDeberiaRedirigirASubastas() throws Exception {
+    when(requestMock.getSession()).thenReturn(sessionMock);
     when(sessionMock.getAttribute("USUARIO_ID")).thenReturn(1L);
-    when(servicioSubastaMock.obtenerSubasta(1L)).thenReturn(subastaMock);
-    when(subastaMock.esCreador(any())).thenReturn(true);
+    doNothing().when(servicioSubastaMock).eliminarSubasta(eq(1L), any(Usuario.class));
 
-    ModelAndView mav = controladorSubasta.irAEditarSubasta(1L, requestMock);
+    ModelAndView mav = controladorSubasta.eliminarSubasta(1L, requestMock);
 
-    assertThat(mav.getViewName(), equalToIgnoringCase("editar-subasta"));
-    assertThat(mav.getModel().get("subasta"), instanceOf(Subasta.class));
+    assertThat(mav.getViewName(), equalToIgnoringCase("redirect:/subastas"));
   }
 
   @Test
-  public void irAEditarSubastaComoNoCreadorDeberiaRedirigirADetalle() {
-    when(sessionMock.getAttribute("USUARIO_ID")).thenReturn(2L);
-    when(servicioSubastaMock.obtenerSubasta(1L)).thenReturn(subastaMock);
-    when(subastaMock.esCreador(any())).thenReturn(false);
+  public void eliminarSubastaSinSesionDeberiaRedirigirALogin() throws Exception {
+    when(requestMock.getSession()).thenReturn(sessionMock);
+    when(sessionMock.getAttribute("USUARIO_ID")).thenReturn(null);
 
-    ModelAndView mav = controladorSubasta.irAEditarSubasta(1L, requestMock);
+    ModelAndView mav = controladorSubasta.eliminarSubasta(1L, requestMock);
 
-    assertThat(mav.getViewName(), equalToIgnoringCase("redirect:/detalle-subasta?id=1"));
-  }
-
-  @Test
-  public void editarSubastaConDatosValidosDeberiaRedirigirADetalle() throws Exception {
-    when(sessionMock.getAttribute("USUARIO_ID")).thenReturn(1L);
-
-    ModelAndView mav = controladorSubasta.editarSubasta(
-      1L,
-      "Mouse",
-      "desc",
-      "Perifericos",
-      imagenMock,
-      requestMock
-    );
-
-    assertThat(mav.getViewName(), equalToIgnoringCase("redirect:/detalle-subasta?id=1"));
-    verify(servicioSubastaMock, times(1))
-      .editarSubasta(eq(1L), eq("Mouse"), eq("desc"), eq("Perifericos"), eq(imagenMock), any());
-  }
-
-  @Test
-  public void editarSubastaComoNoCreadorDeberiaVolverAlFormularioConError() throws Exception {
-    when(sessionMock.getAttribute("USUARIO_ID")).thenReturn(2L);
-    doThrow(SubastaNoEditableException.class)
-      .when(servicioSubastaMock)
-      .editarSubasta(anyLong(), any(), any(), any(), any(), any());
-
-    ModelAndView mav = controladorSubasta.editarSubasta(
-      1L,
-      "Mouse",
-      "desc",
-      "Perifericos",
-      imagenMock,
-      requestMock
-    );
-
-    assertThat(mav.getViewName(), equalToIgnoringCase("editar-subasta"));
-    assertThat(
-      mav.getModel().get("error").toString(),
-      equalToIgnoringCase("No tenés permiso para editar esta subasta")
-    );
+    assertThat(mav.getViewName(), equalToIgnoringCase("redirect:/login"));
   }
 }

@@ -15,6 +15,7 @@ public interface ServicioSubasta {
   List<Subasta> obtenerTodasLasSubastas();
   List<Subasta> obtenerSubastasDelCreador(Long idCreador);
   List<Subasta> obtenerSubastas(String busqueda);
+  void eliminarSubasta(Long subastaId, Usuario usuarioCreador) throws Exception;
   void editarSubasta(
     Long id,
     String nombre,

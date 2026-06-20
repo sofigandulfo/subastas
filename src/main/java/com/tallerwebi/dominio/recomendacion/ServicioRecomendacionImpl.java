@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 @Service
 public class ServicioRecomendacionImpl implements ServicioRecomendacion {
@@ -31,18 +32,17 @@ public class ServicioRecomendacionImpl implements ServicioRecomendacion {
 
   @Override
   public List<Subasta> obtenerRecomendaciones(Long usuarioId) {
-    List<Subasta> activas = servicioSubasta
-      .obtenerTodasLasSubastas()
-      .stream()
-      .filter(s -> s.getEstadoSubasta() == EstadoSubasta.ACTIVA)
-      .filter(s -> s.getCreador() == null || !s.getCreador().getId().equals(usuarioId))
-      .collect(Collectors.toList());
+    // Cambio el orden porque quiero que no figuren las subastas en las que el usuario ya pujó
+    // Entonces primero obtenemos el historial
+
+    List<Subasta> historial = servicioOferta.obtenerSubastasDondeParticipe(usuarioId);
+
+    List<Subasta> activas = filtrarSubastasActivas(usuarioId, historial);
 
     if (activas.isEmpty()) {
       return new ArrayList<>();
     }
 
-    List<Subasta> historial = servicioOferta.obtenerSubastasDondeParticipe(usuarioId);
     String prompt = construirPrompt(historial, activas);
     String respuesta = obtenerRespuestaGemini(prompt);
 
@@ -54,7 +54,18 @@ public class ServicioRecomendacionImpl implements ServicioRecomendacion {
       return servicioGemini.preguntar(prompt, null, false);
     } catch (JsonProcessingException e) {
       return "";
+    } catch (HttpClientErrorException e) {
+      return "";
     }
+  }
+
+  @Override
+  public List<Subasta> obtenerRecomendacionesPorIds(List<Long> ids) {
+    return ids
+      .stream()
+      .map(id -> servicioSubasta.obtenerSubasta(id))
+      .filter(s -> s != null && s.getEstadoSubasta() == EstadoSubasta.ACTIVA)
+      .collect(Collectors.toList());
   }
 
   private String construirPrompt(List<Subasta> historial, List<Subasta> activas) {
@@ -113,5 +124,15 @@ public class ServicioRecomendacionImpl implements ServicioRecomendacion {
         break;
       }
     }
+  }
+
+  private List<Subasta> filtrarSubastasActivas(Long usuarioId, List<Subasta> historial) {
+    return servicioSubasta
+      .obtenerTodasLasSubastas()
+      .stream()
+      .filter(s -> s.getEstadoSubasta() == EstadoSubasta.ACTIVA)
+      .filter(s -> s.getCreador() == null || !s.getCreador().getId().equals(usuarioId))
+      .filter(s -> historial.stream().noneMatch(h -> h.getId().equals(s.getId())))
+      .collect(Collectors.toList());
   }
 }

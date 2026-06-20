@@ -1,5 +1,6 @@
 package com.tallerwebi.presentacion;
 
+import com.tallerwebi.dominio.excepcion.SubastaConOfertasException;
 import com.tallerwebi.dominio.excepcion.SubastaInvalidaExeption;
 import com.tallerwebi.dominio.excepcion.SubastaNoEditableException;
 import com.tallerwebi.dominio.oferta.Oferta;
@@ -16,10 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -31,8 +29,10 @@ public class ControladorSubasta {
   private static final String VISTA_CREAR_SUBASTA = "crear-subasta";
   private static final String KEY_SUBASTA = "subasta";
   private static final String USUARIO_ID = "USUARIO_ID";
+  private static final String ERROR_ELIMINAR = "errorEliminar";
   private static final String VISTA_EDITAR_SUBASTA = "editar-subasta";
   private static final String REDIRECT_LOGIN = "redirect:/login";
+  private static final String REDIRECT_DETALLE = "redirect:/detalle-subasta?id=";
   private static final String KEY_ERROR = "error";
 
   @Autowired
@@ -163,7 +163,34 @@ public class ControladorSubasta {
     modelo.put("participe", participe);
     modelo.put("mejorOferta", mejorOfertaActual);
 
+    String errorEliminar = (String) request.getSession().getAttribute(ERROR_ELIMINAR);
+    if (errorEliminar != null) {
+      modelo.put(ERROR_ELIMINAR, errorEliminar);
+      request.getSession().removeAttribute(ERROR_ELIMINAR);
+    }
+
     return new ModelAndView("detalle-subasta", modelo);
+  }
+
+  @PostMapping("/eliminar-subasta/{id}")
+  public ModelAndView eliminarSubasta(@PathVariable("id") Long id, HttpServletRequest request) {
+    try {
+      Long usuarioId = (Long) request.getSession().getAttribute(USUARIO_ID);
+      if (usuarioId == null) {
+        return new ModelAndView("redirect:/login");
+      }
+      Usuario usuario = new Usuario();
+      usuario.setId(usuarioId);
+      servicioSubasta.eliminarSubasta(id, usuario);
+      return new ModelAndView("redirect:/subastas");
+    } catch (SubastaConOfertasException e) {
+      request
+        .getSession()
+        .setAttribute(ERROR_ELIMINAR, "No se puede eliminar una subasta que ya tiene ofertas");
+      return new ModelAndView(REDIRECT_DETALLE + id);
+    } catch (Exception e) {
+      return new ModelAndView(REDIRECT_DETALLE + id);
+    }
   }
 
   @GetMapping("/editar-subasta")
@@ -178,7 +205,7 @@ public class ControladorSubasta {
     usuarioEnSesion.setId(usuarioId);
 
     if (!subasta.esCreador(usuarioEnSesion)) {
-      return new ModelAndView("redirect:/detalle-subasta?id=" + id);
+      return new ModelAndView(REDIRECT_DETALLE + id);
     }
 
     ModelMap modelo = new ModelMap();
@@ -204,7 +231,7 @@ public class ControladorSubasta {
       usuarioEnSesion.setId(usuarioId);
 
       servicioSubasta.editarSubasta(id, nombre, descripcion, categoria, imagen, usuarioEnSesion);
-      return new ModelAndView("redirect:/detalle-subasta?id=" + id);
+      return new ModelAndView(REDIRECT_DETALLE + id);
     } catch (SubastaNoEditableException e) {
       return new ModelAndView(
         VISTA_EDITAR_SUBASTA,

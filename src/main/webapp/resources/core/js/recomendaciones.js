@@ -18,6 +18,23 @@ document.addEventListener("DOMContentLoaded", function () {
         var card = document.createElement("article");
         card.className = "app-card subasta-card";
 
+        var header = document.createElement("div");
+        header.className = "app-card-body";
+
+        var imgContainer = document.createElement("div");
+        imgContainer.className = "subasta-image";
+
+        if (subasta.imagen) {
+          var img = document.createElement("img");
+          img.src = "data:image/jpeg;base64," + subasta.imagen;
+          img.alt = "Imagen del producto";
+          img.className = "subasta-image";
+          imgContainer.appendChild(img);
+        } else {
+          imgContainer.classList.add("subasta-image-placeholder");
+          imgContainer.textContent = "Sin imagen";
+        }
+
         var body = document.createElement("div");
         body.className = "app-card-body";
 
@@ -42,11 +59,13 @@ document.addEventListener("DOMContentLoaded", function () {
         link.className = "btn btn-app-primary w-100";
         link.textContent = "Ver detalle";
 
-        body.appendChild(titulo);
+        header.appendChild(titulo);
         body.appendChild(desc);
         body.appendChild(precio);
         body.appendChild(categoria);
         body.appendChild(link);
+        card.appendChild(header);
+        card.appendChild(imgContainer);
         card.appendChild(body);
         contenedor.appendChild(card);
       });
