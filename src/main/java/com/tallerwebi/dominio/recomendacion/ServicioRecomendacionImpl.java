@@ -32,18 +32,17 @@ public class ServicioRecomendacionImpl implements ServicioRecomendacion {
 
   @Override
   public List<Subasta> obtenerRecomendaciones(Long usuarioId) {
-    List<Subasta> activas = servicioSubasta
-      .obtenerTodasLasSubastas()
-      .stream()
-      .filter(s -> s.getEstadoSubasta() == EstadoSubasta.ACTIVA)
-      .filter(s -> s.getCreador() == null || !s.getCreador().getId().equals(usuarioId))
-      .collect(Collectors.toList());
+    // Cambio el orden porque quiero que no figuren las subastas en las que el usuario ya pujó
+    // Entonces primero obtenemos el historial
+
+    List<Subasta> historial = servicioOferta.obtenerSubastasDondeParticipe(usuarioId);
+
+    List<Subasta> activas = filtrarSubastasActivas(usuarioId, historial);
 
     if (activas.isEmpty()) {
       return new ArrayList<>();
     }
 
-    List<Subasta> historial = servicioOferta.obtenerSubastasDondeParticipe(usuarioId);
     String prompt = construirPrompt(historial, activas);
     String respuesta = obtenerRespuestaGemini(prompt);
 
@@ -125,5 +124,15 @@ public class ServicioRecomendacionImpl implements ServicioRecomendacion {
         break;
       }
     }
+  }
+
+  private List<Subasta> filtrarSubastasActivas(Long usuarioId, List<Subasta> historial) {
+    return servicioSubasta
+      .obtenerTodasLasSubastas()
+      .stream()
+      .filter(s -> s.getEstadoSubasta() == EstadoSubasta.ACTIVA)
+      .filter(s -> s.getCreador() == null || !s.getCreador().getId().equals(usuarioId))
+      .filter(s -> historial.stream().noneMatch(h -> h.getId().equals(s.getId())))
+      .collect(Collectors.toList());
   }
 }
