@@ -14,7 +14,16 @@ public class ServicioGoogleOAuth2Impl implements ServicioGoogleOAuth2 {
   @Autowired
   private ServicioLogin servicioLogin;
 
-  private OidcUserService delegate = new OidcUserService();
+  private OidcUserService delegate;
+
+  public ServicioGoogleOAuth2Impl() {
+    this.delegate = new OidcUserService();
+  }
+
+  public ServicioGoogleOAuth2Impl(ServicioLogin servicioLogin, OidcUserService delegate) {
+    this.servicioLogin = servicioLogin;
+    this.delegate = delegate;
+  }
 
   /**
    * Método obligatorio definido en la interfaz OAuth2UserService/OidcUserService.

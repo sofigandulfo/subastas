@@ -84,4 +84,9 @@ public class RepositorioSubastaImpl implements RepositorioSubasta {
       .setParameter("busqueda", textoBuscado)
       .getResultList();
   }
+
+  @Override
+  public void eliminarSubasta(Subasta subasta) {
+    sessionFactory.getCurrentSession().delete(subasta);
+  }
 }
