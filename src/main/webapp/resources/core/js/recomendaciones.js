@@ -15,55 +15,51 @@ document.addEventListener("DOMContentLoaded", function () {
       var contenedor = document.getElementById("contenedor-recomendadas");
       contenedor.innerHTML = "";
       subastas.forEach(function (subasta) {
-        var col = document.createElement("div");
-        col.className = "w3-third w3-margin-bottom";
-
-        var card = document.createElement("div");
-        card.className = "w3-card-4 w3-white w3-round-large";
+        var card = document.createElement("article");
+        card.className = "app-card subasta-card";
 
         var header = document.createElement("div");
-        header.className = "w3-container w3-blue w3-round-top";
-        var titulo = document.createElement("h4");
-        titulo.className = "w3-text-white";
-        titulo.textContent = subasta.nombre;
-        header.appendChild(titulo);
+        header.className = "app-card-body";
 
         var imgContainer = document.createElement("div");
-        imgContainer.className = "w3-center w3-border-bottom";
-        imgContainer.style = "height: 200px; overflow: hidden; display: flex; justify-content: center;" +
-            "align-items: center; background-color: #f1f1f1;";
+        imgContainer.className = "subasta-image";
 
         if (subasta.imagen) {
           var img = document.createElement("img");
           img.src = "data:image/jpeg;base64," + subasta.imagen;
           img.alt = "Imagen del producto";
-          img.style = "max-width: 100%; max-height: 100%; object-fit: contain;";
+          img.className = "subasta-image";
           imgContainer.appendChild(img);
         } else {
-          var sinImagenDiv = document.createElement("div");
-          sinImagenDiv.className = "w3-text-grey";
-          sinImagenDiv.innerHTML = "<p><i class='w3-large'>Sin imagen</i></p>";
-          imgContainer.appendChild(sinImagenDiv);
+          imgContainer.classList.add("subasta-image-placeholder");
+          imgContainer.textContent = "Sin imagen";
         }
 
         var body = document.createElement("div");
-        body.className = "w3-container w3-padding-16";
+        body.className = "app-card-body";
+
+        var titulo = document.createElement("h3");
+        titulo.className = "subasta-title";
+        titulo.textContent = subasta.nombre;
 
         var desc = document.createElement("p");
-        desc.className = "w3-text-grey";
+        desc.className = "subasta-description";
         desc.textContent = subasta.descripcion;
 
         var precio = document.createElement("p");
-        precio.innerHTML = "<b>Precio actual:</b> $" + subasta.precioActual;
+        precio.className = "price";
+        precio.textContent = "$" + subasta.precioActual;
 
         var categoria = document.createElement("p");
-        categoria.innerHTML = "<b>Categoría:</b> " + subasta.categoria;
+        categoria.className = "text-muted";
+        categoria.textContent = subasta.categoria;
 
         var link = document.createElement("a");
         link.href = "/spring/detalle-subasta?id=" + subasta.id;
-        link.className = "w3-button w3-blue w3-round w3-block w3-hover-dark-grey w3-margin-top";
+        link.className = "btn btn-app-primary w-100";
         link.textContent = "Ver detalle";
 
+        header.appendChild(titulo);
         body.appendChild(desc);
         body.appendChild(precio);
         body.appendChild(categoria);
@@ -71,8 +67,7 @@ document.addEventListener("DOMContentLoaded", function () {
         card.appendChild(header);
         card.appendChild(imgContainer);
         card.appendChild(body);
-        col.appendChild(card);
-        contenedor.appendChild(col);
+        contenedor.appendChild(card);
       });
     })
     .catch(function () {

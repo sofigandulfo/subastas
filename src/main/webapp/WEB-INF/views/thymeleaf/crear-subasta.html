@@ -1,115 +1,105 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Crear Subasta</title>
 
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/css/main.css}" />
 </head>
 
-<body class="w3-light-grey">
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark app-navbar">
+        <div class="container">
+            <a class="navbar-brand app-brand" th:href="@{/subastas}">SubastApp</a>
+        </div>
+    </nav>
 
-    <div class="w3-content w3-padding-32" style="max-width:700px">
+    <main class="app-page-narrow">
+        <section class="app-card form-card">
+            <div class="app-card-body">
+                <h1 class="page-title">Crear subasta</h1>
+                <p class="page-subtitle mb-4">Completá los datos para publicar tu producto.</p>
 
-        <div class="w3-card-4 w3-white w3-round-large">
-
-            <div class="w3-container w3-amber w3-round-large">
-                <h2 class="w3-center w3-xxlarge  w3-text-white w3-sans-serif">
-                    Crear Subasta
-                </h2>
-            </div>
-
-            <div class="w3-container w3-padding-24">
-
-
-
-                <form th:action="@{/crear-subasta}" th:object="${subasta}" enctype="multipart/form-data" method="POST"
-                    class="w3-container">
-
-                    <label class="w3-text-dark-grey">
-                        <b>Nombre</b>
-                    </label>
-
-                    <input id="nombre" th:field="*{nombre}" class="w3-input w3-border w3-round w3-margin-bottom" type="text"
-                        placeholder="Ejemplo: Sillón" required>
-
-                    <label class="w3-text-dark-grey">
-                        <b>Descripcion</b>
-                    </label>
-
-                    <input id="descripcion" th:field="*{descripcion}" class="w3-input w3-border w3-round w3-margin-bottom" type="text"
-                        placeholder="Describe el producto">
-
-                    <label class="w3-text-dark-grey">
-                        <b>Precio Inicial</b>
-                    </label>
-
-                    <input id="precio-inicial" th:field="*{precioInicial}" class="w3-input w3-border w3-round w3-margin-bottom"
-                        type="number" step="0.01" min="0" required>
-
-                    <label class="w3-text-dark-grey">
-                        <b>Precio Maximo</b>
-                    </label>
-
-                    <input id="precio-maximo" th:field="*{precioMaximo}" class="w3-input w3-border w3-round w3-margin-bottom" type="number"
-                        step="0.01" min="0">
-
-                    <label class="w3-text-dark-grey">
-                        <b>Categoria</b>
-                    </label>
-
-                    <select id="categoria" th:field="*{categoria}" class="w3-select w3-border w3-round w3-margin-bottom">
-                        <option value="" disabled selected>Elegir categoria</option>
-                        <option value="Electronica">Electrónica</option>
-                        <option value="Entretenimiento">Entretenimiento</option>
-                        <option value="Vehiculo">Vehiculo</option>
-                        <option value="Ropa">Ropa/Moda</option>
-                        <option value="Hogar">Hogar</option>
-                        <option value="Deporte">Deporte</option>
-                    </select>
-
-                    <label class="w3-text-dark-grey">
-                        <b>Estado</b>
-                    </label>
-
-                    <select id="estado-articulo" th:field="*{estadoArticulo}" class="w3-select w3-border w3-round w3-margin-bottom">
-                        <option value="" disabled selected>Elegir estado</option>
-                        <option value="Nuevo">Nuevo</option>
-                        <option value="Usado">Usado</option>
-                    </select>
-
-                    <label class="w3-text-dark-grey">
-                        <b>Imagen</b>
-                    </label>
-
-                    <input id="imagen" type="file" name="imagen" accept="image/*"
-                        class="w3-input w3-border w3-round w3-margin-bottom">
-                        
-                    <div th:if="${error}" class="w3-panel w3-pale-red w3-border w3-border-red w3-round">
-                        <p id="mensaje-error-crear-subasta" class="w3-text-red"><b th:text="${error}"></b></p>
+                <form th:action="@{/crear-subasta}" th:object="${subasta}" enctype="multipart/form-data" method="POST">
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label">Nombre</label>
+                        <input id="nombre" th:field="*{nombre}" class="form-control" type="text"
+                            placeholder="Ejemplo: Sillón moderno" required>
                     </div>
 
-                    <label class="w3-text-dark-grey">
-                        <b>Fecha de Finalización</b>
-                    </label>
+                    <div class="mb-3">
+                        <label for="descripcion" class="form-label">Descripción</label>
+                        <textarea id="descripcion" th:field="*{descripcion}" class="form-control" rows="4"
+                            placeholder="Describe el producto"></textarea>
+                    </div>
 
-                    <input id="fecha-cierre" th:field="*{fechaCierre}" class="w3-input w3-border w3-round w3-margin-bottom"
-                           type="datetime-local" required>
-                    
-                    <button id="btn-publicar-subasta" type="submit"
-                        class="w3-button w3-amber w3-hover-dark-grey w3-round w3-block w3-margin-top w3-sans-serif">
-                        Publicar Subasta
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="precio-inicial" class="form-label">Precio inicial</label>
+                            <input id="precio-inicial" th:field="*{precioInicial}" class="form-control"
+                                type="number" step="0.01" min="0" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="precio-maximo" class="form-label">Precio máximo</label>
+                            <input id="precio-maximo" th:field="*{precioMaximo}" class="form-control"
+                                type="number" step="0.01" min="0">
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mt-0">
+                        <div class="col-md-6">
+                            <label for="categoria" class="form-label">Categoría</label>
+                            <select id="categoria" th:field="*{categoria}" class="form-select">
+                                <option value="" disabled selected>Elegir categoría</option>
+                                <option value="Electronica">Electrónica</option>
+                                <option value="Entretenimiento">Entretenimiento</option>
+                                <option value="Vehiculo">Vehículo</option>
+                                <option value="Ropa">Ropa/Moda</option>
+                                <option value="Hogar">Hogar</option>
+                                <option value="Deporte">Deporte</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="estado-articulo" class="form-label">Estado</label>
+                            <select id="estado-articulo" th:field="*{estadoArticulo}" class="form-select">
+                                <option value="" disabled selected>Elegir estado</option>
+                                <option value="Nuevo">Nuevo</option>
+                                <option value="Usado">Usado</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 mt-3">
+                        <label for="imagen" class="form-label">Imagen</label>
+                        <input id="imagen" type="file" name="imagen" accept="image/*" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="fecha-cierre" class="form-label">Fecha de finalización</label>
+                        <input id="fecha-cierre" th:field="*{fechaCierre}" class="form-control"
+                            type="datetime-local" required>
+                    </div>
+
+                    <div th:if="${error}" class="alert alert-danger" role="alert">
+                        <strong id="mensaje-error-crear-subasta" th:text="${error}"></strong>
+                    </div>
+
+                    <button id="btn-publicar-subasta" type="submit" class="btn btn-app-primary w-100">
+                        Publicar subasta
                     </button>
-
+                    <a th:href="@{/subastas}" class="btn btn-outline-secondary w-100 mt-2">Cancelar</a>
                 </form>
             </div>
-        </div>
-    </div>
+        </section>
+    </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"></script>
 </body>
 
 </html>

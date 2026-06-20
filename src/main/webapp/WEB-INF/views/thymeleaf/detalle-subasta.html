@@ -1,215 +1,153 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Detalle Subasta</title>
 
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/css/main.css}" />
 </head>
 
-<body class="w3-light-grey">
-
-    <div class="w3-content w3-padding-32" width="95%">
-
-        <div class="w3-card-4 w3-white w3-round-large">
-
-            <div class="w3-container w3-amber w3-padding w3-round-large">
-                <h2 class="w3-center w3-xxlarge w3-sans-serif">
-                    Detalle de la Subasta
-                </h2>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark app-navbar">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a class="navbar-brand app-brand" th:href="@{/subastas}">SubastApp</a>
+            <div class="d-flex gap-2">
+                <a th:if="${session.USUARIO_ID != null}" th:href="@{/perfil}" class="btn btn-outline-light">Mi perfil</a>
+                <a th:if="${session.USUARIO_ID != null}" th:href="@{/logout}" class="btn btn-outline-light">Cerrar sesión</a>
+                <a th:if="${session.USUARIO_ID == null}" th:href="@{/login}" class="btn btn-outline-light">Iniciar sesión</a>
             </div>
-
-            <div class="w3-container w3-padding-24">
-
-                <div class="w3-margin-bottom">
-                    <label class="w3-text-grey w3-small">
-                        <b>NOMBRE DEL PRODUCTO</b>
-                    </label>
-                    <p id="nombre-subasta" class="w3-xlarge w3-border-bottom w3-padding-small" th:text="${subasta.detalle.nombre}">Nombre de
-                        la
-                        subasta</p>
-                </div>
-
-                <div class="w3-margin-bottom">
-                    <label class="w3-text-grey w3-small"><b>DESCRIPCIÓN</b></label>
-
-                    <div class="w3-panel w3-pale-yellow w3-leftbar w3-border-amber w3-round">
-                        <p id="descripcion-subasta" th:text="${subasta.detalle.descripcion}">Descripción detallada aquí...</p>
-                    </div>
-                </div>
-
-                <div class="w3-row-padding w3-margin-top">
-
-                    <div class="w3-col l6 m6 s12 w3-margin-bottom">
-                        <div class="w3-panel w3-pale-green w3-round-large">
-
-                            <label class="w3-text-grey w3-small"><b>PRECIO INICIAL</b></label>
-
-                            <p class="w3-xlarge w3-text-green">
-                                <b id="precio-inicial-subasta" th:text="'$' + ${#numbers.formatDecimal(subasta.precioInicial, 1, 2)}">$0.00</b>
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="w3-col l6 m6 s12 w3-margin-bottom">
-                        <div class="w3-panel w3-pale-red w3-round-large">
-
-                            <label class="w3-text-grey w3-small"><b>PRECIO MÁXIMO</b></label>
-
-                            <p class="w3-xlarge w3-text-red">
-                                <b id="precio-maximo-subasta" th:text="'$' + ${#numbers.formatDecimal(subasta.precioMaximo, 1, 2)}">$0.00</b>
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="w3-col l6 m6 s12 w3-margin-bottom">
-                        <div class="w3-panel w3-pale-blue w3-round-large">
-                            <label class="w3-text-grey w3-small"><b>PRECIO ACTUAL</b></label>
-
-                            <p class="w3-xlarge w3-text-blue">
-                                <b id="precio-actual-subasta" th:text="'$' + ${#numbers.formatDecimal(subasta.precioActual, 1, 2)}">$0.00</b>
-                            </p>
-                        </div>
-
-                        <div th:if="${session.USUARIO_ID != null}">
-                            <span id="mensaje-voy-ganando" th:if="${voyGanando}" class="w3-tag w3-green w3-round">¡Vas ganando!</span>
-                            <span th:if="${participe and !voyGanando}" class="w3-tag w3-red w3-round">Tu oferta fue superada</span>
-                        </div>
-                    </div>
-
-                    <div class="w3-col l6 m6 s12 w3-margin-bottom">
-                        <div class="w3-panel w3-pale-blue w3-round-large">
-                            <p th:if="${subasta.estadoSubasta.name() == 'CUENTA_ATRAS'}">
-                                Cuenta atrás hasta:
-                                <strong th:text="${subasta.fechaCierre}"></strong>
-                            </p>
-                        </div>
-                        <div class="w3-panel w3-pale-blue w3-round-large">
-                            <p th:if="${subasta.estadoSubasta.name() == 'ACTIVA'}">
-                                Fecha de finalización:
-                                <strong th:text="${subasta.fechaCierre}"></strong>
-                            </p>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="w3-row-padding">
-
-                    <div class="w3-col l6 m6 s12 w3-margin-bottom">
-                        <label class="w3-text-grey w3-small"><b>CATEGORÍA</b></label>
-                        <p>
-                            <span id="categoria-subasta" class="w3-tag w3-amber w3-round-large w3-padding"
-                                th:text="${subasta.detalle.categoria}">Categoría</span>
-                        </p>
-                    </div>
-
-                    <div class="w3-col l6 m6 s12 w3-margin-bottom">
-                        <label class="w3-text-grey w3-small"> <b>ESTADO</b> </label>
-                        <p class="w3-large" th:text="${subasta.detalle.estadoArticulo}">Nuevo / Usado</p>
-                    </div>
-
-                </div>
-
-                <div class="w3-margin-top w3-center">
-                    <div th:if="${imagenBase64 != null}" class="w3-padding">
-                        <img th:src="@{'data:image/jpeg;base64,' + ${imagenBase64}}" alt="Imagen de la subasta"
-                            class="w3-image w3-round-large w3-border">
-                    </div>
-
-                    <div th:unless="${imagenBase64 != null}" class="w3-panel w3-pale-red w3-round-large">
-                        <p>Sin imagen cargada</p>
-                    </div>
-                </div>
-
-
-
-                <hr>
-
-                <div th:if="${esCreador}" class="w3-row-padding w3-margin-top">
-
-                    <div th:if="${errorEliminar}" class="w3-panel w3-pale-red w3-border w3-border-red w3-round w3-margin-bottom">
-                        <p class="w3-text-red"><b th:text="${errorEliminar}"></b></p>
-                    </div>
-
-                    <div class="w3-row-padding w3-margin-top">
-                        <div class="w3-col l6 m6 s12 w3-margin-bottom">
-                            <a th:href="@{/editar-subasta(id=${subasta.id})}"
-                               class="w3-button w3-amber w3-hover-dark-grey w3-block w3-round-large w3-large">Editar</a>
-                        </div>
-
-                        <div class="w3-col l6 m6 s12 w3-margin-bottom">
-                            <form th:action="@{/eliminar-subasta/{id}(id=${subasta.id})}" method="POST">
-                                <button type="submit"
-                                        class="w3-button w3-red w3-hover-dark-grey w3-block w3-round-large w3-large"
-                                        onclick="return confirm('¿Estás seguro de que deseas eliminar esta subasta?')">Borrar</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                <div th:unless="${esCreador}" class="w3-container w3-padding">
-
-
-                    <div th:if="${!esCreador and session.USUARIO_ID != null}" class="w3-container w3-padding">
-                        <a id="btn-ofertar-manualmente" th:if="${subasta.estadoSubasta.name() != 'CERRADA'}"
-                            th:href="@{/ofertar/{id}(id=${subasta.id})}"
-                            class="w3-button w3-amber w3-hover-dark-grey w3-block w3-round-large w3-large w3-margin-bottom">
-                            Ofertar Manualmente
-                        </a>
-
-                        <a id="btn-auto-puja" th:if="${subasta.estadoSubasta.name() != 'CERRADA'}"
-                            th:href="@{/auto-pujar/{id}(id=${subasta.id})}"
-                            class="w3-button w3-blue w3-hover-dark-grey w3-block w3-round-large w3-large">
-                            Ofertar con Auto-Puja (Bot)
-                        </a>
-                    </div>
-
-                    <div th:if="${session.USUARIO_ID == null}" class="w3-container w3-padding">
-                        <p class="w3-text-grey">
-                            <a th:href="@{/login}">Iniciá sesión</a> para poder ofertar.
-                        </p>
-                    </div>
-                </div>
-                <div th:if="${subasta.estadoSubasta.name() == 'CERRADA'}"
-                    class="w3-panel w3-pale-green w3-border w3-border-green w3-round">
-                    <h3>Subasta finalizada</h3>
-
-                    <p th:if="${ganador != null}">
-                        Ganador:
-                        <strong th:text="${ganador.email}"></strong>
-                    </p>
-
-                    <p th:if="${ganador != null}">
-                        Monto ganador:
-                        <strong th:text="${montoGanador}"></strong>
-                    </p>
-
-                    <p th:if="${ganador == null}">
-                        La subasta finalizó sin ofertas
-                    </p>
-                </div>
-                <div th:if="${session.USUARIO_ID != null}" class="w3-container w3-padding">
-                    <a id="btn-cerrar-sesion-detalle" th:href="@{/logout}"
-                        class="w3-button w3-grey w3-hover-dark-grey w3-block w3-round-large w3-large w3-margin-bottom">
-                        Cerrar sesión
-                    </a>
-                </div>
-
-                <div class="w3-container w3-padding">
-                    <a th:href="@{/subastas}"
-    class="w3-button w3-dark-grey w3-hover-black w3-block w3-round-large w3-large">Volver al
-    listado</a>
-                </div>
-
-            </div>
-
         </div>
-    </div>
+    </nav>
 
+    <main class="app-page">
+        <section class="app-card">
+            <div class="app-card-body">
+                <div class="row g-4">
+                    <div class="col-lg-6">
+                        <img th:if="${imagenBase64 != null}"
+                            th:src="@{'data:image/jpeg;base64,' + ${imagenBase64}}"
+                            alt="Imagen de la subasta" class="detail-image rounded border">
+                        <div th:unless="${imagenBase64 != null}"
+                            class="detail-image subasta-image-placeholder rounded border">
+                            Sin imagen cargada
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                            <div>
+                                <h1 id="nombre-subasta" class="page-title" th:text="${subasta.detalle.nombre}">Nombre</h1>
+                                <p id="descripcion-subasta" class="page-subtitle"
+                                    th:text="${subasta.detalle.descripcion}">Descripción detallada aquí...</p>
+                            </div>
+                            <span class="status-badge"
+                                th:classappend="${subasta.estadoSubasta.name() == 'ACTIVA'} ? ' status-active' : (${subasta.estadoSubasta.name() == 'CERRADA'} ? ' status-closed' : ' status-countdown')"
+                                th:text="${subasta.estadoSubasta}">ACTIVA</span>
+                        </div>
+
+                        <div class="my-4">
+                            <div class="text-muted">Precio actual</div>
+                            <div id="precio-actual-subasta" class="price"
+                                th:text="'$' + ${#numbers.formatDecimal(subasta.precioActual, 1, 2)}">$0.00</div>
+                        </div>
+
+                        <div th:if="${session.USUARIO_ID != null}" class="mb-3">
+                            <span id="mensaje-voy-ganando" th:if="${voyGanando}" class="status-badge status-winning">¡Vas ganando!</span>
+                            <span th:if="${participe and !voyGanando}" class="status-badge status-lost">Tu oferta fue superada</span>
+                        </div>
+
+                        <div th:if="${subasta.estadoSubasta.name() == 'CUENTA_ATRAS'}" class="alert alert-warning">
+                            Cuenta atrás hasta: <strong th:text="${subasta.fechaCierre}"></strong>
+                        </div>
+                        <div th:if="${subasta.estadoSubasta.name() == 'ACTIVA'}" class="alert alert-info">
+                            Fecha de finalización: <strong th:text="${subasta.fechaCierre}"></strong>
+                        </div>
+
+                        <div th:if="${esCreador}" class="row g-2 mt-4">
+                            <div class="col-md-6">
+                                <a th:href="@{/editar-subasta(id=${subasta.id})}" class="btn btn-app-accent w-100">Editar</a>
+                            </div>
+                            <div class="col-md-6">
+                                <form th:action="@{/eliminar-subasta/{id}(id=${subasta.id})}" method="POST">
+                                    <button type="submit" class="btn btn-outline-danger w-100"
+                                        onclick="return confirm('¿Estás seguro de que deseas eliminar esta subasta?')">Borrar</button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div th:unless="${esCreador}" class="auth-actions mt-4">
+                            <div th:if="${!esCreador and session.USUARIO_ID != null}" class="auth-actions">
+                                <a id="btn-ofertar-manualmente" th:if="${subasta.estadoSubasta.name() != 'CERRADA'}"
+                                    th:href="@{/ofertar/{id}(id=${subasta.id})}" class="btn btn-app-primary">
+                                    Ofertar manualmente
+                                </a>
+                                <a id="btn-auto-puja" th:if="${subasta.estadoSubasta.name() != 'CERRADA'}"
+                                    th:href="@{/auto-pujar/{id}(id=${subasta.id})}" class="btn btn-outline-primary">
+                                    Ofertar con auto-puja
+                                </a>
+                            </div>
+
+                            <p th:if="${session.USUARIO_ID == null}" class="text-muted mb-0">
+                                <a th:href="@{/login}">Iniciá sesión</a> para poder ofertar.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3 mt-4">
+                    <div class="col-md-3">
+                        <div class="app-card app-card-body">
+                            <div class="text-muted">Precio inicial</div>
+                            <strong id="precio-inicial-subasta"
+                                th:text="'$' + ${#numbers.formatDecimal(subasta.precioInicial, 1, 2)}">$0.00</strong>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="app-card app-card-body">
+                            <div class="text-muted">Precio máximo</div>
+                            <strong id="precio-maximo-subasta"
+                                th:text="'$' + ${#numbers.formatDecimal(subasta.precioMaximo, 1, 2)}">$0.00</strong>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="app-card app-card-body">
+                            <div class="text-muted">Categoría</div>
+                            <strong id="categoria-subasta" th:text="${subasta.detalle.categoria}">Categoría</strong>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="app-card app-card-body">
+                            <div class="text-muted">Estado del artículo</div>
+                            <strong th:text="${subasta.detalle.estadoArticulo}">Nuevo / Usado</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div th:if="${subasta.estadoSubasta.name() == 'CERRADA'}" class="alert alert-success mt-4">
+                    <h2 class="section-title">Subasta finalizada</h2>
+                    <p th:if="${ganador != null}" class="mb-1">
+                        Ganador: <strong th:text="${ganador.email}"></strong>
+                    </p>
+                    <p th:if="${ganador != null}" class="mb-1">
+                        Monto ganador: <strong th:text="${montoGanador}"></strong>
+                    </p>
+                    <p th:if="${ganador == null}" class="mb-0">La subasta finalizó sin ofertas</p>
+                </div>
+
+                <div class="auth-actions mt-4">
+                    <a th:href="@{/subastas}" class="btn btn-outline-dark">Volver al listado</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"></script>
 </body>
 
 </html>
