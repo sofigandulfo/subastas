@@ -44,5 +44,7 @@ public class RecomendacionDTO {
     return precioActual;
   }
 
-  public String getImagen() { return imagen; }
+  public String getImagen() {
+    return imagen;
+  }
 }

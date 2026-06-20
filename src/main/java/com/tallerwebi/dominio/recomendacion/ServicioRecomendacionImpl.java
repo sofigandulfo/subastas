@@ -37,13 +37,7 @@ public class ServicioRecomendacionImpl implements ServicioRecomendacion {
 
     List<Subasta> historial = servicioOferta.obtenerSubastasDondeParticipe(usuarioId);
 
-    List<Subasta> activas = servicioSubasta
-      .obtenerTodasLasSubastas()
-      .stream()
-      .filter(s -> s.getEstadoSubasta() == EstadoSubasta.ACTIVA)
-      .filter(s -> s.getCreador() == null || !s.getCreador().getId().equals(usuarioId))
-      .filter(s -> historial.stream().noneMatch(h -> h.getId().equals(s.getId())))
-      .collect(Collectors.toList());
+    List<Subasta> activas = filtrarSubastasActivas(usuarioId, historial);
 
     if (activas.isEmpty()) {
       return new ArrayList<>();
@@ -130,5 +124,15 @@ public class ServicioRecomendacionImpl implements ServicioRecomendacion {
         break;
       }
     }
+  }
+
+  private List<Subasta> filtrarSubastasActivas(Long usuarioId, List<Subasta> historial) {
+    return servicioSubasta
+      .obtenerTodasLasSubastas()
+      .stream()
+      .filter(s -> s.getEstadoSubasta() == EstadoSubasta.ACTIVA)
+      .filter(s -> s.getCreador() == null || !s.getCreador().getId().equals(usuarioId))
+      .filter(s -> historial.stream().noneMatch(h -> h.getId().equals(s.getId())))
+      .collect(Collectors.toList());
   }
 }

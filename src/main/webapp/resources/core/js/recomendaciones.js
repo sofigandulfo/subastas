@@ -28,6 +28,24 @@ document.addEventListener("DOMContentLoaded", function () {
         titulo.textContent = subasta.nombre;
         header.appendChild(titulo);
 
+        var imgContainer = document.createElement("div");
+        imgContainer.className = "w3-center w3-border-bottom";
+        imgContainer.style = "height: 200px; overflow: hidden; display: flex; justify-content: center;" +
+            "align-items: center; background-color: #f1f1f1;";
+
+        if (subasta.imagen) {
+          var img = document.createElement("img");
+          img.src = "data:image/jpeg;base64," + subasta.imagen;
+          img.alt = "Imagen del producto";
+          img.style = "max-width: 100%; max-height: 100%; object-fit: contain;";
+          imgContainer.appendChild(img);
+        } else {
+          var sinImagenDiv = document.createElement("div");
+          sinImagenDiv.className = "w3-text-grey";
+          sinImagenDiv.innerHTML = "<p><i class='w3-large'>Sin imagen</i></p>";
+          imgContainer.appendChild(sinImagenDiv);
+        }
+
         var body = document.createElement("div");
         body.className = "w3-container w3-padding-16";
 
@@ -51,6 +69,7 @@ document.addEventListener("DOMContentLoaded", function () {
         body.appendChild(categoria);
         body.appendChild(link);
         card.appendChild(header);
+        card.appendChild(imgContainer);
         card.appendChild(body);
         col.appendChild(card);
         contenedor.appendChild(col);
