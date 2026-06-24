@@ -26,6 +26,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 
 public class ServicioRecomendacionTest {
 
@@ -142,6 +143,32 @@ public class ServicioRecomendacionTest {
     when(servicioOfertaMock.obtenerSubastasDondeParticipe(1L)).thenReturn(List.of());
     when(servicioGeminiMock.preguntar(any(), any(), eq(false)))
       .thenThrow(new HttpClientErrorException(HttpStatus.TOO_MANY_REQUESTS));
+
+    List<Subasta> resultado = servicioRecomendacion.obtenerRecomendaciones(1L);
+
+    assertThat(resultado, empty());
+  }
+
+  @Test
+  public void siGeminiLanzaUnHttpServerErrorExceptionDeberiaRetornarListaVacia() throws Exception {
+    Subasta subasta = crearSubastaActiva(1L, "Notebook", "Tecnologia", 2L);
+    when(servicioSubastaMock.obtenerTodasLasSubastas()).thenReturn(List.of(subasta));
+    when(servicioOfertaMock.obtenerSubastasDondeParticipe(1L)).thenReturn(List.of());
+    when(servicioGeminiMock.preguntar(any(), any(), eq(false)))
+      .thenThrow(new HttpServerErrorException(HttpStatus.SERVICE_UNAVAILABLE));
+
+    List<Subasta> resultado = servicioRecomendacion.obtenerRecomendaciones(1L);
+
+    assertThat(resultado, empty());
+  }
+
+  @Test
+  public void siGeminiLanzaUnaExcepcionInesperadaDeberiaRetornarListaVacia() throws Exception {
+    Subasta subasta = crearSubastaActiva(1L, "Notebook", "Tecnologia", 2L);
+    when(servicioSubastaMock.obtenerTodasLasSubastas()).thenReturn(List.of(subasta));
+    when(servicioOfertaMock.obtenerSubastasDondeParticipe(1L)).thenReturn(List.of());
+    when(servicioGeminiMock.preguntar(any(), any(), eq(false)))
+      .thenThrow(new RuntimeException("fallo inesperado"));
 
     List<Subasta> resultado = servicioRecomendacion.obtenerRecomendaciones(1L);
 

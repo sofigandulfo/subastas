@@ -33,7 +33,7 @@ public class ControladorRecomendacion {
     List<Long> idsEnCache = (List<Long>) request.getSession().getAttribute("RECOMENDACIONES_IDS");
     List<Subasta> recomendaciones;
 
-    if (idsEnCache != null) {
+    if (idsEnCache != null && !idsEnCache.isEmpty()) {
       recomendaciones = servicioRecomendacion.obtenerRecomendacionesPorIds(idsEnCache);
       List<Long> idsActivos = recomendaciones
         .stream()
