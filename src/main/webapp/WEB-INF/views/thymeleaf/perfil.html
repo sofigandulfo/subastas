@@ -47,6 +47,8 @@
                                         class="status-badge status-sold">¡Vendido!</span>
                                     <span th:if="${venta.estadoSubasta.name() == 'CERRADA' and venta.podio.isEmpty()}"
                                         class="status-badge status-danger">Sin ofertas</span>
+
+                                    <a th:href="@{/detalle-subasta(id=${venta.id})}" class="btn btn-sm btn-warning ms-auto">Ver detalle</a>
                                 </div>
                             </li>
                         </ul>
@@ -77,6 +79,11 @@
                                         <span th:if="${puja.podio[0].id == usuarioId}" class="status-badge status-winning">¡Ganaste!</span>
                                         <span th:unless="${puja.podio[0].id == usuarioId}" class="status-badge status-lost">Perdiste</span>
                                     </span>
+
+                                    <a th:href="@{/detalle-subasta(id=${puja.id})}" class="btn btn-sm btn-primary ms-auto">
+                                        <span th:if="${puja.estadoSubasta.name() == 'ACTIVA' or puja.estadoSubasta.name() == 'CUENTA_ATRAS'}">Ir a pujar</span>
+                                        <span th:unless="${puja.estadoSubasta.name() == 'ACTIVA' or puja.estadoSubasta.name() == 'CUENTA_ATRAS'}">Ver detalle</span>
+                                    </a>
                                 </div>
                             </li>
                         </ul>
