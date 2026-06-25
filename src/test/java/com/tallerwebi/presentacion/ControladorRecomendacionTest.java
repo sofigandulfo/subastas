@@ -95,6 +95,23 @@ public class ControladorRecomendacionTest {
     assertThat(body.get(0).getId(), equalTo(5L));
   }
 
+  @Test
+  public void siLaCacheEstaVaciaSeRegeneraLlamandoAObtenerRecomendaciones() {
+    when(sessionMock.getAttribute("USUARIO_ID")).thenReturn(1L);
+    when(sessionMock.getAttribute("RECOMENDACIONES_IDS")).thenReturn(List.of());
+
+    Subasta subasta = crearSubastaActiva(5L);
+    when(servicioRecomendacionMock.obtenerRecomendaciones(1L)).thenReturn(List.of(subasta));
+
+    ResponseEntity<?> respuesta = controladorRecomendacion.obtenerRecomendaciones(requestMock);
+
+    assertThat(respuesta.getStatusCode(), equalTo(HttpStatus.OK));
+    List<RecomendacionDTO> body = (List<RecomendacionDTO>) respuesta.getBody();
+    assertThat(body, hasSize(1));
+    verify(servicioRecomendacionMock).obtenerRecomendaciones(1L);
+    verify(servicioRecomendacionMock, never()).obtenerRecomendacionesPorIds(any());
+  }
+
   private Subasta crearSubastaActiva(Long id) {
     Subasta subasta = new Subasta("Notebook", "desc", 1000.0, 5000.0, "Tecnologia", "nuevo");
     subasta.setId(id);

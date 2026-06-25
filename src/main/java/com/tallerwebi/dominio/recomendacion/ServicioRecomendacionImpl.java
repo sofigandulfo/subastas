@@ -8,12 +8,17 @@ import com.tallerwebi.dominio.subasta.Subasta;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 
 @Service
 public class ServicioRecomendacionImpl implements ServicioRecomendacion {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(ServicioRecomendacionImpl.class);
 
   private final ServicioSubasta servicioSubasta;
   private final ServicioOferta servicioOferta;
@@ -55,6 +60,14 @@ public class ServicioRecomendacionImpl implements ServicioRecomendacion {
     } catch (JsonProcessingException e) {
       return "";
     } catch (HttpClientErrorException e) {
+      return "";
+    } catch (HttpServerErrorException e) {
+      String mensajeError = e.getMessage();
+      LOGGER.error("Error 500/503 de Gemini: {}", mensajeError);
+      return "";
+    } catch (Exception e) {
+      String mensajeError = e.getMessage();
+      LOGGER.error("Error al llamar a Gemini: {}", mensajeError);
       return "";
     }
   }

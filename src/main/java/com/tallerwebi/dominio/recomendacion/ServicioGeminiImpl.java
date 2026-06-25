@@ -27,9 +27,9 @@ public class ServicioGeminiImpl implements ServicioGemini {
   // Modelos disponibles:
   //
   // Nivel Gratuito (Limitado por cuotas, mejora la IA con tus datos):
-  // - gemini-3-flash: Recomendado, mejor equilibrio actual.
+  // - gemini-3-flash: Mejor equilibrio actual.
   // - gemini-2.5-flash: Estable y rápido.
-  // - gemini-2.5-flash-lite: Máxima velocidad, mayores límites de peticiones.
+  // - gemini-2.5-flash-lite: EN USO. Máxima velocidad, mayores límites de peticiones.
   //
   // Nivel De Pago (Pay-as-you-go, datos privados):
   // - gemini-3.1-pro: Razonamiento complejo y tareas avanzadas.
@@ -130,14 +130,11 @@ public class ServicioGeminiImpl implements ServicioGemini {
     try {
       ObjectMapper mapper = new ObjectMapper();
       JsonNode root = mapper.readTree(json);
-      return root
-        .path("candidates")
-        .get(0)
-        .path("content")
-        .path("parts")
-        .get(0)
-        .path("text")
-        .asText();
+      JsonNode candidates = root.path("candidates");
+      if (!candidates.isArray() || candidates.size() == 0) {
+        return "";
+      }
+      return candidates.get(0).path("content").path("parts").get(0).path("text").asText();
     } catch (Exception e) {
       return "Error procesando respuesta de Gemini: " + e.getMessage();
     }
