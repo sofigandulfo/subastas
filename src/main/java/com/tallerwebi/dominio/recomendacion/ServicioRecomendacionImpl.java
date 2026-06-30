@@ -37,11 +37,7 @@ public class ServicioRecomendacionImpl implements ServicioRecomendacion {
 
   @Override
   public List<Subasta> obtenerRecomendaciones(Long usuarioId) {
-    // Cambio el orden porque quiero que no figuren las subastas en las que el usuario ya pujó
-    // Entonces primero obtenemos el historial
-
     List<Subasta> historial = servicioOferta.obtenerSubastasDondeParticipe(usuarioId);
-
     List<Subasta> activas = filtrarSubastasActivas(usuarioId, historial);
 
     if (activas.isEmpty()) {
@@ -51,7 +47,12 @@ public class ServicioRecomendacionImpl implements ServicioRecomendacion {
     String prompt = construirPrompt(historial, activas);
     String respuesta = obtenerRespuestaGemini(prompt);
 
-    return parsearRespuesta(respuesta, activas);
+    List<Subasta> recomendadas = parsearRespuesta(respuesta, activas);
+    if (recomendadas.isEmpty()) {
+      LOGGER.warn("Gemini no devolvió recomendaciones válidas, usando fallback por popularidad.");
+      return obtenerFallback(activas);
+    }
+    return recomendadas;
   }
 
   private String obtenerRespuestaGemini(String prompt) {
@@ -146,6 +147,22 @@ public class ServicioRecomendacionImpl implements ServicioRecomendacion {
       .filter(s -> s.getEstadoSubasta() == EstadoSubasta.ACTIVA)
       .filter(s -> s.getCreador() == null || !s.getCreador().getId().equals(usuarioId))
       .filter(s -> historial.stream().noneMatch(h -> h.getId().equals(s.getId())))
+      .collect(Collectors.toList());
+  }
+
+  private List<Subasta> obtenerFallback(List<Subasta> activas) {
+    return activas
+      .stream()
+      .sorted((subastaUno, subastaDos) -> {
+        int cantidadOfertasSubastaUno = servicioOferta
+          .obtenerMejoresOfertasPorSubasta(subastaUno.getId())
+          .size();
+        int cantidadOfertasSubastaDos = servicioOferta
+          .obtenerMejoresOfertasPorSubasta(subastaDos.getId())
+          .size();
+        return Integer.compare(cantidadOfertasSubastaDos, cantidadOfertasSubastaUno);
+      })
+      .limit(3)
       .collect(Collectors.toList());
   }
 }
