@@ -60,7 +60,8 @@ public class ServicioOfertaImpl implements ServicioOferta {
     // Esto no va mas
     // Usuario usuario = repositorioUsuario.buscar("test@unlam.edu.ar");
 
-    // Si no lanzó excepcion, vinculamos la oferta con la subasta y actualizamos el precio
+    // Si no lanzó excepcion, vinculamos la oferta con la subasta y actualizamos el
+    // precio
     nuevaOferta.setSubasta(subasta);
     nuevaOferta.setUsuario(ofertante);
     subasta.setPrecioActual(nuevaOferta.getMonto());
@@ -81,6 +82,11 @@ public class ServicioOfertaImpl implements ServicioOferta {
   @Override
   public List<Subasta> obtenerSubastasDondeParticipe(Long idUsuario) {
     return repositorioOferta.buscarSubastasDondeOferto(idUsuario);
+  }
+
+  @Override
+  public List<Oferta> obtenerMejoresOfertasPorSubasta(Long subastaId) {
+    return repositorioOferta.obtenerMejoresOfertasPorSubasta(subastaId);
   }
 
   private void validarSubastaExistente(Subasta subasta) throws SubastaNoEncontradaException {

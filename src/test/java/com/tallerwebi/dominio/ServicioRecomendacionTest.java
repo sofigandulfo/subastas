@@ -89,16 +89,19 @@ public class ServicioRecomendacionTest {
   }
 
   @Test
-  public void siGeminiDevuelveTextoInvalidoDeberiaRetornarListaVacia() throws Exception {
+  public void siGeminiDevuelveTextoInvalidoDeberiaRetornarFallbackPorPopularidad()
+    throws Exception {
     Subasta subasta = crearSubastaActiva(1L, "Notebook", "Tecnologia", 2L);
     when(servicioSubastaMock.obtenerTodasLasSubastas()).thenReturn(List.of(subasta));
     when(servicioOfertaMock.obtenerSubastasDondeParticipe(1L)).thenReturn(List.of());
+    when(servicioOfertaMock.obtenerMejoresOfertasPorSubasta(1L)).thenReturn(List.of());
     when(servicioGeminiMock.preguntar(any(), any(), eq(false)))
       .thenReturn("no puedo responder eso");
 
     List<Subasta> resultado = servicioRecomendacion.obtenerRecomendaciones(1L);
 
-    assertThat(resultado, empty());
+    assertThat(resultado, hasSize(1));
+    assertThat(resultado.get(0), equalTo(subasta));
   }
 
   @Test
@@ -137,42 +140,51 @@ public class ServicioRecomendacionTest {
   }
 
   @Test
-  public void siGeminiLanzaUnHttpClientErrorExceptionDeberiaRetornarListaVacia() throws Exception {
+  public void siGeminiLanzaUnHttpClientErrorExceptionDeberiaRetornarFallbackPorPopularidad()
+    throws Exception {
     Subasta subasta = crearSubastaActiva(1L, "Notebook", "Tecnologia", 2L);
     when(servicioSubastaMock.obtenerTodasLasSubastas()).thenReturn(List.of(subasta));
     when(servicioOfertaMock.obtenerSubastasDondeParticipe(1L)).thenReturn(List.of());
+    when(servicioOfertaMock.obtenerMejoresOfertasPorSubasta(1L)).thenReturn(List.of());
     when(servicioGeminiMock.preguntar(any(), any(), eq(false)))
       .thenThrow(new HttpClientErrorException(HttpStatus.TOO_MANY_REQUESTS));
 
     List<Subasta> resultado = servicioRecomendacion.obtenerRecomendaciones(1L);
 
-    assertThat(resultado, empty());
+    assertThat(resultado, hasSize(1));
+    assertThat(resultado.get(0), equalTo(subasta));
   }
 
   @Test
-  public void siGeminiLanzaUnHttpServerErrorExceptionDeberiaRetornarListaVacia() throws Exception {
+  public void siGeminiLanzaUnHttpServerErrorExceptionDeberiaRetornarFallbackPorPopularidad()
+    throws Exception {
     Subasta subasta = crearSubastaActiva(1L, "Notebook", "Tecnologia", 2L);
     when(servicioSubastaMock.obtenerTodasLasSubastas()).thenReturn(List.of(subasta));
     when(servicioOfertaMock.obtenerSubastasDondeParticipe(1L)).thenReturn(List.of());
+    when(servicioOfertaMock.obtenerMejoresOfertasPorSubasta(1L)).thenReturn(List.of());
     when(servicioGeminiMock.preguntar(any(), any(), eq(false)))
       .thenThrow(new HttpServerErrorException(HttpStatus.SERVICE_UNAVAILABLE));
 
     List<Subasta> resultado = servicioRecomendacion.obtenerRecomendaciones(1L);
 
-    assertThat(resultado, empty());
+    assertThat(resultado, hasSize(1));
+    assertThat(resultado.get(0), equalTo(subasta));
   }
 
   @Test
-  public void siGeminiLanzaUnaExcepcionInesperadaDeberiaRetornarListaVacia() throws Exception {
+  public void siGeminiLanzaUnaExcepcionInesperadaDeberiaRetornarFallbackPorPopularidad()
+    throws Exception {
     Subasta subasta = crearSubastaActiva(1L, "Notebook", "Tecnologia", 2L);
     when(servicioSubastaMock.obtenerTodasLasSubastas()).thenReturn(List.of(subasta));
     when(servicioOfertaMock.obtenerSubastasDondeParticipe(1L)).thenReturn(List.of());
+    when(servicioOfertaMock.obtenerMejoresOfertasPorSubasta(1L)).thenReturn(List.of());
     when(servicioGeminiMock.preguntar(any(), any(), eq(false)))
       .thenThrow(new RuntimeException("fallo inesperado"));
 
     List<Subasta> resultado = servicioRecomendacion.obtenerRecomendaciones(1L);
 
-    assertThat(resultado, empty());
+    assertThat(resultado, hasSize(1));
+    assertThat(resultado.get(0), equalTo(subasta));
   }
 
   private Subasta crearSubastaActiva(Long id, String nombre, String categoria, Long idCreador) {
