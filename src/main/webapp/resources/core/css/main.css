@@ -254,6 +254,153 @@ body {
   gap: 12px;
 }
 
+.autopuja-steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: .75rem;
+    margin-bottom: 1rem;
+}
+
+.autopuja-step {
+    border: 1px solid #dee2e6;
+    border-radius: .5rem;
+    padding: .75rem .6rem;
+    text-align: center;
+    background: #fff;
+}
+
+.autopuja-step .step-icon {
+    font-size: 1.5rem;
+    color: #0d6efd;
+    display: block;
+    margin-bottom: .3rem;
+}
+
+.autopuja-step .step-num {
+    font-size: .7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: #6c757d;
+    display: block;
+    margin-bottom: .2rem;
+}
+
+.autopuja-step .step-desc {
+    font-size: .8rem;
+    color: #495057;
+    line-height: 1.35;
+}
+
+.autopuja-step .step-desc strong {
+    color: #212529;
+}
+
+
+.autopuja-steps-wrapper {
+    position: relative;
+}
+
+
+.bot-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    background: #e7f1ff;
+    color: #0a58ca;
+    border: 1px solid #b6d4fe;
+    border-radius: 2rem;
+    padding: .2rem .65rem;
+    font-size: .78rem;
+    font-weight: 500;
+}
+
+
+#sim-box {
+    display: none;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: .375rem;
+    padding: .6rem .85rem;
+    font-size: .85rem;
+    color: #495057;
+    margin-top: .5rem;
+}
+
+#sim-box .sim-accent {
+    color: #0a58ca;
+    font-weight: 600;
+}
+
+#sim-box.sim-warning {
+    background: #fff8ec;
+    border-color: #ffc107;
+    color: #664d03;
+}
+
+#sim-box.sim-warning .sim-accent {
+    color: #664d03;
+}
+
+
+.form-label-icon {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+}
+
+.form-label-icon i {
+    color: #6c757d;
+    font-size: 1rem;
+}
+
+.puja-steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: .75rem;
+    margin-bottom: 1rem;
+}
+
+.puja-step {
+    border: 1px solid #dee2e6;
+    border-radius: .5rem;
+    padding: .75rem .6rem;
+    text-align: center;
+    background: #fff;
+}
+
+.puja-step .step-icon {
+    font-size: 1.5rem;
+    color: #0d6efd;
+    display: block;
+    margin-bottom: .3rem;
+}
+
+.puja-step .step-num {
+    font-size: .7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: #6c757d;
+    display: block;
+    margin-bottom: .2rem;
+}
+
+.puja-step .step-desc {
+    font-size: .8rem;
+    color: #495057;
+    line-height: 1.35;
+}
+
+.puja-step .step-desc strong {
+    color: #212529;
+}
+
+.price {
+    font-size: 1.5rem;
+    color: #212529;
+}
+
 @media (max-width: 768px) {
   .page-header {
     align-items: flex-start;
@@ -262,5 +409,38 @@ body {
 
   .app-card-body {
     padding: 18px;
+  }
+
+   .page-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .app-card-body {
+    padding: 18px;
+  }
+
+  /* Agregado */
+  .autopuja-steps,
+  .puja-steps {
+    grid-template-columns: 1fr;
+  }
+
+  .autopuja-step,
+  .puja-step {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: .75rem;
+    text-align: center;
+    padding: .75rem;
+  }
+
+  .autopuja-step .step-icon,
+  .puja-step .step-icon {
+    font-size: 1.25rem;
+    margin-bottom: 0;
+    flex-shrink: 0;
+    margin-top: .1rem;
   }
 }
