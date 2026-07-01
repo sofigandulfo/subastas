@@ -12,4 +12,5 @@ public interface ServicioOferta {
 
   Oferta obtenerMejorOfertaPorSubasta(Long subastaId);
   List<Subasta> obtenerSubastasDondeParticipe(Long idUsuario);
+  List<Oferta> obtenerMejoresOfertasPorSubasta(Long subastaId);
 }

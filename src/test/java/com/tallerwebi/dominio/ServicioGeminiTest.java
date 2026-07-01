@@ -41,9 +41,24 @@ public class ServicioGeminiTest {
   }
 
   @Test
-  public void preguntarDeberiaRetornarMensajeDeErrorSiElJsonEsInvalido()
-    throws JsonProcessingException {
+  public void preguntarDeberiaRetornarVacioSiNoHayCandidates() throws JsonProcessingException {
     this.dadoQueLaApiResponde("{\"error\": \"formato incorrecto\"}");
+    String respuesta = this.cuandoPregunto(PREGUNTA, null, false);
+    assertThat(respuesta, equalTo(""));
+  }
+
+  @Test
+  public void preguntarDeberiaRetornarVacioSiElArrayCandidatesEstaVacio()
+    throws JsonProcessingException {
+    this.dadoQueLaApiResponde("{\"candidates\": []}");
+    String respuesta = this.cuandoPregunto(PREGUNTA, null, false);
+    assertThat(respuesta, equalTo(""));
+  }
+
+  @Test
+  public void preguntarDeberiaRetornarMensajeDeErrorSiElJsonEsMalformado()
+    throws JsonProcessingException {
+    this.dadoQueLaApiResponde("{ esto no es json valido ");
     String respuesta = this.cuandoPregunto(PREGUNTA, null, false);
     assertThat(respuesta, startsWith("Error procesando respuesta de Gemini:"));
   }
