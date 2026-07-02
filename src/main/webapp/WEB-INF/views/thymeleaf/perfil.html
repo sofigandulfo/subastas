@@ -30,29 +30,24 @@
             <a th:href="@{/subastas}" class="btn btn-outline-secondary">Volver al listado</a>
         </section>
 
+        <input type="hidden" id="session-usuario-id" th:value="${session.USUARIO_ID}">
+
         <div class="row g-4">
             <section class="col-lg-6">
                 <div class="app-card">
                     <div class="app-card-body">
                         <h2 class="section-title">Mis ventas</h2>
-                        <ul class="profile-list">
-                            <li th:each="venta : ${misVentas}" class="profile-list-item">
-                                <strong th:text="${venta.detalle.nombre}">Nombre Artículo</strong>
-                                <p class="text-muted mb-2" th:text="'Estado: ' + ${venta.estadoSubasta}">Estado</p>
 
-                                <div class="d-flex gap-2 flex-wrap">
-                                    <span th:if="${venta.estadoSubasta.name() == 'ACTIVA' or venta.estadoSubasta.name() == 'CUENTA_ATRAS'}"
-                                        class="status-badge status-countdown">En curso</span>
-                                    <span th:if="${venta.estadoSubasta.name() == 'CERRADA' and !venta.podio.isEmpty()}"
-                                        class="status-badge status-sold">¡Vendido!</span>
-                                    <span th:if="${venta.estadoSubasta.name() == 'CERRADA' and venta.podio.isEmpty()}"
-                                        class="status-badge status-danger">Sin ofertas</span>
-
-                                    <a th:href="@{/detalle-subasta(id=${venta.id})}" class="btn btn-sm btn-warning ms-auto">Ver detalle</a>
-                                </div>
-                            </li>
+                        <ul id="lista-mis-ventas" class="profile-list">
                         </ul>
-                        <p th:if="${misVentas.isEmpty()}" class="text-muted mb-0">Aún no has creado ninguna subasta.</p>
+
+                        <p id="msg-sin-ventas" class="text-muted mb-0 d-none">Aún no has creado ninguna subasta.</p>
+
+                        <div class="text-center mt-3">
+                            <button id="btn-cargar-ventas" class="btn btn-sm btn-outline-primary d-none" onclick="cargarMasVentas()">
+                                Cargar más ventas
+                            </button>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -61,33 +56,17 @@
                 <div class="app-card">
                     <div class="app-card-body">
                         <h2 class="section-title">Mis pujas</h2>
-                        <ul class="profile-list">
-                            <li th:each="puja : ${misPujas}" class="profile-list-item">
-                                <strong th:text="${puja.detalle.nombre}">Nombre Artículo</strong>
-                                <p class="text-muted mb-2" th:text="'Estado: ' + ${puja.estadoSubasta}">Estado</p>
 
-                                <div class="d-flex gap-2 flex-wrap">
-                                    <span th:if="${puja.estadoSubasta.name() == 'ACTIVA' or puja.estadoSubasta.name() == 'CUENTA_ATRAS'}"
-                                        class="status-badge status-countdown">En juego</span>
-
-                                    <span th:if="${puja.estadoSubasta.name() == 'ACTIVA' or puja.estadoSubasta.name() == 'CUENTA_ATRAS'}">
-                                        <span th:if="${estadoPujas.get(puja.id)}" class="status-badge status-winning">Vas ganando</span>
-                                        <span th:unless="${estadoPujas.get(puja.id)}" class="status-badge status-lost">Superado</span>
-                                    </span>
-
-                                    <span th:if="${puja.estadoSubasta.name() == 'CERRADA' and not #lists.isEmpty(puja.podio)}">
-                                        <span th:if="${puja.podio[0].id == usuarioId}" class="status-badge status-winning">¡Ganaste!</span>
-                                        <span th:unless="${puja.podio[0].id == usuarioId}" class="status-badge status-lost">Perdiste</span>
-                                    </span>
-
-                                    <a th:href="@{/detalle-subasta(id=${puja.id})}" class="btn btn-sm btn-primary ms-auto">
-                                        <span th:if="${puja.estadoSubasta.name() == 'ACTIVA' or puja.estadoSubasta.name() == 'CUENTA_ATRAS'}">Ir a pujar</span>
-                                        <span th:unless="${puja.estadoSubasta.name() == 'ACTIVA' or puja.estadoSubasta.name() == 'CUENTA_ATRAS'}">Ver detalle</span>
-                                    </a>
-                                </div>
-                            </li>
+                        <ul id="lista-mis-pujas" class="profile-list">
                         </ul>
-                        <p th:if="${misPujas.isEmpty()}" class="text-muted mb-0">Aún no has participado en ninguna subasta.</p>
+
+                        <p id="msg-sin-pujas" class="text-muted mb-0 d-none">Aún no has participado en ninguna subasta.</p>
+
+                        <div class="text-center mt-3">
+                            <button id="btn-cargar-pujas" class="btn btn-sm btn-outline-primary d-none" onclick="cargarMasPujas()">
+                                Cargar más pujas
+                            </button>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -97,6 +76,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
         crossorigin="anonymous"></script>
+
+    <script th:src="@{/js/perfil.js}"></script>
 </body>
 
 </html>
