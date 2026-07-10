@@ -15,11 +15,17 @@ public class ReiniciarDB {
         : "user";
 
       String sqlCommands =
-        "DELETE FROM Subasta;\n" +
-        "DELETE FROM Usuario;\n" +
-        "ALTER TABLE Subasta AUTO_INCREMENT = 1;\n" +
-        "ALTER TABLE Usuario AUTO_INCREMENT = 1;\n" +
-        "INSERT INTO Usuario(id, email, password, rol, activo) VALUES(null, 'test@unlam.edu.ar', 'test', 'ADMIN', true);\n" +
+        "SET FOREIGN_KEY_CHECKS=0; " +
+        "DELETE FROM AutoPuja; " +
+        "DELETE FROM Oferta; " +
+        "DELETE FROM Subasta; " +
+        "DELETE FROM Usuario; " +
+        "ALTER TABLE AutoPuja AUTO_INCREMENT = 1; " +
+        "ALTER TABLE Oferta AUTO_INCREMENT = 1; " +
+        "ALTER TABLE Subasta AUTO_INCREMENT = 1; " +
+        "ALTER TABLE Usuario AUTO_INCREMENT = 1; " +
+        "SET FOREIGN_KEY_CHECKS=1; " +
+        "INSERT INTO Usuario(id, email, password, rol, activo) VALUES(null, 'test@unlam.edu.ar', 'test', 'ADMIN', true); " +
         "INSERT INTO Usuario(id, email, password, rol, activo) VALUES(null, 'test2@unlam.edu.ar', 'test', 'USER', true);";
 
       String comando = String.format(
@@ -32,7 +38,14 @@ public class ReiniciarDB {
         sqlCommands
       );
 
-      Process process = Runtime.getRuntime().exec(new String[] { "/bin/bash", "-c", comando });
+      String sistemaOperativo = System.getProperty("os.name").toLowerCase();
+
+      Process process;
+      if (sistemaOperativo.contains("win")) {
+        process = Runtime.getRuntime().exec(new String[] { "cmd.exe", "/c", comando });
+      } else {
+        process = Runtime.getRuntime().exec(new String[] { "/bin/bash", "-c", comando });
+      }
       int exitCode = process.waitFor();
 
       if (exitCode == 0) {
