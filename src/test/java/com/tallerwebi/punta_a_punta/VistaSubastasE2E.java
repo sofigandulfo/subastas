@@ -61,6 +61,6 @@ public class VistaSubastasE2E {
     VistaSubastas vistaSubastas = new VistaSubastas(page);
 
     assertThat(vistaSubastas.obtenerTitulo(), containsString("Subastas Disponibles"));
-    assertThat(page.url(), containsString("/spring/subastas"));
+    assertThat(page.url(), containsString("/subastas"));
   }
 }

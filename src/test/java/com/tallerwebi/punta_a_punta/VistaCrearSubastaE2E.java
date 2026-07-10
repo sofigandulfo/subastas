@@ -75,7 +75,7 @@ public class VistaCrearSubastaE2E {
 
     VistaDetalleSubasta vistaDetalleSubasta = new VistaDetalleSubasta(page);
 
-    assertThat(page.url(), containsString("/spring/detalle-subasta"));
+    assertThat(page.url(), containsString("/detalle-subasta"));
     assertThat(vistaDetalleSubasta.obtenerNombreSubasta(), containsString("PlayStation 5"));
     assertThat(
       vistaDetalleSubasta.obtenerDescripcionSubasta(),
@@ -105,7 +105,7 @@ public class VistaCrearSubastaE2E {
     vistaCrearSubasta.escribirFechaCierre("2026-12-31T23:59");
     vistaCrearSubasta.darClickEnPublicarSubasta();
 
-    assertThat(page.url(), containsString("/spring/crear-subasta"));
+    assertThat(page.url(), containsString("/crear-subasta"));
     assertThat(
       vistaCrearSubasta.obtenerMensajeDeError(),
       containsString("Los datos ingresados son invalidos")
@@ -133,7 +133,7 @@ public class VistaCrearSubastaE2E {
     vistaCrearSubasta.escribirFechaCierre("2020-01-01T10:00");
     vistaCrearSubasta.darClickEnPublicarSubasta();
 
-    assertThat(page.url(), containsString("/spring/crear-subasta"));
+    assertThat(page.url(), containsString("/crear-subasta"));
     assertThat(
       vistaCrearSubasta.obtenerMensajeDeError(),
       containsString("Los datos ingresados son invalidos")
