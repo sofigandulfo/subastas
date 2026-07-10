@@ -17,7 +17,7 @@
             <a class="navbar-brand app-brand" th:href="@{/subastas}">SubastApp</a>
             <div class="d-flex gap-2">
                 <a th:if="${session.USUARIO_ID != null}" th:href="@{/perfil}" class="btn btn-outline-light">Mi perfil</a>
-                <a th:if="${session.USUARIO_ID != null}" th:href="@{/logout}" class="btn btn-outline-light">Cerrar sesión</a>
+                <a id="btn-cerrar-sesion-detalle" th:if="${session.USUARIO_ID != null}" th:href="@{/logout}" class="btn btn-outline-light">Cerrar sesión</a>
                 <a th:if="${session.USUARIO_ID == null}" th:href="@{/login}" class="btn btn-outline-light">Iniciar sesión</a>
             </div>
         </div>

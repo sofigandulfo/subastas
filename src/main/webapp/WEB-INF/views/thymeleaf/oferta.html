@@ -57,17 +57,36 @@
                     <strong class="price" th:text="'$' + ${subasta.precioActual}">$0.00</strong>
                 </div>
 
-                <form action="#" th:action="@{/ofertar/{id}(id=${subasta.id})}" method="POST" th:object="${oferta}">
+                <form id="form-oferta" action="#" th:action="@{/ofertar/{id}(id=${subasta.id})}" method="POST" th:object="${oferta}">
                     <div class="mb-3">
                         <label for="monto" class="form-label">Tu oferta</label>
                         <input th:field="*{monto}" id="monto" type="number" class="form-control"
                             placeholder="Ingrese su oferta" required />
                     </div>
 
-                    <button id="btn-ofertar" class="btn btn-app-primary w-100" type="submit">Ofertar</button>
+                    <button id="btn-ofertar" class="btn btn-app-primary w-100" type="button">Ofertar</button>
                     <p id="mensaje-error-oferta" th:if="${error != null}" class="alert alert-danger mt-3"
                         th:text="'Error ' + ${error}"></p>
                 </form>
+
+                <div class="modal fade" id="modalConfirmarOferta" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Confirmar oferta</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Vas a ofertar <strong id="monto-confirmacion">$0</strong>.</p>
+                                <p class="mb-0">¿Querés confirmar esta oferta?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button id="btn-confirmar-oferta" type="button" class="btn btn-app-primary">Confirmar oferta</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <a th:href="@{/detalle-subasta(id=${subasta.id})}" class="btn btn-outline-secondary w-100 mt-2">Volver</a>
             </div>
@@ -77,6 +96,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
         crossorigin="anonymous"></script>
+    <script th:src="@{/js/oferta.js}"></script>
 </body>
 
 </html>

@@ -93,10 +93,11 @@ public class VistaOfertarE2E {
     VistaOferta vistaOferta = new VistaOferta(page);
     vistaOferta.escribirMonto("1500");
     vistaOferta.darClickEnOfertar();
+    vistaOferta.confirmarOferta();
 
     VistaDetalleSubasta vistaDetalleFinal = new VistaDetalleSubasta(page);
 
-    assertThat(page.url(), containsString("/spring/detalle-subasta"));
+    assertThat(page.url(), containsString("/detalle-subasta"));
     assertThat(vistaDetalleFinal.obtenerPrecioActual(), containsString("1500"));
     assertThat(vistaDetalleFinal.obtenerMensajeVoyGanando(), containsString("Vas ganando"));
   }
@@ -143,8 +144,9 @@ public class VistaOfertarE2E {
     VistaOferta vistaOferta = new VistaOferta(page);
     vistaOferta.escribirMonto("500");
     vistaOferta.darClickEnOfertar();
+    vistaOferta.confirmarOferta();
 
-    assertThat(page.url(), containsString("/spring/ofertar"));
+    assertThat(page.url(), containsString("/ofertar"));
     assertThat(
       vistaOferta.obtenerMensajeDeError(),
       containsString("Error La oferta ingresada no es válida")
@@ -177,8 +179,8 @@ public class VistaOfertarE2E {
     VistaDetalleSubasta vistaDetalleSubasta = new VistaDetalleSubasta(page);
     vistaDetalleSubasta.darClickEnCerrarSesion();
 
-    page.navigate("http://localhost:8080/spring/ofertar/3");
+    page.navigate("http://localhost:8080/ofertar/3");
 
-    assertThat(page.url(), containsString("/spring/login"));
+    assertThat(page.url(), containsString("/login"));
   }
 }
