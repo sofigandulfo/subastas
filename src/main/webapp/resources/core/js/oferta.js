@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
-  const modalConfirmarOferta = new bootstrap.Modal(modalConfirmarOfertaElemento);
+  const modalConfirmarOferta = new window.bootstrap.Modal(modalConfirmarOfertaElemento);
 
   botonOfertar.addEventListener("click", function () {
     if (!inputMonto.checkValidity()) {
