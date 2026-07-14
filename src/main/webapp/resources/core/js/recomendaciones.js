@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-  fetch("/spring/api/recomendaciones")
+  fetch("/api/recomendaciones")
     .then(function (res) {
       if (res.status === 401) {
         document.getElementById("seccion-recomendadas").style.display = "none";
@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function () {
         categoria.textContent = subasta.categoria;
 
         var link = document.createElement("a");
-        link.href = "/spring/detalle-subasta?id=" + subasta.id;
+        link.href = "/detalle-subasta?id=" + subasta.id;
         link.className = "btn btn-app-primary w-100";
         link.textContent = "Ver detalle";
 

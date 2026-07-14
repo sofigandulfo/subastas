@@ -19,4 +19,8 @@ public class VistaOferta extends VistaWeb {
   public String obtenerMensajeDeError() {
     return this.obtenerTextoDelElemento("#mensaje-error-oferta");
   }
+
+  public void confirmarOferta() {
+    this.darClickEnElElemento("#btn-confirmar-oferta");
+  }
 }

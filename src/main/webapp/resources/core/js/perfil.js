@@ -22,7 +22,7 @@ function pedirVentas() {
   const usuarioId = document.getElementById("session-usuario-id").value;
   if (!usuarioId) return;
 
-  fetch(`/spring/api/perfil/ventas?usuarioId=${usuarioId}&pagina=${paginaVentas}&limite=${LIMITE}`)
+  fetch(`/api/perfil/ventas?usuarioId=${usuarioId}&pagina=${paginaVentas}&limite=${LIMITE}`)
     .then(res => res.json())
     .then(subastas => {
       const contenedor = document.getElementById("lista-mis-ventas");
@@ -47,7 +47,7 @@ function pedirVentas() {
           <p class="text-muted mb-2">Estado: ${subasta.estado}</p>
           <div class="d-flex gap-2 flex-wrap">
             ${armarTagEstadoVenta(subasta)}
-            <a href="/spring/detalle-subasta?id=${subasta.id}" class="btn btn-sm btn-warning ms-auto">Ver detalle</a>
+            <a href="/detalle-subasta?id=${subasta.id}" class="btn btn-sm btn-warning ms-auto">Ver detalle</a>
           </div>
         `;
         contenedor.appendChild(li);
@@ -60,7 +60,7 @@ function pedirPujas() {
   const usuarioId = document.getElementById("session-usuario-id").value;
   if (!usuarioId) return;
 
-  fetch(`/spring/api/perfil/pujas?usuarioId=${usuarioId}&pagina=${paginaPujas}&limite=${LIMITE}`)
+  fetch(`/api/perfil/pujas?usuarioId=${usuarioId}&pagina=${paginaPujas}&limite=${LIMITE}`)
     .then(res => res.json())
     .then(subastas => {
       const contenedor = document.getElementById("lista-mis-pujas");
@@ -86,7 +86,7 @@ function pedirPujas() {
           <p class="text-muted mb-2">Estado: ${subasta.estado}</p>
           <div class="d-flex gap-2 flex-wrap">
             ${armarTagEstadoPuja(subasta)}
-            <a href="/spring/detalle-subasta?id=${subasta.id}" class="btn btn-sm btn-primary ms-auto">${textoBoton}</a>
+            <a href="/detalle-subasta?id=${subasta.id}" class="btn btn-sm btn-primary ms-auto">${textoBoton}</a>
           </div>
         `;
         contenedor.appendChild(li);
