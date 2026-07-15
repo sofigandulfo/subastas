@@ -12,6 +12,7 @@ services:
         MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     container_name: tallerwebi-mysql
     environment:
+      TZ: America/Argentina/Buenos_Aires
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
@@ -37,6 +38,7 @@ services:
       - tallerwebi-network
     restart: unless-stopped
     environment:
+      TZ: America/Argentina/Buenos_Aires
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
       DB_NAME: ${DB_NAME}

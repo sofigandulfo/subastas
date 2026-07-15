@@ -16,6 +16,7 @@ import com.tallerwebi.dominio.subasta.RepositorioSubasta;
 import com.tallerwebi.dominio.subasta.ServicioSubasta;
 import com.tallerwebi.dominio.subasta.ServicioSubastaImpl;
 import com.tallerwebi.dominio.subasta.Subasta;
+import com.tallerwebi.dominio.usuario.ServicioEmail;
 import com.tallerwebi.dominio.usuario.Usuario;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,12 +30,15 @@ public class ServicioSubastaTest {
   private RepositorioSubasta repositorioSubasta;
   private RepositorioOferta repositorioOferta;
   private Usuario usuarioCreador;
+  private ServicioEmail servicioEmailMock;
 
   @BeforeEach
   public void init() {
     repositorioSubasta = mock(RepositorioSubasta.class);
     repositorioOferta = mock(RepositorioOferta.class);
-    servicioSubasta = new ServicioSubastaImpl(repositorioSubasta, repositorioOferta);
+    servicioEmailMock = mock(ServicioEmail.class);
+    servicioSubasta =
+      new ServicioSubastaImpl(repositorioSubasta, repositorioOferta, servicioEmailMock);
     usuarioCreador = new Usuario();
     usuarioCreador.setId(1L);
   }

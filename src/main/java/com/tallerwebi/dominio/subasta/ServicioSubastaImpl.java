@@ -5,6 +5,7 @@ import com.tallerwebi.dominio.excepcion.SubastaInvalidaExeption;
 import com.tallerwebi.dominio.excepcion.SubastaNoEditableException;
 import com.tallerwebi.dominio.oferta.Oferta;
 import com.tallerwebi.dominio.oferta.RepositorioOferta;
+import com.tallerwebi.dominio.usuario.ServicioEmail;
 import com.tallerwebi.dominio.usuario.Usuario;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -25,14 +26,17 @@ public class ServicioSubastaImpl implements ServicioSubasta {
 
   private RepositorioSubasta repositorioSubasta;
   private RepositorioOferta repositorioOferta;
+  private ServicioEmail servicioEmail;
 
   @Autowired
   public ServicioSubastaImpl(
     RepositorioSubasta repositorioSubasta,
-    RepositorioOferta repositorioOferta
+    RepositorioOferta repositorioOferta,
+    ServicioEmail servicioEmail
   ) {
     this.repositorioSubasta = repositorioSubasta;
     this.repositorioOferta = repositorioOferta;
+    this.servicioEmail = servicioEmail;
   }
 
   @Override
@@ -82,6 +86,25 @@ public class ServicioSubastaImpl implements ServicioSubasta {
         subasta.setPodio(podio);
         subasta.setEstadoSubasta(EstadoSubasta.CERRADA);
         repositorioSubasta.guardarSubasta(subasta);
+
+        if (!podio.isEmpty()) {
+          Usuario ganador = podio.get(0);
+          Usuario vendedor = subasta.getCreador();
+
+          // Verificamos que vendedor y ganador existan (para que no exploten los tests) y tengan email
+          if (
+            vendedor != null &&
+            ganador != null &&
+            vendedor.getEmail() != null &&
+            ganador.getEmail() != null
+          ) {
+            servicioEmail.notificarGanador(
+              vendedor.getEmail(),
+              ganador.getEmail(),
+              ganador.getEmail()
+            );
+          }
+        }
       }
     }
   }
