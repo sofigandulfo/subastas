@@ -15,6 +15,7 @@ import com.tallerwebi.dominio.subasta.DetalleSubasta;
 import com.tallerwebi.dominio.subasta.EstadoSubasta;
 import com.tallerwebi.dominio.subasta.ServicioSubasta;
 import com.tallerwebi.dominio.subasta.Subasta;
+import com.tallerwebi.dominio.usuario.ServicioEmail;
 import com.tallerwebi.dominio.usuario.Usuario;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
