@@ -1,5 +1,7 @@
 package com.tallerwebi.dominio.usuario;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 public class ServicioEmailImpl implements ServicioEmail {
 
   private final JavaMailSender mailSender;
+  private static final Logger LOGGER = Logger.getLogger(ServicioEmailImpl.class.getName());
 
   @Autowired
   public ServicioEmailImpl(JavaMailSender mailSender) {
@@ -43,13 +46,20 @@ public class ServicioEmailImpl implements ServicioEmail {
         "  </div>" +
         "  <p style=\"color: #333; font-size: 16px;\">Por favor, escribile a la brevedad para coordinar el pago y la entrega.</p>" +
         "  <hr style=\"border: none; border-top: 1px solid #ddd; margin-top: 30px;\">" +
-        "  <p style=\"color: #7f8c8d; font-size: 12px; text-align: center;\">Plataforma SubastApp - Taller Web I</p>" +
+        "  <p style=\"color: #7f8c8d; font-size: 12px; text-align: center;\">Plataforma SubastAPP - Taller Web I</p>" +
         "</div>";
 
       helperComprador.setText(htmlComprador, true);
       mailSender.send(msgComprador);
     } catch (Exception e) {
-      throw new RuntimeException("Error al enviar el email al comprador", e);
+      // En caso de que dos subastas terminen al mismo tiempo, por tener cuenta gratuita, se lanzaría una excepcion
+      // En lugar de lanzar 'throw new RuntimeException', atrapamos la caída.
+      // Si Mailtrap bloquea el envío, solo dejamos un registro y permitimos que la DB guarde los cambios.
+      if (LOGGER.isLoggable(Level.WARNING)) {
+        LOGGER.warning(
+          "Aviso: No se pudo enviar el correo por limites de API externa. " + e.getMessage()
+        );
+      }
     }
   }
 }
